@@ -1,2 +1,2 @@
-# fd1d
-Fortran code applying the finite differences method to run one-dimensional simulations based on self-consistent field theory
+# RuSseL1D
+Fortran code applying the finite differences method to run one-dimensional calculations based on self-consistent field theory.

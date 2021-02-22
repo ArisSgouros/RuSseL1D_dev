@@ -3,9 +3,9 @@ module arrays
 integer                            :: n_dir_nodes
 integer, allocatable, dimension(:) :: dir_nodes_id
 
-real(8)                              :: volume, surface_area
+real(8)                              :: volume, surface_area, wa_bulk
 real(8), allocatable, dimension(:)   :: rr, irr, layer_area
-real(8), allocatable, dimension(:)   :: wa, wa_new, Ufield, df_drho
+real(8), allocatable, dimension(:)   :: wa, wa_ifc, wa_ifc_new, wa_ifc_backup, Ufield, df_drho
 real(8), allocatable, dimension(:)   :: dx, rx, coeff_nx
 real(8), allocatable, dimension(:)   :: ds_matrix, ds_matrix_aux, ds_grafted_lo, ds_grafted_hi
 real(8), allocatable, dimension(:)   :: coeff_ns_matrix, coeff_ns_matrix_aux, coeff_ns_grafted_lo, coeff_ns_grafted_hi

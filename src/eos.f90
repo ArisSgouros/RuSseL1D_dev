@@ -9,6 +9,7 @@ integer :: eos_type
 real(8) :: HF_kappa_T
 real(8) :: T_star, P_star, V_star, rho_star
 real(8) :: T_tilde, P_tilde, rho_tilde_bulk, rsl_N
+real(8) :: chainlen_sl
 !----------------------------------------------------------------------------------------------------------!
 contains
     function eos_ff(phi) result(ff)
@@ -20,6 +21,7 @@ contains
         ff = 0.5d0 / HF_kappa_T * (phi - 1.d0)**2
     elseif (eos_type.eq.F_sanchez_labombe) then
         rho_tilde = rho_tilde_bulk*phi
+        if(rho_tilde.gt.1.d0) rho_tilde = 0.9999d0
         ff        = P_star*(T_tilde*rho_tilde - rho_tilde**2 + T_tilde*(1-rho_tilde)*log(1-rho_tilde))
     endif
     end function eos_ff
@@ -34,13 +36,7 @@ contains
         df_drho = (phi - 1.d0)/(HF_kappa_T * rho_seg_bulk)
     elseif (eos_type.eq.F_sanchez_labombe) then
         rho_tilde = rho_tilde_bulk*phi
-        if(rho_tilde.gt.1.d0) then
-            !write(*,*)"warning, rho_rilde > .do", rho_tilde
-            rho_tilde = 0.9999d0
-        endif
-        !df_drho   = boltz_const_Joule_K * T_star *                  &
-        !          &    ( + 2.d0 * rsl_N * (rho_tilde_bulk - rho_tilde)  &
-        !          &      - T_tilde * rsl_N * log((1.d0-rho_tilde)/(1.d0-rho_tilde_bulk)))
+        if(rho_tilde.gt.1.d0) rho_tilde = 0.9999d0
         df_drho   = boltz_const_Joule_K * T_star *                  &
                   &    ( + 2.d0 * rsl_N * (0.d0 - rho_tilde)  &
                   &      - T_tilde * rsl_N * log((1.d0-rho_tilde)/(1.d0-0.d0)))

@@ -15,9 +15,11 @@ integer, parameter :: F_sphere            = 1
 integer, parameter :: F_helfand           = 0
 integer, parameter :: F_sanchez_labombe   = 1
 ! wall types
+integer, parameter :: F_hybrid            = -1
 integer, parameter :: F_vacuum            = 0
 integer, parameter :: F_hamaker           = 1
 integer, parameter :: F_square_well       = 2
+integer, parameter :: F_ramp              = 3
 ! chain types
 integer, parameter :: F_lo                = -1
 integer, parameter :: F_both              = 0

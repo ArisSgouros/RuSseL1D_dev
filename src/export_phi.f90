@@ -33,7 +33,7 @@ open(unit=120, file='o.phi.out.txt')
 write(120,'(8(A14,2X))') 'r', 'phi_matrix', 'phi_gr_lo', 'phi_gr_hi', 'phi_tot', &
 &                         'cumul_matrix', 'cumul_gr_lo', 'cumul_gr_hi'
 do ii = 0, nx
-    write (120,'(8(E14.7,2X))') rx(ii), phi_matrix(ii), phi_gr_lo(ii), phi_gr_hi(ii), phi_total(ii), &
+    write (120,'(8(E14.7E3,2X))') rx(ii), phi_matrix(ii), phi_gr_lo(ii), phi_gr_hi(ii), phi_total(ii), &
 &                                cumul_matrix(ii), cumul_gr_lo(ii), cumul_gr_hi(ii)
 enddo
 close(120)

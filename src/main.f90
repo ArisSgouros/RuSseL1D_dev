@@ -9,12 +9,12 @@ use write_helper
 !----------------------------------------------------------------------------------------------------------!
 implicit none
 !----------------------------------------------------------------------------------------------------------!
-logical :: convergence = .false.
+logical :: convergence = .false., restart = .false., restore = .false.
 
 integer :: iter, jj, ii, tt
 
 real(8) :: get_nchains
-real(8) :: wa_error = 1.d10, en_error = 1.d10, free_energy_prev = 1.d10
+real(8) :: wa_error_new = 1.d10, wa_error_old = 1.d10
 real(8) :: qinit_lo = 0.d0, qinit_hi = 0.d0
 real(8) :: free_energy = 0.d0
 real(8) :: nchgr_lo = 0.d0, nchgr_hi = 0.d0, nch_matrix = 0.d0
@@ -31,8 +31,8 @@ call init_field
 write(iow,'(A85)')adjl('---------------------------------BEGIN THE SIMULATION--------------------------------',85)
 write(*  ,'(A85)')adjl('---------------------------------BEGIN THE SIMULATION--------------------------------',85)
 
-write(*,  '(2X,A15,4(2X,A15))') 'Iteration', 'energy (mN/m)','error (k_B T)', 'gdens_lo', 'gdens_hi'
-write(iow,'(2X,A15,4(2X,A15))') 'Iteration', 'energy (mN/m)','error', 'gdens_lo', 'gdens_hi'
+write(iow,'(2X,A15,9(2X,A15))') 'Iteration', 'energy (mN/m)','error (k_B T)', 'gdens_lo', 'gdens_hi', "nch_m", "nch_glo", "nch_ghi", "fraction"
+write(*  ,'(2X,A15,9(2X,A15))') 'Iteration', 'energy (mN/m)','error (k_B T)', 'gdens_lo', 'gdens_hi', "nch_m", "nch_glo", "nch_ghi", "fraction"
 
 do iter = 0, max_iter
 
@@ -76,7 +76,7 @@ do iter = 0, max_iter
     endif
  
     call edwards(bc_lo_matrix, bc_hi_matrix, n_dir_nodes, dir_nodes_id, dir_nodes_rdiag, &
-&           Rg2_per_mon, nx, ns_matrix_aux, dx, ds_matrix_aux, edwards_solver, wa, qmatrix, qmatrix_final)
+&           Rg2_per_mon, nx, ns_matrix_aux, dx, ds_matrix_aux, edwards_solver, wa_ifc, qmatrix, qmatrix_final)
 
     if (geometry.eq.F_sphere) then
         do tt = 0, ns_matrix_aux
@@ -86,7 +86,7 @@ do iter = 0, max_iter
         enddo
     endif
 
-    call convolution(chainlen_matrix, nx, ns_matrix, coeff_ns_matrix, qmatrix_final, qmatrix_final, phi_matrix)
+    if (matrix_exist) call convolution(chainlen_matrix, nx, ns_matrix, coeff_ns_matrix, qmatrix_final, qmatrix_final, phi_matrix)
 
     !edwards diffusion for grafted chains in the lower boundary
     if (grafted_lo_exist) then
@@ -134,7 +134,7 @@ do iter = 0, max_iter
         endif
 
         call edwards(bc_lo_grafted, bc_hi_grafted, n_dir_nodes, dir_nodes_id, dir_nodes_rdiag, &
-&                Rg2_per_mon, nx, ns_grafted_lo, dx, ds_grafted_lo, edwards_solver, wa, qgr_lo, qgr_final_lo)
+&                Rg2_per_mon, nx, ns_grafted_lo, dx, ds_grafted_lo, edwards_solver, wa_ifc, qgr_lo, qgr_final_lo)
 
         if (geometry.eq.F_sphere) then
             do tt = 0, ns_grafted_lo
@@ -194,7 +194,7 @@ do iter = 0, max_iter
         endif
 
         call edwards(bc_hi_grafted, bc_hi_grafted, n_dir_nodes, dir_nodes_id, dir_nodes_rdiag, &
-&                Rg2_per_mon, nx, ns_grafted_hi, dx, ds_grafted_hi, edwards_solver, wa, qgr_hi, qgr_final_hi)
+&                Rg2_per_mon, nx, ns_grafted_hi, dx, ds_grafted_hi, edwards_solver, wa_ifc, qgr_hi, qgr_final_hi)
 
         if (geometry.eq.F_sphere) then
             do tt = 0, ns_grafted_hi
@@ -215,71 +215,116 @@ do iter = 0, max_iter
     enddo
 
     if (square_gradient) then
-        ! Warning! this is not compatible with the nonuniforma spatial discretization scheme
-        if (geometry.eq.F_sphere) then
-            do jj = 1, nx-1
-                d2phi_dr2(jj) = (phi_total(jj-1)*rr(jj-1) -2.d0*phi_total(jj)*rr(jj) + phi_total(jj+1)*rr(jj+1)) / (dx(jj)*dx(jj)*1.e-20*rr(jj))
-                dphi_dr(jj)   = (phi_total(jj+1)*rr(jj+1) - phi_total(jj)*rr(jj)) / (dx(jj)*1.e-10*rr(jj))
-            enddo
-            d2phi_dr2(0)  = (phi_total(0)*(rr(0)-dx(1))    -2.d0*phi_total(0)*rr(0)  + phi_total(1)*rr(1))  / (dx(1)*dx(1)*1.e-20*rr(0))
-            d2phi_dr2(nx) = (phi_total(nx-1)*rr(nx-1) -2.d0*phi_total(nx)*rr(nx) + phi_total(nx)*(rr(nx)+dx(1))) / (dx(nx)*dx(nx)*1.e-20*rr(nx))
+        do jj = 1, nx-1
+            d2phi_dr2(jj) = (phi_total(jj-1) -2.d0*phi_total(jj) + phi_total(jj+1)) / (dx(jj)*1.e-10)**2
+            dphi_dr(jj)   = (phi_total(jj+1) - phi_total(jj)) / (dx(jj)*1.e-10)
+        enddo
+        d2phi_dr2(0)  = (phi_total(0)    -2.d0*phi_total(0)  + phi_total(1))  / (dx(1) *1.e-10)**2
+        d2phi_dr2(nx) = (phi_total(nx-1) -2.d0*phi_total(nx) + phi_total(nx)) / (dx(nx)*1.e-10)**2
         
-            dphi_dr(0)  = (phi_total(1)*rr(1) - phi_total(0)*rr(0)) / (dx(1)*1.e-10*rr(0))
-            dphi_dr(nx) = 0.d0
-        else
-            do jj = 1, nx-1
-                d2phi_dr2(jj) = (phi_total(jj-1) -2.d0*phi_total(jj) + phi_total(jj+1)) / (dx(jj)*1.e-10)**2
-                dphi_dr(jj)   = (phi_total(jj+1) - phi_total(jj)) / (dx(jj)*1.e-10)
-            enddo
-            d2phi_dr2(0)  = (phi_total(0)    -2.d0*phi_total(0)  + phi_total(1))  / (dx(1) *1.e-10)**2
-            d2phi_dr2(nx) = (phi_total(nx-1) -2.d0*phi_total(nx) + phi_total(nx)) / (dx(nx)*1.e-10)**2
-        
-            dphi_dr(0)  = (phi_total(1) - phi_total(0)) / (dx(1)*1.e-10)
-            dphi_dr(nx) = 0.d0
-        endif
+        dphi_dr(0)  = (phi_total(1) - phi_total(0)) / (dx(1)*1.e-10)
+        dphi_dr(nx) = 0.d0
     endif
 
     !calculate new field and maximum absolute wa_error
     do jj = 0, nx
-        wa_new(jj) = +(eos_df_drho(phi_total(jj)) - eos_df_drho(1.d0)) / (boltz_const_Joule_K * Temp) &
-&                    -k_gr * (rho_seg_bulk * d2phi_dr2(jj)) / (boltz_const_Joule_K * Temp) &
-&                  + Ufield(jj)
+        wa(jj) = + (eos_df_drho(phi_total(jj)) ) * beta &
+&                - k_gr * (rho_seg_bulk * d2phi_dr2(jj)) * beta &
+&                + Ufield(jj)
     enddo
 
-    wa_error = 0.d0
+    wa_bulk = eos_df_drho(1.d0) * beta
+    wa_ifc_new = wa - wa_bulk
+
+    wa_error_new = 0.d0
     do jj = 0, nx
-        wa_error = max(wa_error, dabs((wa_new(jj)-wa(jj))))
+        wa_error_new = max(wa_error_new, dabs((wa_ifc_new(jj)-wa_ifc(jj))))
     end do
 
     !apply field mixing rule and update field
     do jj = 0, nx
-        wa(jj) = (1.d0 - frac) * wa(jj) + frac * wa_new(jj)
+        wa_ifc(jj) = (1.d0 - frac) * wa_ifc(jj) + frac * wa_ifc_new(jj)
     end do
 
-    call energies(free_energy)
-    en_error = abs(free_energy_prev - free_energy)
-    free_energy_prev = free_energy
+    !
+    !The present section checks the behavior of the field.
+    !In case it diverges or it converges to a bad solution, the field is
+    !restored and the fraction is decreased
+    !
+    if (check_stability_every.gt.0) then
+    if (mod(iter,check_stability_every).eq.0.and.iter.gt.0) then
+        restart = .false.
+        restore = .false.
 
-    convergence = (wa_error.lt.max_wa_error).or.(en_error.lt.max_en_error)
+        if (wa_error_new > wa_error_old) then
+            write(iow,'(3X,''*wa_error_new > wa_error_old:'',E16.7,''>'',E16.7)') wa_error_new, wa_error_old
+            write(6  ,'(3X,''*wa_error_new > wa_error_old:'',E16.7,''>'',E16.7)') wa_error_new, wa_error_old
+            restore = .true.
+        endif
+        if (isnan(wa_error_new)) then
+            write(iow,'(3X,''*current field is not a number!'')')
+            write(6  ,'(3X,''*current field is not a number!'')')
+            restart = .true.
+        endif
 
-    if (mod(iter,field_every)  .eq.0.or.convergence) call export_field_binary(wa,nx)
-    if (mod(iter,compute_every).eq.0.or.convergence) call export_computes(qinit_lo, qinit_hi)
+        if (matrix_exist) then
+            do jj = 1, nx-1
+                if (phi_total(jj).lt.1.e-10) then
+                    restart = .true.
+                    write(iow,'(3X,''*Convergence to unphysical solution!'')')
+                    write(6  ,'(3X,''*Convergence to unphysical solution!'')')
+                    exit
+                endif
+            end do
+        endif
+
+        if (restart) then
+            wa_ifc = 0.d0
+            wa_ifc_backup = 0.d0
+            frac = frac * 0.5d0
+            wa_error_old = 1.d10
+            write(iow,'(3X,''Restart simulation with a new fraction:'',E16.7)') frac
+            write(6  ,'(3X,''Restart simulation with a new fraction:'',E16.7)') frac
+        elseif (restore) then
+            frac = frac * 0.5d0
+            wa_ifc = wa_ifc_backup
+            wa_error_old = 1.d10
+            write(iow,'(3X,''Restore previous field with a new fraction:'',E16.7)') frac
+            write(6  ,'(3X,''Restore previous field with a new fraction:'',E16.7)') frac
+        else
+            wa_error_old = wa_error_new
+            wa_ifc_backup = wa_ifc
+        endif
+    endif
+    endif
+
+    convergence = (wa_error_new.lt.max_wa_error)
+
+    if (mod(iter,field_every)  .eq.0.or.convergence) call export_field_binary(wa_ifc,nx)
+    if (compute_every.gt.0) then
+        if (mod(iter,compute_every).eq.0.or.convergence) call export_computes(qinit_lo, qinit_hi)
+    endif
     if (mod(iter,thermo_every) .eq.0.or.convergence) then
-        nch_matrix = get_nchains(coeff_nx, nx, layer_area, phi_matrix, rho_seg_bulk, chainlen_matrix)
-        nchgr_lo   = get_nchains(coeff_nx, nx, layer_area, phi_gr_lo,  rho_seg_bulk, chainlen_grafted_lo)
-        nchgr_hi   = get_nchains(coeff_nx, nx, layer_area, phi_gr_hi,  rho_seg_bulk, chainlen_grafted_hi)
-        write(*,  '(2X,I15,4(2X,E15.7))') iter, free_energy, wa_error, nchgr_lo / surface_area, nchgr_hi / surface_area
-        write(iow,'(2X,I15,4(2X,E15.7))') iter, free_energy, wa_error, nchgr_lo / surface_area, nchgr_hi / surface_area
+        if (matrix_exist)     nch_matrix = get_nchains(coeff_nx, nx, layer_area, phi_matrix, rho_seg_bulk, chainlen_matrix)
+        if (grafted_lo_exist) nchgr_lo   = get_nchains(coeff_nx, nx, layer_area, phi_gr_lo,  rho_seg_bulk, chainlen_grafted_lo)
+        if (grafted_hi_exist) nchgr_hi   = get_nchains(coeff_nx, nx, layer_area, phi_gr_hi,  rho_seg_bulk, chainlen_grafted_hi)
+
+        call energies(free_energy)
+
+        ! flush the log file
+        close(iow)
+        open(unit=iow, file = "o.scft.out.txt", position = 'append')
+
+        write(iow,'(2X,I15,9(2X,E15.7))') iter, free_energy, wa_error_new, nchgr_lo / surface_area, nchgr_hi / surface_area, nch_matrix, nchgr_lo, nchgr_hi, frac
+        write(*  ,'(2X,I15,9(2X,E15.7))') iter, free_energy, wa_error_new, nchgr_lo / surface_area, nchgr_hi / surface_area, nch_matrix, nchgr_lo, nchgr_hi, frac
     endif
     if (convergence) exit
 enddo
 
-if (iter.eq.max_iter)         write(iow,'(/''Convergence of max iterations'',I16,'' iterations'')') iter
-if (wa_error.lt.max_wa_error) write(iow,'(/''Convergence of max field error'',E16.7,'' k_B T'')') wa_error
-if (en_error.lt.max_en_error) write(iow,'(/''Convergence of max energy error'',E16.7,'' mJ/m^2'')') en_error
-if (iter.eq.max_iter)         write(*  ,'(/''Convergence of max iterations'',I16,'' iterations'')') iter
-if (wa_error.lt.max_wa_error) write(*  ,'(/''Convergence of max field error'',E16.7,'' k_B T'')') wa_error
-if (en_error.lt.max_en_error) write(*  ,'(/''Convergence of max energy error'',E16.7,'' mJ/m^2'')') en_error
+if (iter.eq.max_iter)             write(iow,'(/''Convergence of max iterations'',I16,'' iterations'')') iter
+if (wa_error_new.lt.max_wa_error) write(iow,'(/''Convergence of max field error'',E16.7,'' k_B T'')') wa_error_new
+if (iter.eq.max_iter)             write(*  ,'(/''Convergence of max iterations'',I16,'' iterations'')') iter
+if (wa_error_new.lt.max_wa_error) write(*  ,'(/''Convergence of max field error'',E16.7,'' k_B T'')') wa_error_new
 
 write(iow,'(A85)')adjl('-------------------------------------FINAL OUTPUT------------------------------------',85)
 write(*  ,'(A85)')adjl('-------------------------------------FINAL OUTPUT------------------------------------',85)

@@ -10,13 +10,15 @@ use write_helper
 implicit none
 !----------------------------------------------------------------------------------------------------------!
 integer        :: ior = 638
+
 character(200) :: line
 character(15)  :: input_filename = 'input.in.txt'
 character(12)  :: field_filename = 'field.in.bin'
 character(100) :: ERROR_MESSAGE
 
 logical :: FILE_EXISTS
-integer :: Reason
+
+integer :: Reason, wall_itype
 
 logical :: log_system_geometry             = .false.
 logical :: log_sphere_radius               = .false.
@@ -34,10 +36,18 @@ logical :: log_number_of_iterations        = .false.
 logical :: log_thermo_every                = .false.
 logical :: log_compute_every               = .false.
 logical :: log_field_every                 = .false.
+logical :: log_check_stability_every       = .false.
 logical :: log_max_wa_error                = .false.
-logical :: log_max_en_error                = .false.
 logical :: log_fraction_of_new_field       = .false.
 logical :: log_read_field                  = .false.
+
+logical :: log_out_phi                     = .false.
+logical :: log_out_field                   = .false.
+logical :: log_out_q                       = .false.
+logical :: log_out_chainshape              = .false.
+logical :: log_out_ads_free                = .false.
+logical :: log_out_end_middle              = .false.
+logical :: log_out_brush_thickness         = .false.
 
 logical :: log_edwards_solver              = .false.
 logical :: log_spatial_discret_scheme      = .false.
@@ -46,7 +56,9 @@ logical :: log_spatial_integr_scheme       = .false.
 logical :: log_contour_integr_scheme       = .false.
 
 logical :: log_wall_type                   = .false.
-logical :: log_wall_coeffs                 = .false.
+logical :: log_wall_coeffs_hamaker         = .false.
+logical :: log_wall_coeffs_square_well     = .false.
+logical :: log_wall_coeffs_ramp            = .false.
 logical :: log_wall_pos                    = .false.
 logical :: log_wall_side                   = .false.
 logical :: log_wall_pos_auto               = .false.
@@ -76,21 +88,33 @@ logical :: log_lo_BC_of_grafted            = .false.
 logical :: log_eos_type                    = .false.
 logical :: log_eos_coeffs                  = .false.
 logical :: log_influence_param             = .false.
+logical :: log_real_influence_param        = .false.
 !----------------------------------------------------------------------------------------------------------!
+wall_hamaker     = .false.
+wall_square_well = .false.
+wall_ramp        = .false.
+wall_vacuum      = .false.
+wall_hybrid      = .false.
+!----------------------------------------------------------------------------------------------------------!
+
 INQUIRE(FILE=input_filename, EXIST=FILE_EXISTS)
 
 if (FILE_EXISTS) then
     open(unit=ior, file = input_filename)
 else
     write(ERROR_MESSAGE,'(''File '',A15,'' does not exist!'')')input_filename
-    write(*,*)ERROR_MESSAGE
+    write(iow,*)ERROR_MESSAGE
+    write(*  ,*)ERROR_MESSAGE
+    STOP
 endif
 
 do
     read(ior,'(A100)',IOSTAT=Reason) line
 
     if (Reason > 0)  then
-        write(*,*)"Something went wrong!"
+        write(iow,*)"Problem with the input file!"
+        write(*  ,*)"Problem with the input file!"
+        STOP
     elseif (Reason < 0) then
         write(*,*)"Input parameter file was read successfully!"
         exit
@@ -142,15 +166,15 @@ do
         elseif (index(line,'! compute every') > 0) then
             read(line,'(I10)') compute_every
             log_compute_every = .true.
+        elseif (index(line,'! check stability every') > 0) then
+            read(line,'(I10)') check_stability_every
+            log_check_stability_every = .true.
         elseif (index(line,'! field read') > 0) then
             read(line,'(L10)') read_field
             log_read_field = .true.
         elseif (index(line,'! field max_error') > 0) then
             read(line,'(E16.9)') max_wa_error
             log_max_wa_error = .true.
-        elseif (index(line,'! energy max_error') > 0) then
-            read(line,'(E16.9)') max_en_error
-            log_max_en_error = .true.
         elseif (index(line,'! field mixing_fraction') > 0) then
             read(line,'(E16.9)') frac
             log_fraction_of_new_field = .true.
@@ -169,17 +193,71 @@ do
         elseif (index(line,"! integr spatial") > 0) then
             read(line,*) spatial_integr_scheme
             log_spatial_integr_scheme = .true.
+
+        ! computes
+        elseif (index(line,'! export phi') > 0) then
+            read(line,'(L10)') out_phi
+            log_out_phi = .true.
+        elseif (index(line,'! export field') > 0) then
+            read(line,'(L10)') out_field
+            log_out_field = .true.
+        elseif (index(line,'! export q') > 0) then
+            read(line,'(L10)') out_q
+            log_out_q = .true.
+        elseif (index(line,'! export shape') > 0) then
+            read(line,'(L10)') out_chainshape
+            log_out_chainshape = .true.
+        elseif (index(line,'! export ads_free') > 0) then
+            read(line,'(L10)') out_ads_free
+            log_out_ads_free = .true.
+        elseif (index(line,'! export brush') > 0) then
+            read(line,'(L10)') out_brush_thickness
+            log_out_brush_thickness = .true.
+        elseif (index(line,'! export end_middle') > 0) then
+            read(line,'(L10)') out_end_middle
+            log_out_end_middle = .true.
+
         ! wall section
         elseif (index(line,'! wall type') > 0) then
             read(line,'(I10)') wall_type
+            if (wall_type == F_vacuum)      wall_vacuum = .true.
+            if (wall_type == F_hamaker)     wall_hamaker = .true.
+            if (wall_type == F_square_well) wall_square_well = .true.
+            if (wall_type == F_ramp)        wall_ramp = .true.
+            if (wall_type == F_hybrid)      wall_hybrid = .true.
             log_wall_type = .true.
         elseif (index(line,'! wall coeffs') > 0) then
-            if (wall_type.eq.F_hamaker) then
-                read(line,*) sig_pol, sig_solid, Apol, Asolid
-            elseif (wall_type.eq.F_square_well) then
-                read(line,*) sigma_sq_well, A_sq_well
+            if (wall_hybrid) then
+                read(line,*) wall_itype
+                if (wall_itype.eq.F_hamaker) then
+                    read(line,*) wall_itype, sig_pol, sig_solid, Apol, Asolid
+                    wall_hamaker = .true.
+                    log_wall_coeffs_hamaker = .true.
+                endif
+                if (wall_itype.eq.F_square_well) then
+                    read(line,*) wall_itype, sigma_sq_well, A_sq_well
+                    wall_square_well = .true.
+                    log_wall_coeffs_square_well = .true.
+                endif
+                if (wall_itype.eq.F_ramp) then
+                    read(line,*) wall_itype, sigma_ramp, A_ramp
+                    wall_ramp = .true.
+                    log_wall_coeffs_ramp = .true.
+                endif
+            else
+                if (wall_hamaker) then
+                    read(line,*) sig_pol, sig_solid, Apol, Asolid
+                    log_wall_coeffs_hamaker = .true.
+                endif
+                if (wall_square_well) then
+                    read(line,*) sigma_sq_well, A_sq_well
+                    log_wall_coeffs_square_well = .true.
+                endif
+                if (wall_ramp) then
+                    read(line,*) sigma_ramp, A_ramp
+                    log_wall_coeffs_ramp = .true.
+                endif
             endif
-            log_wall_coeffs = .true.
         elseif (index(line,'! wall pos set') > 0) then
             read(line,'(E16.9)') wall_pos
             log_wall_pos = .true.
@@ -230,7 +308,7 @@ do
             log_gdens_hi = .true.
         ! grafted misc
         elseif (index(line,'! grafted distance_from_solid') > 0) then
-            read(line,'(E16.9)') graft_pos
+            read(line,*) graft_pos
             log_position_of_grafted = .true.
         ! boundary condition
         elseif (index(line,'! boundary_condition lo matrix') > 0) then
@@ -259,6 +337,9 @@ do
         elseif (index(line,'! EOS influence_parameter') > 0) then
             read(line,'(E16.9)') k_gr_tilde
             log_influence_param = .true.
+        elseif (index(line,'! EOS real_influence_parameter') > 0) then
+            read(line,'(E16.9)') k_gr
+            log_real_influence_param = .true.
         endif
     endif
 enddo
@@ -322,9 +403,10 @@ endif
 if (log_temperature) then
     write(iow,'(3X,A45,F16.4,'' K'')')adjl('Temperature:',45),Temp
     write(*  ,'(3X,A45,F16.4,'' K'')')adjl('Temperature:',45),Temp
+    beta = 1.d0 / (boltz_const_Joule_K * Temp)
 else
     write(iow,'(3X,A45)')'Error: temperature not found..'
-    write(iow,'(3X,A45)')'Error: temperature not found..'
+    write(*  ,'(3X,A45)')'Error: temperature not found..'
     STOP
 endif
 
@@ -408,15 +490,82 @@ else
 endif
 
 if (log_compute_every) then
-    write(iow,'(3X,A45,I16,A16)')adjl('Output computes every:',45),compute_every,adjustl('steps')
-    write(*  ,'(3X,A45,I16,A16)')adjl('Output computes every:',45),compute_every,adjustl('steps')
+    write(iow,'(3X,A45,I16,'' steps'')')adjl('Output computes every:',45),compute_every
+    write(*  ,'(3X,A45,I16,'' steps'')')adjl('Output computes every:',45),compute_every
     if (compute_every.le.0) then
-        write(iow,'(3X,A45)') '*set a positive compute output value'
-        write(*  ,'(3X,A45)') '*set a positive compute output value'
-        STOP
+        write(iow,'(3X,A45)') '*Computes have been skipped'
+        write(6  ,'(3X,A45)') '*Computes have been skipped'
     endif  
 else
     compute_every = 50000
+    continue
+endif
+
+if (log_out_phi) then
+    write(iow,'(3X,A45,L16)')adjl('Output phi:',45),out_phi
+    write(6  ,'(3X,A45,L16)')adjl('Output phi:',45),out_phi
+else
+    out_phi = .True.
+    continue
+endif
+
+if (log_out_field) then
+    write(iow,'(3X,A45,L16)')adjl('Output field:',45),out_field
+    write(6  ,'(3X,A45,L16)')adjl('Output field:',45),out_field
+else
+    out_field = .True.
+    continue
+endif
+
+if (log_out_q) then
+    write(iow,'(3X,A45,L16)')adjl('Output q:',45),out_q
+    write(6  ,'(3X,A45,L16)')adjl('Output q:',45),out_q
+else
+    out_q = .True.
+    continue
+endif
+
+if (log_out_chainshape) then
+    write(iow,'(3X,A45,L16)')adjl('Output chain shape:',45),out_chainshape
+    write(6  ,'(3X,A45,L16)')adjl('Output chain shape:',45),out_chainshape
+else
+    out_chainshape = .True.
+    continue
+endif
+
+if (log_out_ads_free) then
+    write(iow,'(3X,A45,L16)')adjl('Output ads free:',45),out_ads_free
+    write(6  ,'(3X,A45,L16)')adjl('Output ads free:',45),out_ads_free
+else
+    out_ads_free = .True.
+    continue
+endif
+
+if (log_out_end_middle) then
+    write(iow,'(3X,A45,L16)')adjl('Output end middle:',45),out_end_middle
+    write(6  ,'(3X,A45,L16)')adjl('Output end middle:',45),out_end_middle
+else
+    out_end_middle = .True.
+    continue
+endif
+
+if (log_out_brush_thickness) then
+    write(iow,'(3X,A45,L16)')adjl('Output brush thickness:',45),out_brush_thickness
+    write(6  ,'(3X,A45,L16)')adjl('Output brush thickness:',45),out_brush_thickness
+else
+    out_brush_thickness = .True.
+    continue
+endif
+
+if (log_check_stability_every) then
+    write(iow,'(3X,A45,I16,A16)')adjl('The stability will be checked every:',45),check_stability_every,adjustl('steps')
+    write(6  ,'(3X,A45,I16,A16)')adjl('The stability will be checked every:',45),check_stability_every,adjustl('steps')
+    if (check_stability_every.le.0) then
+        write(iow,'(3X,A45)') '*stability check will not be performed'
+        write(6  ,'(3X,A45)') '*stability check will not be performed'
+    endif  
+else
+    check_stability_every = 0
     continue
 endif
 
@@ -443,18 +592,9 @@ else
     write(*  ,'(3X,A45,E16.9,'' k_B T'')')adjl('*Maximum field error not found. Auto:',45),max_wa_error
 endif
 
-if (log_max_en_error) then
-    write(iow,'(3X,A45,F16.4,'' mJ/m^2'')')adjl('Surf. energy error tolerance:',45),max_en_error
-    write(iow,'(3X,A45,F16.4,'' mJ/m^2'')')adjl('Surf. energy error tolerance:',45),max_en_error
-else
-    max_en_error = 0.0D+00
-    write(iow,'(3X,A45,E16.9,'' mJ/m^2'')')adjl('*Maximum surf. eng. error not found. Auto:',45),max_en_error
-    write(*  ,'(3X,A45,E16.9,'' mJ/m^2'')')adjl('*Maximum surf. eng. error not found. Auto:',45),max_en_error
-endif
-
 if (log_fraction_of_new_field) then
-    write(iow,'(3X,A45,F16.4)')adjl('Field mixing fraction:',45),frac
-    write(*  ,'(3X,A45,F16.4)')adjl('Field mixing fraction:',45),frac
+    write(iow,'(3X,A45,F16.9)')adjl('Field mixing fraction:',45),frac
+    write(*  ,'(3X,A45,F16.9)')adjl('Field mixing fraction:',45),frac
 else
     write(iow,'(3X,A45)')'*Field mixing fraction not found..'
     write(*  ,'(3X,A45)')'*Field mixing fraction not found..'
@@ -685,6 +825,9 @@ else
     write(iow,'(3X,A45,E16.9, '' Angstrom'')')adjl('*Grafting position not found. It was set to',45),r_critical,adjustl('Angstrom')
     write(*  ,'(3X,A45,E16.9, '' Angstrom'')')adjl('*Grafting position not found. It was set to',45),r_critical,adjustl('Angstrom')
 endif
+else
+    ds_ave_matrix = 0.d0
+    chainlen_matrix = 0.d0
 endif ! end of matrix chains
 
 
@@ -731,6 +874,10 @@ else
     write(iow,'(3X,A45)') adjl('Grafting density not found.. It was set to zero.',45)
     write(*  ,'(3X,A45)') adjl('Grafting density not found.. It was set to zero.',45)
 endif
+else
+    ds_ave_grafted_lo = 0.d0
+    chainlen_grafted_lo = 0.d0
+    gdens_lo = 0.d0
 endif ! end of grafted lo chains
 
 if (log_grafted_hi_exist) then
@@ -776,6 +923,10 @@ else
     write(iow,'(3X,A45)') adjl('Grafting density not found.. It was set to zero.',45)
     write(*  ,'(3X,A45)') adjl('Grafting density not found.. It was set to zero.',45)
 endif
+else
+    ds_ave_grafted_hi = 0.d0
+    chainlen_grafted_hi = 0.d0
+    gdens_hi = 0.d0
 endif ! end of grafted hi chains
 
 if (grafted_lo_exist.or.grafted_hi_exist) then
@@ -786,6 +937,7 @@ if (log_position_of_grafted) then
         write(*  ,'(3X,A45,I16,'' nodes'')') adjl('Solid-grafted point distance:',45), gnode_lo
     elseif (graft_pos > 0.d0) then
         gnode_lo = int(anint((graft_pos - wall_pos) * dble(nx) / lx))
+        write(*,*)graft_pos, wall_pos, nx, lx, gnode_lo
         if (gnode_lo .le. 1) then
             gnode_lo = 1
         endif
@@ -848,38 +1000,42 @@ else
 endif
 
 if (log_influence_param) then
-    square_gradient = .true.
-    write(iow,'(3X,A45,F16.4,'' J m^5/mol^2'')') adjl('Influence parameter:',45),k_gr_tilde
-    write(*  ,'(3X,A45,F16.4,'' J m^5/mol^2'')') adjl('Influence parameter:',45),k_gr_tilde
+    write(iow,'(3X,A45,F16.4)') adjl('Reduced influence parameter:',45),k_gr_tilde
+    write(*  ,'(3X,A45,F16.4)') adjl('Reduced influence parameter:',45),k_gr_tilde
 else
     k_gr_tilde = 0.d0
-    square_gradient = .false.
-    write(iow,'(3X,A45,F16.4,'' J m^5/mol^2'')') adjl('Influence parameter not found. Auto:',45), k_gr_tilde
-    write(*  ,'(3X,A45,F16.4,'' J m^5/mol^2'')') adjl('Influence parameter not found. Auto:',45), k_gr_tilde
 endif
+if (log_real_influence_param) then
+    write(iow,'(3X,A45,E16.9,'' J m^5/mol^2'')') adjl('Influence parameter:',45),k_gr
+    write(*  ,'(3X,A45,E16.9,'' J m^5/mol^2'')') adjl('Influence parameter:',45),k_gr
+else
+    k_gr = 0.d0
+endif
+
+if (log_influence_param.and.log_real_influence_param) then
+    write(iow,'(3X,A45)') adjl('Error: Set either the real OR the reduced infl. parameter',45)
+    write(*  ,'(3X,A45)') adjl('Error: Set either the real OR the reduced infl. parameter',45)
+    STOP
+endif
+
+if (log_influence_param.or.log_real_influence_param) then
+    square_gradient = .true.
+else
+    square_gradient = .false.
+endif
+
 
 write(iow,'(A85)')adjl('------------------------------------SETUP THE WALLS----------------------------------',85)
 write(*  ,'(A85)')adjl('------------------------------------SETUP THE WALLS----------------------------------',85)
 
 if (log_wall_type) then
-    if (wall_type == F_vacuum) then
-        write(iow,'(3X,A45,A16)')adjl('Wall type:',45),adjustl('vacuum')
-        write(*  ,'(3X,A45,A16)')adjl('Wall type:',45),adjustl('vacuum')
-    elseif (wall_type == F_hamaker) then
+    if (wall_hybrid) then
+        write(iow,'(3X,A45)')adjl('Hybrid wall potential was selected:',45)
+        write(*  ,'(3X,A45)')adjl('Hybrid wall potential was selected:',45)
+    endif
+    if (wall_hamaker.and.log_wall_coeffs_hamaker) then
         write(iow,'(3X,A45)')adjl('Coefficients of the Hamaker potential:',45)
         write(*  ,'(3X,A45)')adjl('Coefficients of the Hamaker potential:',45)
-    elseif (wall_type == F_square_well) then
-        write(iow,'(3X,A45)')adjl('Coefficients of the square well potential:',45)
-        write(*  ,'(3X,A45)')adjl('Coefficients of the square well potential:',45)
-    endif
-else
-    wall_type = F_vacuum
-    write(iow,'(3X,A45)')adjl('*wall type not found.. it was set to vacuum',45)
-    write(*  ,'(3X,A45)')adjl('*wall type not found.. it was set to vacuum',45)
-endif
-
-if (log_wall_coeffs) then
-    if (wall_type.eq.F_hamaker) then
         write(iow,'(3X,A45,F16.4,'' Angstrom'')')adjl('*sigma polymer:',45),sig_pol
         write(iow,'(3X,A45,F16.4,'' Angstrom'')')adjl('*sigma solid:',45),sig_solid
         write(iow,'(3X,A45,F16.4,'' 10^-20 J'')')adjl('*Hamaker constant of polymer:',45), Apol
@@ -890,19 +1046,54 @@ if (log_wall_coeffs) then
         write(*  ,'(3X,A45,F16.4,'' 10^-20 J'')')adjl('*Hamaker constant of solid:',45), Asolid
         Asolid = Asolid * 1.e-20 ! SI
         Apol   = Apol   * 1.e-20 ! SI
-    elseif (wall_type.eq.F_square_well) then
+    if (wall_hamaker.and..not.log_wall_coeffs_hamaker) then
+            write(iow,'(3X,A150)')adjl('Error: The coefficients of the hamaker potential were not found!',150)
+            write(*  ,'(3X,A150)')adjl('Error: The coefficients of the hamaker potential were not found!',150)
+            STOP
+        endif
+    endif
+    if (wall_square_well.and.log_wall_coeffs_square_well) then
+        write(iow,'(3X,A45)')adjl('Coefficients of the square well potential:',45)
+        write(*  ,'(3X,A45)')adjl('Coefficients of the square well potential:',45)
         write(iow,'(3X,A45,F16.4,'' 10^-20 J'')')adjl('*Energy barrier:',45), A_sq_well
-        write(iow,'(3X,A45,F16.4,'' Angstrom'')')adjl('*sigma:',45),sigma_sq_well
+        write(iow,'(3X,A45,F16.4,'' kBT'')')     adjl('*Energy barrier:',45), A_sq_well* 1.e-20 * beta
+        write(iow,'(3X,A45,F16.4,'' Angstrom'')')adjl('*sigma:',45)         , sigma_sq_well
         write(*  ,'(3X,A45,F16.4,'' 10^-20 J'')')adjl('*Energy barrier:',45), A_sq_well
-        write(*  ,'(3X,A45,F16.4,'' Angstrom'')')adjl('*sigma:',45),sigma_sq_well
+        write(*  ,'(3X,A45,F16.4,'' kBT'')')     adjl('*Energy barrier:',45), A_sq_well* 1.e-20 * beta
+        write(*  ,'(3X,A45,F16.4,'' Angstrom'')')adjl('*sigma:',45)         , sigma_sq_well
         A_sq_well = A_sq_well * 1.e-20 ! SI
     endif
-else
-    if (wall_type.ne.F_vacuum) then
-        write(iow,'(3X,A150)')adjl('Error: The coefficients of the wall potential were not found!',150)
-        write(*  ,'(3X,A150)')adjl('Error: The coefficients of the wall potential were not found!',150)
+    if (wall_square_well.and..not.log_wall_coeffs_square_well) then
+        write(iow,'(3X,A150)')adjl('Error: The coefficients of the square well potential were not found!',150)
+        write(*  ,'(3X,A150)')adjl('Error: The coefficients of the square well potential were not found!',150)
         STOP
     endif
+    if (wall_ramp.and.log_wall_coeffs_ramp) then
+        write(iow,'(3X,A45)')adjl('Coefficients of the ramp potential:',45)
+        write(*  ,'(3X,A45)')adjl('Coefficients of the ramp potential:',45)
+        write(iow,'(3X,A45,F16.4,'' 10^-20 J'')')adjl('*Energy barrier:',45), A_ramp
+        write(iow,'(3X,A45,F16.4,'' kBT'')')     adjl('*Energy barrier:',45), A_ramp* 1.e-20 * beta
+        write(iow,'(3X,A45,F16.4,'' Angstrom'')')adjl('*sigma:',45),sigma_ramp
+        write(*  ,'(3X,A45,F16.4,'' 10^-20 J'')')adjl('*Energy barrier:',45), A_ramp
+        write(*  ,'(3X,A45,F16.4,'' kBT'')')     adjl('*Energy barrier:',45), A_ramp* 1.e-20 * beta
+        write(*  ,'(3X,A45,F16.4,'' Angstrom'')')adjl('*sigma:',45),sigma_ramp
+        A_ramp = A_ramp * 1.e-20 ! SI
+    endif
+    if (wall_ramp.and..not.log_wall_coeffs_ramp) then
+        write(iow,'(3X,A150)')adjl('Error: The coefficients of the ramp potential were not found!',150)
+        write(*  ,'(3X,A150)')adjl('Error: The coefficients of the ramp potential were not found!',150)
+        STOP
+    endif
+
+    if (wall_vacuum) then
+        write(iow,'(3X,A45,A16)')adjl('Wall type:',45),adjustl('vacuum')
+        write(*  ,'(3X,A45,A16)')adjl('Wall type:',45),adjustl('vacuum')
+    endif
+else
+    wall_type = F_vacuum
+    wall_vacuum = .true.
+    write(iow,'(3X,A45)')adjl('*wall type not found.. it was set to vacuum',45)
+    write(*  ,'(3X,A45)')adjl('*wall type not found.. it was set to vacuum',45)
 endif
 
 if (log_wall_side) then
@@ -923,7 +1114,7 @@ if (log_wall_side) then
 else
     write(iow,'(3X,A45)')adjl('*Side of the solid wall not detected..',45)
     write(*  ,'(3X,A45)')adjl('*Side of the solid wall not detected..',45)
-    if (wall_type.eq.F_vacuum) then
+    if (wall_vacuum) then
         wall_side = F_both
         write(iow,'(3X,A45)')'    ..it will be set to both sides'
         write(*  ,'(3X,A45)')'    ..it will be set to both sides'
@@ -941,7 +1132,7 @@ else
     write(*  ,'(3X,A45,F16.4,'' Angstrom'')')adjl('*Hard sphere wall position not found. Auto:',45),wall_pos
 endif
 
-if (log_wall_pos_auto.and.wall_type.ne.F_vacuum) then
+if (log_wall_pos_auto.and.(wall_hamaker.or.wall_ramp)) then
     wall_auto = .true.
     write(iow,'(3X,A45,F16.4,'' k_B T'')')adjl('Recalibration of hard-sphere wall. E-target:',45), E_wall_target
     write(*  ,'(3X,A45,F16.4,'' k_B T'')')adjl('Recalibration of hard-sphere wall. E-target:',45), E_wall_target

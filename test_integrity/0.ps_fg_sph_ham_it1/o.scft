@@ -1,0 +1,68 @@
+-----------------------------------SYSTEM PARAMETERS---------------------------------
+   System geometry:                                       sphere
+   Sphere radius:                                        80.0000 Angstrom
+   Domain in Angstroms:                                 250.0000 Angstrom
+   Domain discretization:                                 2.5000 Angstrom
+   Nodes across the domain:                                  100 nodes
+   Temperature:                                         500.0000 K
+   Pressure:                                              0.0000 atm
+----------------------------------POLYMER PROPERTIES---------------------------------
+   Chain characteristic ratio C_infinity:                 9.8530
+   Bond length:                                           1.5400 Angstrom
+   Monomer mass:                                         52.0000 g/mol
+   Mass density:                                          0.9530 g/cm^3
+--------------------------------SIMULATION PARAMETERS--------------------------------
+   Field will be initialized to zero            
+   Field error tolerance:                                 0.0050 J/k_BT
+   Field mixing fraction:                            0.000300000
+   Edwards solver                                       implicit
+   Maximum iterations:                                         0 iterations
+   Spacing for chain contour discret:                    uniform
+   Spacing for spatial discret:                          uniform
+   Chain contour integration rule:                  Simpson rule
+   Spatial integration rule:                        Simpson rule
+   matrix boundary condition for lo edge:              Dirichlet q=0
+   matrix boundary condition for hi edge:                Neumann (dq/dr=0)
+   grafted boundary condition for lo edge:             Dirichlet q=0
+   grafted boundary condition for hi edge:               Neumann (dq/dr=0)
+-------------------------------------MATRIX CHAINS-----------------------------------
+   Chain contour discretization:                 0.768000000E+01 monomers
+   Chain length:                                   384.000000000 monomers
+   Critical position of adsorbed segs                9.000000000 Angstrom
+----------------------------------GRAFTED LO CHAINS----------------------------------
+   Chain contour discretization:                 0.768000000E+01 monomers
+   Chain length:                                   384.000000000 monomers
+   Grafting density:                             0.146262502E-02 chains/Angstrom^2
+   Solid-grafted point distance:                               1 nodes
+------------------------------SETUP THE EQUATION OF STATE----------------------------
+   The Helfand EoS was chosen with coeffs:      
+   *Isothermal compressibility:                       0.1070E-08 Pa^-1
+   Reduced influence parameter:                           0.0000
+------------------------------------SETUP THE WALLS----------------------------------
+   Coefficients of the Hamaker potential:       
+   *sigma polymer:                                        3.7000 Angstrom
+   *sigma solid:                                          3.0000 Angstrom
+   *Hamaker constant of polymer:                          5.8400 10^-20 J
+   *Hamaker constant of solid:                            6.4300 10^-20 J
+   Side of the solid wall:                                    lo
+   Position of the hard-sphere wall:                      4.5000 Angstrom
+-----------------------------INITIALIZE THE SCF PARAMETERS---------------------------
+   Matrix radious of gyration:                           38.6719 Angstrom
+   Matrix nodes along chain contour:                          50 nodes
+   grafted lo radious of gyration:                       38.6719 Angstrom
+   grafted lo nodes along chain contour:                      50 nodes
+   molar density in bulk                              18326.9231 mol/m3
+---------------------------------BEGIN THE SIMULATION--------------------------------
+        Iteration    energy (mN/m)    error (k_B T)         gdens_lo         gdens_hi            nch_m          nch_glo          nch_ghi         fraction
+                0    0.7334283E+04    0.1249460E+02    0.1466544E-02    0.0000000E+00    0.4110620E+04    0.1179464E+03    0.0000000E+00    0.3000000E-03
+
+-------------------------------------FINAL OUTPUT------------------------------------
+   Free energy:        0.7334283E+04 mN/m
+-------------------------------------MATRIX CHAINS-----------------------------------
+   matrix chains:      0.4110620E+04 chains
+---------------------------------GRAFTED LO CHAINS-----------------------------------
+   grafted lo chains   0.1179464E+03 chains
+   q_f(r_gi,0):        0.6441868E-01
+   q_g(r_gi,N_g):      0.2671858E+03
+   grafting density:   0.1466544E-02 chains/angstrom
+   error:              0.2679215E+00

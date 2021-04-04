@@ -1,2 +1,10 @@
 # RuSseL1D
-Fortran code applying the finite differences method to run one-dimensional calculations based on self-consistent field theory. At the moment, the code can address homopolymer melts in contact with solid surfaces. The latter can be either bare or grafted with polymer chains with the same chemical identity as the matrix.
+This is the repository of the RuSseL1D code.
+
+The code is named after the British philosopher and mathematician, Bertrand Russell.
+
+It is an open-source code, distributed under the terms of the accompanying LICENSE.
+
+The primary authors of the code are Constantinos J. Revelas (cjrevelas@gmail.com) and Aristotelis P. Sgouros (arissgouros@gmail.com).
+
+RuSseL1D is a code developed in Fortran which applies the Finite Differences method to run one-dimensional calculations on heterogeneous polymer systems based on self-consistent field theory (SCFT). At the moment, the code can address homopolymer melts in contact with solid surfaces and provides with useful results concerning the thermodynamics and the structural properties of the system. The solid surfaces can be either bare or grafted with polymer chains with the same chemical identity as the matrix chains.

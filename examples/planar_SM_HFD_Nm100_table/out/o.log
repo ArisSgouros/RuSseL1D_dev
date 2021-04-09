@@ -1,0 +1,51 @@
+-----------------------------------SYSTEM PARAMETERS---------------------------------
+   System geometry:                                         film
+   Domain in Angstroms:                                  30.0000 Angstrom
+   Domain discretization:                                 0.5000 Angstrom
+   Nodes across the domain:                                   60 nodes
+   Temperature:                                         450.0000 K
+   Pressure:                                              0.0000 atm
+----------------------------------POLYMER PROPERTIES---------------------------------
+   Chain characteristic ratio C_infinity:                 8.2656
+   Bond length:                                           1.5400 Angstrom
+   Monomer mass:                                         28.0000 g/mol
+   Mass density:                                          0.7660 g/cm^3
+--------------------------------SIMULATION PARAMETERS--------------------------------
+   Output q:                                                   F
+   Output chain shape:                                         F
+   Output ads free:                                            F
+   Field input file not specified.              
+   Reading default field input file:            ./in.field.bin  
+   Field error tolerance:                                 0.0001 J/k_BT
+   Field mixing fraction:                            0.000100000
+   *Edwards solver not set.. we will use the imp
+   Maximum iterations:                                  10000000 iterations
+   Spacing for chain contour discret:                    uniform
+   Spacing for spatial discret:                          uniform
+   Chain contour integration rule:                  Simpson rule
+   Spatial integration rule:                      Recrangle rule
+-------------------------------------MATRIX CHAINS-----------------------------------
+   Chain contour discretization:                 0.250000000E+00 monomers
+   Chain length:                                   100.000000000 monomers
+   matrix boundary condition for lo edge:              Dirichlet q=0
+   matrix boundary condition for hi edge:                Neumann (dq/dr=0)
+------------------------------SETUP THE EQUATION OF STATE----------------------------
+   The Helfand EoS was chosen with coeffs:      
+   *Isothermal compressibility:                       0.1430E-08 Pa^-1
+------------------------------------SETUP THE WALLS----------------------------------
+   A tabulated wall potential has been selected 
+   Side of the solid wall:                                    lo
+   Position of the hard-sphere wall:                      0.0000 Angstrom
+-----------------------------INITIALIZE THE SCF PARAMETERS---------------------------
+   Matrix radious of gyration:                           18.0752 Angstrom
+   Matrix nodes along chain contour:                         400 nodes
+   molar density in bulk                              27357.1429 mol/m3
+---------------------------------BEGIN THE SIMULATION--------------------------------
+        Iteration    energy (mN/m)    error (k_B T)         gdens_lo         gdens_hi            nch_m          nch_glo          nch_ghi         fraction
+                0   -0.1799329E+03    0.9998906E-04    0.0000000E+00    0.0000000E+00    0.4725396E-02    0.0000000E+00    0.0000000E+00    0.1000000E-03
+
+Convergence of max field error   0.9998906E-04 k_B T
+-------------------------------------FINAL OUTPUT------------------------------------
+   Free energy:       -0.1799329E+03 mN/m
+-------------------------------------MATRIX CHAINS-----------------------------------
+   matrix chains:      0.4725396E-02 chains

@@ -1,0 +1,10 @@
+Description:
+   A planar solid/matrix interface (SM), with the presence of the HFD EoS and a square well potential.
+   The system corresponds to the one in Figure 3a(θ = 45.3°) in the main document.
+Parameters:
+   Folder name:	                planar_SM_HFD_Nm100_sqwell_kT1.65
+   Geometry:                    Planar, SM
+   EoS:	                        HFD
+   Chain length of m chains:	100
+   Polymer-solid potential:	square well
+

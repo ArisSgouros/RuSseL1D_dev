@@ -1,0 +1,14 @@
+Description:
+   A planar GMG geometry with chains grafted on the opposing surfaces.
+   The system corresponds to the one in Figure 1(GMG) in the main document.
+Parameters:
+   Folder name:                         planar_GMG_SLSGT_glo0.008_Nlo50_ghi0.004_Nhi200_Nm100
+   Geometry:                            Planar, GMG
+   EoS:                                 SL+SGT
+   Grafting density of g- chains:       0.008 (Angstrom^-1)
+   Grafting density of g+ chains:       0.004 (Angstrom^-1)
+   Chain length of g- chains:           50
+   Chain length of g+ chains:           200
+   Chain length of m chains:            100
+   Polymer-solid potential:             Hybrid: Hamaker + ramp
+

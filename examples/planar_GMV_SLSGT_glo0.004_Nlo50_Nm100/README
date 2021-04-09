@@ -1,0 +1,12 @@
+Description:
+    A planar grafted/matrix/vacuum geometry (SMV), with the presence of the SL-SGT EoS and a hybrid wall potential.
+    The system corresponds to the one in Figures 6, 7, 8 and 11, in the main document.
+Parameters:
+    Folder name:                    planar_GMV_SLSGT_glo0.004_Nlo50_Nm100
+    Geometry:                       Planar, GMV
+    EoS:                            SL-SGT
+    Grafting density of g- chains:  0.004 (Angstrom^-1)
+    Chain length of g- chains:      50
+    Chain length of m chains:       100
+    Polymer-solid potential:        Hybrid: Hamaker + ramp
+

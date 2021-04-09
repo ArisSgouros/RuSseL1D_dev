@@ -1,0 +1,25 @@
+ 1                             ! system geometry (0: Film, 1: sphere)
+ 2.500000000D+02               ! lx, domain half height, in units of Angstrom (E16.9); nx (I6)
+ 100                           ! nx, number of nodes across the domain
+ 50                            ! ns (I6)
+ 384                           ! chainlen (I10) ! demo 100
+ 0.500000000D+03               ! Temp, absolute temperature in K (E16.9)
+ 5.840000000D+00               ! Hamaker constant of polymer, in 10-20 joule(E16.9) ! 
+ 6.430000000D+00               ! Hamaker constant of solid, in 10-20 joule(E16.9) !
+ 0.953000000D+00               ! massden, in g/cm3 (E16.9)
+ 1.070000000D-09               ! kappa_T, isothermal compressibility in Pa^-1 (E16.9) ! 1.4300000000D-09  demo 1.43D-09
+ 0.985300000D+01               ! CN (E16.8) characteristic ratio
+ 10000000                      ! iterations (I10), max_error=absolute error in field beta N.w (E16.9) ! 0.1D-03 
+ 0.5000000D-02                 ! max error absolute error in field beta N.w (E16.9) ! 0.1D-03 
+ 0.300000000D-03               ! fraction of new field mixed in; Daoulas: 0.500000000D-04 ! demo 0.6D-02
+ 0.520000000D+02               ! mon_mass mass of monomer in gr/mol (pe)
+ 8.000000000E+01               ! sphere_radius
+ 3.700000000E+00               ! sigma polymer
+ 3.000000000E+00               ! sigma solid
+ 0.146262502E-02               ! grafting density
+ 0.000000000D+00               ! position of grafting point
+ 5.800000000D+00               ! critical distance of adsorbed segments
+ 0                             ! read field
+ -1                            ! matrix upper boundary condition
+ -1                            ! grafted upper boundary condition
+ 1                             ! system type ( 1--->matrix+grafted, 2--->grafted )

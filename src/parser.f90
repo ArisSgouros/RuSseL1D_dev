@@ -18,6 +18,7 @@ integer        :: ii
 character(200) :: line
 character(100) :: input_filename
 character(100) :: ERROR_MESSAGE
+character(3)   :: comment_flag
 
 logical :: FILE_EXISTS
 
@@ -73,7 +74,8 @@ logical :: log_wall_pos_auto               = .false.
 logical :: log_matrix_exist                = .false.
 logical :: log_chain_length_matrix         = .false.
 logical :: log_ds_ave_matrix               = .false.
-logical :: log_r_critical                  = .false.
+logical :: log_r_ads_lo                    = .false.
+logical :: log_r_ads_hi                    = .false.
 
 logical :: log_grafted_lo_exist            = .false.
 logical :: log_chain_length_grafted_lo     = .false.
@@ -128,10 +130,13 @@ do
         write(*,*)"Input parameter file was read successfully!"
         exit
     else
+        ! skip the line in case it starts with a comment "#", or "!"
+        read(line,'(A3)') comment_flag
+        if (index(comment_flag,"#") > 0 .or. index(comment_flag,"!") > 0) cycle
+        
         ! system setup
         if (index(line,"# field input file") > 0) then
             read(line,'(A50)') field_in_filename
-            write(*,*) field_in_filename
             log_field_in_filename = .true.
         elseif (index(line,"! domain geometry") > 0) then
             read(line,'(I9)') geometry
@@ -184,7 +189,6 @@ do
             log_check_stability_every = .true.
         elseif (index(line,"! field read") > 0) then
             read(line,'(L10)') read_field
-            write(*,*) read_field
             log_read_field = .true.
         elseif (index(line,"! field max_error") > 0) then
             read(line,'(E16.9)') max_wa_error
@@ -309,9 +313,12 @@ do
         elseif (index(line,"! matrix ds") > 0) then
             read(line,*) ds_ave_matrix
             log_ds_ave_matrix = .true.
-        elseif (index(line,"matrix r_adsorbed") > 0) then
-            read(line,'(E16.9)') r_critical
-            log_r_critical = .true.
+        elseif (index(line,"chain r_ads_lo") > 0) then
+            read(line,'(E16.9)') r_ads_lo
+            log_r_ads_lo = .true.
+        elseif (index(line,"chain r_ads_hi") > 0) then
+            read(line,'(E16.9)') r_ads_hi
+            log_r_ads_hi = .true.
         ! grafted lo chains
         elseif (index(line,"! grafted lo set") > 0) then
             read(line,'(L10)') grafted_lo_exist
@@ -492,10 +499,8 @@ else
 endif
 rho_mass_bulk = rho_mass_bulk * gr_cm3_to_kg_m3 ! SI
 
-WRITE(*,*) "CHECKPOINT 1"
 write(iow,'(A85)')adjl('--------------------------------SIMULATION PARAMETERS--------------------------------',85)
 write(*  ,'(A85)')adjl('--------------------------------SIMULATION PARAMETERS--------------------------------',85)
-WRITE(*,*) "CHECKPOINT 2"
 
 if (log_field_every) then
     write(iow,'(3X,A45,I16,A16)')adjl('Export field every:',45),field_every,adjustl('steps')
@@ -636,7 +641,7 @@ if (log_read_field) then
             write(iow,'(3X,A45,A16)')adjl("Field will be read from file:",45),adjustl(field_in_filename)
             write(6  ,'(3X,A45,A16)')adjl("Field will be read from file:",45),adjustl(field_in_filename)
         else
-            field_in_filename = "./in.field"
+            field_in_filename = "./in.field.bin"
             write(iow,'(3X,A45)')adjl("Field input file not specified.",45)
             write(iow,'(3X,A45,A16)')adjl("Reading default field input file:",45),adjustl(field_in_filename)
             write(6  ,'(3X,A45)')adjl("Field input file not specified.",45)
@@ -774,90 +779,6 @@ else
     write(*  ,'(3X,A45,A16)')adjl("*Spatial integr rule not found. Auto:",45),adjustl('Simpson rule')
 endif
 
-if (log_lo_BC_of_matrix) then
-    if (bc_lo_matrix == F_bc_neuman)then
-        write(iow,'(3X,A45,A16,'' (dq/dr=0)'')')adjl('matrix boundary condition for lo edge:',45),adjustl('Neumann')
-        write(*  ,'(3X,A45,A16,'' (dq/dr=0)'')')adjl('matrix boundary condition for lo edge:',45),adjustl('Neumann')
-    else if(bc_lo_matrix == F_bc_dirichlet_eq_0) then
-        write(iow,'(3X,A45,A16,'' q=0'')')adjl('matrix boundary condition for lo edge:',45),adjustl('Dirichlet')
-        write(*  ,'(3X,A45,A16,'' q=0'')')adjl('matrix boundary condition for lo edge:',45),adjustl('Dirichlet')
-    else if(bc_lo_matrix == F_bc_dirichlet_eq_1) then
-        write(iow,'(3X,A45,A16,'' q=1'')')adjl('matrix boundary condition for lo edge:',45),adjustl('Dirichlet')
-        write(*  ,'(3X,A45,A16,'' q=1'')')adjl('matrix boundary condition for lo edge:',45),adjustl('Dirichlet')
-    else
-        write(iow,'(3X,A150)')adjl('Error: wrong matrix boundary condition for lo edge.. (choose between -1, 0 and 1',150)
-        write(*  ,'(3X,A150)')adjl('Error: wrong matrix boundary condition for lo edge.. (choose between -1, 0 and 1',150)
-        STOP
-    end if 
-else
-    write(iow,'(3X,A150)')adjl('Error: matrix boundary condition for lo edge not found..',150)
-    write(*  ,'(3X,A150)')adjl('Error: matrix boundary condition for lo edge not found..',150)
-    STOP
-endif
-
-if (log_hi_BC_of_matrix) then
-    if (bc_hi_matrix == F_bc_neuman)then
-        write(iow,'(3X,A45,A16,'' (dq/dr=0)'')')adjl('matrix boundary condition for hi edge:',45),adjustl('Neumann')
-        write(*  ,'(3X,A45,A16,'' (dq/dr=0)'')')adjl('matrix boundary condition for hi edge:',45),adjustl('Neumann')
-    else if(bc_hi_matrix == F_bc_dirichlet_eq_0) then
-        write(iow,'(3X,A45,A16,'' q=0'')')adjl('matrix boundary condition for hi edge:',45),adjustl('Dirichlet')
-        write(*  ,'(3X,A45,A16,'' q=0'')')adjl('matrix boundary condition for hi edge:',45),adjustl('Dirichlet')
-    else if(bc_hi_matrix == F_bc_dirichlet_eq_1) then
-        write(iow,'(3X,A45,A16,'' q=1'')')adjl('matrix boundary condition for hi edge:',45),adjustl('Dirichlet')
-        write(*  ,'(3X,A45,A16,'' q=1'')')adjl('matrix boundary condition for hi edge:',45),adjustl('Dirichlet')
-    else
-        write(iow,'(3X,A150)')adjl('Error: wrong matrix boundary condition for hi edge.. (choose between -1, 0 and 1',150)
-        write(*  ,'(3X,A150)')adjl('Error: wrong matrix boundary condition for hi edge.. (choose between -1, 0 and 1',150)
-        STOP
-    end if 
-else
-    write(iow,'(3X,A150)')adjl('Error: matrix boundary condition for hi edge not found..',150)
-    write(*  ,'(3X,A150)')adjl('Error: matrix boundary condition for hi edge not found..',150)
-    STOP
-endif
-
-if (log_lo_BC_of_grafted) then
-    if (bc_lo_grafted == F_bc_neuman)then
-        write(iow,'(3X,A45,A16,'' (dq/dr=0)'')')adjl('grafted boundary condition for lo edge:',45),adjustl('Neumann')
-        write(*  ,'(3X,A45,A16,'' (dq/dr=0)'')')adjl('grafted boundary condition for lo edge:',45),adjustl('Neumann')
-    else if(bc_lo_grafted == F_bc_dirichlet_eq_0) then
-        write(iow,'(3X,A45,A16,'' q=0'')')adjl('grafted boundary condition for lo edge:',45),adjustl('Dirichlet')
-        write(*  ,'(3X,A45,A16,'' q=0'')')adjl('grafted boundary condition for lo edge:',45),adjustl('Dirichlet')
-    else if(bc_lo_grafted == F_bc_dirichlet_eq_1) then
-        write(iow,'(3X,A45,A16,'' q=1'')')adjl('grafted boundary condition for lo edge:',45),adjustl('Dirichlet')
-        write(*  ,'(3X,A45,A16,'' q=1'')')adjl('grafted boundary condition for lo edge:',45),adjustl('Dirichlet')
-    else
-        write(iow,'(3X,A150)')adjl('Error: wrong grafted boundary condition for lo edge.. (choose between -1, 0 and 1',150)
-        write(*  ,'(3X,A150)')adjl('Error: wrong grafted boundary condition for lo edge.. (choose between -1, 0 and 1',150)
-        STOP
-    end if 
-else
-    write(iow,'(3X,A150)')adjl('Error: grafted boundary condition for lo edge not found..',150)
-    write(*  ,'(3X,A150)')adjl('Error: grafted boundary condition for lo edge not found..',150)
-    STOP
-endif
-
-if (log_hi_BC_of_grafted) then
-    if (bc_hi_grafted == F_bc_neuman)then
-        write(iow,'(3X,A45,A16,'' (dq/dr=0)'')')adjl('grafted boundary condition for hi edge:',45),adjustl('Neumann')
-        write(*  ,'(3X,A45,A16,'' (dq/dr=0)'')')adjl('grafted boundary condition for hi edge:',45),adjustl('Neumann')
-    else if(bc_hi_grafted == F_bc_dirichlet_eq_0) then
-        write(iow,'(3X,A45,A16,'' q=0'')')adjl('grafted boundary condition for hi edge:',45),adjustl('Dirichlet')
-        write(*  ,'(3X,A45,A16,'' q=0'')')adjl('grafted boundary condition for hi edge:',45),adjustl('Dirichlet')
-    else if(bc_hi_grafted == F_bc_dirichlet_eq_1) then
-        write(iow,'(3X,A45,A16,'' q=1'')')adjl('grafted boundary condition for hi edge:',45),adjustl('Dirichlet')
-        write(*  ,'(3X,A45,A16,'' q=1'')')adjl('grafted boundary condition for hi edge:',45),adjustl('Dirichlet')
-    else
-        write(iow,'(3X,A150)')adjl('Error: wrong grafted boundary condition for hi edge.. (choose between -1, 0 and 1',150)
-        write(*  ,'(3X,A150)')adjl('Error: wrong grafted boundary condition for hi edge.. (choose between -1, 0 and 1',150)
-        STOP
-    end if 
-else
-    write(iow,'(3X,A150)')adjl('Error: grafted boundary condition for hi edge not found..',150)
-    write(*  ,'(3X,A150)')adjl('Error: grafted boundary condition for hi edge not found..',150)
-    STOP
-endif
-
 if (log_matrix_exist) then
     if (matrix_exist) then
         write(iow,'(A85)')adjl('-------------------------------------MATRIX CHAINS-----------------------------------',85)
@@ -888,20 +809,6 @@ else
     STOP
 endif
 
-if (log_r_critical) then
-    if (r_critical > 0.d0)then
-        write(iow,'(3X,A45,F16.9, '' Angstrom'')')adjl('Critical position of adsorbed segs',45), r_critical
-        write(*  ,'(3X,A45,F16.9, '' Angstrom'')')adjl('Critical position of adsorbed segs',45), r_critical
-    else
-        write(iow,*)"r_critical < 0"
-        write(*  ,*)"r_critical < 0"
-        STOP
-    end if
-else
-    r_critical = 10.0d0
-    write(iow,'(3X,A45,E16.9, '' Angstrom'')')adjl('*Grafting position not found. It was set to',45),r_critical,adjustl('Angstrom')
-    write(*  ,'(3X,A45,E16.9, '' Angstrom'')')adjl('*Grafting position not found. It was set to',45),r_critical,adjustl('Angstrom')
-endif
 else
     ds_ave_matrix = 0.d0
     chainlen_matrix = 0.d0
@@ -1037,6 +944,142 @@ else
 endif
 gnode_hi = nx - gnode_lo
 endif
+
+
+if (log_lo_BC_of_grafted) then
+    if (bc_lo_grafted == F_bc_neuman)then
+        write(iow,'(3X,A45,A16,'' (dq/dr=0)'')')adjl('grafted boundary condition for lo edge:',45),adjustl('Neumann')
+        write(*  ,'(3X,A45,A16,'' (dq/dr=0)'')')adjl('grafted boundary condition for lo edge:',45),adjustl('Neumann')
+    else if(bc_lo_grafted == F_bc_dirichlet_eq_0) then
+        write(iow,'(3X,A45,A16,'' q=0'')')adjl('grafted boundary condition for lo edge:',45),adjustl('Dirichlet')
+        write(*  ,'(3X,A45,A16,'' q=0'')')adjl('grafted boundary condition for lo edge:',45),adjustl('Dirichlet')
+    else if(bc_lo_grafted == F_bc_dirichlet_eq_1) then
+        write(iow,'(3X,A45,A16,'' q=1'')')adjl('grafted boundary condition for lo edge:',45),adjustl('Dirichlet')
+        write(*  ,'(3X,A45,A16,'' q=1'')')adjl('grafted boundary condition for lo edge:',45),adjustl('Dirichlet')
+    else
+        write(iow,'(3X,A150)')adjl('Error: wrong grafted boundary condition for lo edge.. (choose between -1, 0 and 1',150)
+        write(*  ,'(3X,A150)')adjl('Error: wrong grafted boundary condition for lo edge.. (choose between -1, 0 and 1',150)
+        STOP
+    end if 
+else
+    if (grafted_lo_exist.or.grafted_hi_exist) then
+        write(iow,'(3X,A150)')adjl('Error: grafted boundary condition for lo edge not found..',150)
+        write(*  ,'(3X,A150)')adjl('Error: grafted boundary condition for lo edge not found..',150)
+        STOP
+    else
+        bc_lo_grafted = F_bc_neuman
+    endif
+endif
+
+if (log_hi_BC_of_grafted) then
+    if (bc_hi_grafted == F_bc_neuman)then
+        write(iow,'(3X,A45,A16,'' (dq/dr=0)'')')adjl('grafted boundary condition for hi edge:',45),adjustl('Neumann')
+        write(*  ,'(3X,A45,A16,'' (dq/dr=0)'')')adjl('grafted boundary condition for hi edge:',45),adjustl('Neumann')
+    else if(bc_hi_grafted == F_bc_dirichlet_eq_0) then
+        write(iow,'(3X,A45,A16,'' q=0'')')adjl('grafted boundary condition for hi edge:',45),adjustl('Dirichlet')
+        write(*  ,'(3X,A45,A16,'' q=0'')')adjl('grafted boundary condition for hi edge:',45),adjustl('Dirichlet')
+    else if(bc_hi_grafted == F_bc_dirichlet_eq_1) then
+        write(iow,'(3X,A45,A16,'' q=1'')')adjl('grafted boundary condition for hi edge:',45),adjustl('Dirichlet')
+        write(*  ,'(3X,A45,A16,'' q=1'')')adjl('grafted boundary condition for hi edge:',45),adjustl('Dirichlet')
+    else
+        write(iow,'(3X,A150)')adjl('Error: wrong grafted boundary condition for hi edge.. (choose between -1, 0 and 1',150)
+        write(*  ,'(3X,A150)')adjl('Error: wrong grafted boundary condition for hi edge.. (choose between -1, 0 and 1',150)
+        STOP
+    end if 
+else
+    if (grafted_lo_exist.or.grafted_hi_exist) then
+        write(iow,'(3X,A150)')adjl('Error: grafted boundary condition for hi edge not found..',150)
+        write(*  ,'(3X,A150)')adjl('Error: grafted boundary condition for hi edge not found..',150)
+        STOP
+    else
+        bc_hi_grafted = F_bc_neuman
+    endif
+endif
+
+
+if (log_lo_BC_of_matrix) then
+    if (bc_lo_matrix == F_bc_neuman)then
+        write(iow,'(3X,A45,A16,'' (dq/dr=0)'')')adjl('matrix boundary condition for lo edge:',45),adjustl('Neumann')
+        write(*  ,'(3X,A45,A16,'' (dq/dr=0)'')')adjl('matrix boundary condition for lo edge:',45),adjustl('Neumann')
+    else if(bc_lo_matrix == F_bc_dirichlet_eq_0) then
+        write(iow,'(3X,A45,A16,'' q=0'')')adjl('matrix boundary condition for lo edge:',45),adjustl('Dirichlet')
+        write(*  ,'(3X,A45,A16,'' q=0'')')adjl('matrix boundary condition for lo edge:',45),adjustl('Dirichlet')
+    else if(bc_lo_matrix == F_bc_dirichlet_eq_1) then
+        write(iow,'(3X,A45,A16,'' q=1'')')adjl('matrix boundary condition for lo edge:',45),adjustl('Dirichlet')
+        write(*  ,'(3X,A45,A16,'' q=1'')')adjl('matrix boundary condition for lo edge:',45),adjustl('Dirichlet')
+    else
+        write(iow,'(3X,A150)')adjl('Error: wrong matrix boundary condition for lo edge.. (choose between -1, 0 and 1',150)
+        write(*  ,'(3X,A150)')adjl('Error: wrong matrix boundary condition for lo edge.. (choose between -1, 0 and 1',150)
+        STOP
+    end if 
+else
+    if (matrix_exist) then
+        write(iow,'(3X,A150)')adjl('Error: matrix boundary condition for lo edge not found..',150)
+        write(*  ,'(3X,A150)')adjl('Error: matrix boundary condition for lo edge not found..',150)
+        STOP
+    else
+        bc_lo_matrix = bc_lo_grafted
+    endif
+endif
+
+if (log_hi_BC_of_matrix) then
+    if (bc_hi_matrix == F_bc_neuman)then
+        write(iow,'(3X,A45,A16,'' (dq/dr=0)'')')adjl('matrix boundary condition for hi edge:',45),adjustl('Neumann')
+        write(*  ,'(3X,A45,A16,'' (dq/dr=0)'')')adjl('matrix boundary condition for hi edge:',45),adjustl('Neumann')
+    else if(bc_hi_matrix == F_bc_dirichlet_eq_0) then
+        write(iow,'(3X,A45,A16,'' q=0'')')adjl('matrix boundary condition for hi edge:',45),adjustl('Dirichlet')
+        write(*  ,'(3X,A45,A16,'' q=0'')')adjl('matrix boundary condition for hi edge:',45),adjustl('Dirichlet')
+    else if(bc_hi_matrix == F_bc_dirichlet_eq_1) then
+        write(iow,'(3X,A45,A16,'' q=1'')')adjl('matrix boundary condition for hi edge:',45),adjustl('Dirichlet')
+        write(*  ,'(3X,A45,A16,'' q=1'')')adjl('matrix boundary condition for hi edge:',45),adjustl('Dirichlet')
+    else
+        write(iow,'(3X,A150)')adjl('Error: wrong matrix boundary condition for hi edge.. (choose between -1, 0 and 1',150)
+        write(*  ,'(3X,A150)')adjl('Error: wrong matrix boundary condition for hi edge.. (choose between -1, 0 and 1',150)
+        STOP
+    end if 
+else
+    if (matrix_exist) then
+        write(iow,'(3X,A150)')adjl('Error: matrix boundary condition for hi edge not found..',150)
+        write(*  ,'(3X,A150)')adjl('Error: matrix boundary condition for hi edge not found..',150)
+        STOP
+    else
+        bc_hi_matrix = bc_hi_grafted
+    endif
+endif
+
+
+
+
+if (log_r_ads_lo) then
+    if (r_ads_lo .ge. 0.d0)then
+        write(iow,'(3X,A45,F16.9, '' Angstrom'')')adjl('Critical lo position of adsorbed segs',45), r_ads_lo
+        write(*  ,'(3X,A45,F16.9, '' Angstrom'')')adjl('Critical lo position of adsorbed segs',45), r_ads_lo
+    else
+        write(iow,*)"r_ads_lo < 0"
+        write(*  ,*)"r_ads_lo < 0"
+        STOP
+    end if
+else
+    r_ads_lo = 0.0d0
+    !write(iow,'(3X,A45,E16.9, '' Angstrom'')')adjl('*Adsorption lo distance not set. It was set to',45),r_ads_lo,adjustl('Angstrom')
+    !write(*  ,'(3X,A45,E16.9, '' Angstrom'')')adjl('*Adsorption lo distance not set. It was set to',45),r_ads_lo,adjustl('Angstrom')
+endif
+
+if (log_r_ads_hi) then
+    if (r_ads_hi .ge. 0.d0)then
+        write(iow,'(3X,A45,F16.9, '' Angstrom'')')adjl('Critical hi position of adsorbed segs',45), r_ads_hi
+        write(*  ,'(3X,A45,F16.9, '' Angstrom'')')adjl('Critical hi position of adsorbed segs',45), r_ads_hi
+    else
+        write(iow,*)"r_ads_hi < 0"
+        write(*  ,*)"r_ads_hi < 0"
+        STOP
+    end if
+else
+    r_ads_hi = 0.0d0
+    !write(iow,'(3X,A45,E16.9, '' Angstrom'')')adjl('*Adsorption hi distance not set. It was set to',45),r_ads_hi,adjustl('Angstrom')
+    !write(*  ,'(3X,A45,E16.9, '' Angstrom'')')adjl('*Adsorption hi distance not set. It was set to',45),r_ads_hi,adjustl('Angstrom')
+endif
+
 
 write(iow,'(A85)')adjl('------------------------------SETUP THE EQUATION OF STATE----------------------------',85)
 write(*  ,'(A85)')adjl('------------------------------SETUP THE EQUATION OF STATE----------------------------',85)

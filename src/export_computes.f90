@@ -1,11 +1,12 @@
 subroutine export_computes(qinit_lo, qinit_hi)
 !----------------------------------------------------------------------------------------------------------!
 use parser_vars, only: geometry, Rg2_per_mon, ns_grafted_lo, ns_grafted_hi, gnode_lo, gnode_hi, out_phi,   &
-                & out_field, out_q, out_phi_seg, out_ads_free, out_chainshape, out_brush_thickness,     &
+                & out_field, out_q, out_phi_seg, out_ads_free, out_chainshape, out_brush_thickness,        &
                 & grafted_lo_exist, grafted_hi_exist, matrix_exist, ns_matrix, ns_matrix_aux, rho_seg_bulk,&
                 & edwards_solver, rho_seg_bulk, chainlen_matrix, grafted_hi_exist, grafted_lo_exist,       &
                 & matrix_exist, ns_grafted_lo, ns_grafted_hi, chainlen_grafted_lo, chainlen_grafted_hi,    &
-                & bc_lo_matrix, bc_hi_matrix, bc_lo_grafted, bc_hi_grafted, nx, export_phi_seg_id
+                & bc_lo_matrix, bc_hi_matrix, bc_lo_grafted, bc_hi_grafted, nx, export_phi_seg_id,         &
+                & r_ads_lo, r_ads_hi
 use flags,  only: F_lo, F_hi
 use arrays, only: rx, coeff_nx, layer_area, phi_matrix, phi_gr_lo, phi_gr_hi, phi_total, qmatrix_final,    &
                 & qgr_final_lo, qgr_final_hi, wa_ifc, wa_ifc_new, rx, dx, ds_matrix, ds_grafted_lo, rr,    &
@@ -22,10 +23,12 @@ if (out_q)     call export_q(qmatrix_final, ns_matrix_aux, nx, rs_matrix_aux, rx
 
 if (matrix_exist) then
     if (out_q)          call export_q(qmatrix_final, ns_matrix, nx, rs_matrix, rx, "matrix")
-    if (out_phi_seg)    call compute_phi_seg(export_phi_seg_id, chainlen_matrix, coeff_ns_matrix, ns_matrix, nx, rx, qmatrix_final, qmatrix_final,"matrix")
-    if (out_ads_free)   call compute_matrix_ads_free(coeff_ns_matrix, rr, rx, dx, ds_matrix, wa_ifc, phi_matrix, qmatrix_final)
-    if (out_chainshape) call compute_chainshape(rho_seg_bulk, Rg2_per_mon, geometry, gnode_lo, edwards_solver, &
-&             bc_lo_matrix, bc_hi_matrix, qinit_lo, coeff_nx, rr, layer_area,                                  &
+    if (out_phi_seg)    call compute_phi_seg(export_phi_seg_id, chainlen_matrix, coeff_ns_matrix, ns_matrix, nx, &
+&             rx, qmatrix_final, qmatrix_final,"matrix")
+    if (out_ads_free)   call compute_phi_ads_states(coeff_ns_matrix, rr, rx, dx, ds_matrix, wa_ifc, phi_matrix, &
+&             qmatrix_final, bc_lo_matrix, bc_hi_matrix, geometry, r_ads_lo, r_ads_hi, chainlen_matrix, ns_matrix, "matrix")
+    if (out_chainshape) call compute_chainshape(rho_seg_bulk, Rg2_per_mon, geometry, gnode_lo, edwards_solver,   &
+&             bc_lo_matrix, bc_hi_matrix, qinit_lo, coeff_nx, rr, layer_area,                                    &
 &             rx, nx, dx, chainlen_matrix, ns_matrix, ds_matrix, wa_ifc, phi_matrix, qmatrix_final, "matrix")
 endif
 

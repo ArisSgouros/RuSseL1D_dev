@@ -5,12 +5,12 @@ use flags, only: F_semi_implicit, F_implicit, F_bc_neuman
 !----------------------------------------------------------------------------------------------------------!
 implicit none
 !----------------------------------------------------------------------------------------------------------!
-integer, intent(in)                  :: bc_lo, bc_hi, n_dir_nodes, nx, ns, edwards_solver
-integer, intent(in), dimension(0:nx) :: dir_nodes_id
-integer                              :: tt, ii, id
+integer, intent(in)                    :: bc_lo, bc_hi, n_dir_nodes, nx, ns, edwards_solver
+integer, intent(in), dimension(0:nx+4) :: dir_nodes_id
+integer                                :: tt, ii, id
 
 real(8), intent(in)                          :: Rg2_per_mon
-real(8), intent(in), dimension(0:nx)         :: dir_nodes_rdiag
+real(8), intent(in), dimension(0:nx+4)       :: dir_nodes_rdiag
 real(8), intent(in), dimension(0:nx)         :: dx
 real(8), intent(in), dimension(0:nx)         :: wa
 real(8), intent(in), dimension(0:ns)         :: ds

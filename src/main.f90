@@ -28,7 +28,7 @@ real(8) :: qinit_lo = 0.d0, qinit_hi = 0.d0
 real(8) :: free_energy = 0.d0
 real(8) :: nchgr_lo = 0.d0, nchgr_hi = 0.d0, nch_matrix = 0.d0
 !----------------------------------------------------------------------------------------------------------!
-open(unit=iow, file = "o.scft")
+open(unit=iow, file = "o.log")
 
 call parser
 call init_scf_params
@@ -321,7 +321,7 @@ do iter = 0, max_iter
 
         ! flush the log file
         close(iow)
-        open(unit=iow, file = "o.scft", position = 'append')
+        open(unit=iow, file = "o.log", position = 'append')
 
         write(iow,'(2X,I15,9(2X,E15.7))') iter, free_energy, wa_error_new, nchgr_lo / surface_area, nchgr_hi / surface_area, nch_matrix, nchgr_lo, nchgr_hi, frac
         write(*  ,'(2X,I15,9(2X,E15.7))') iter, free_energy, wa_error_new, nchgr_lo / surface_area, nchgr_hi / surface_area, nch_matrix, nchgr_lo, nchgr_hi, frac

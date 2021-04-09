@@ -19,7 +19,7 @@ integer :: export_phi_seg_id
 integer :: wall_type, wall_side
 integer :: n_wall_custom_vars
 
-real(8) :: max_wa_error, r_critical
+real(8) :: max_wa_error, r_ads_lo, r_ads_hi
 real(8) :: chainlen_matrix, chainlen_matrix_aux, chainlen_grafted_lo, chainlen_grafted_hi
 real(8) :: ds_ave_matrix, ds_ave_grafted_lo, ds_ave_grafted_hi
 real(8) :: lx, dx_ave

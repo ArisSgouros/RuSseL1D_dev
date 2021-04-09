@@ -63,7 +63,7 @@ endif
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ##
 # 4. Choose whether we are building for DEBUG or RELEASE                      ##
 # 4.1 Debug or release flags for Fortran files                                ##
-#FCFLAGS = $(FRFLAGS) 
+FCFLAGS = $(FRFLAGS) 
 FCFLAGS = $(FDFLAGS)
 # 4.2 Debug or release flags for C files                                      ##
 CCFLAGS = $(FRFLAGS)
@@ -117,7 +117,7 @@ OBJECTS =   parser.o\
             get_auto_wall_pos.o\
             compute_chainshape.o\
 	    compute_phi_seg.o\
-	    compute_matrix_ads_free.o\
+	    compute_phi_ads_states.o\
 	    compute_brush_thickness.o\
 	    export_q.o\
             export_phi.o\

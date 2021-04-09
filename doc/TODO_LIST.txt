@@ -1,8 +1,0 @@
-* *2*pi*r for cylinders?
-Vavasour, J. D., & Whitmore, M. D. (1993). Self-consistent field theory of block copolymers with conformational asymmetry. Macromolecules, 26(25), 7070-7075. doi:10.1021/ma00077a054 
-
-* move the modules to a the "mod" folder
-
-* chain length independent nconst scheme
-
-* fix energy convergence criterion

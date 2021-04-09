@@ -1,0 +1,56 @@
+-----------------------------------SYSTEM PARAMETERS---------------------------------
+   System geometry:                                         film
+   Domain in Angstroms:                                 200.0000 Angstrom
+   Domain discretization:                                 0.5000 Angstrom
+   Nodes across the domain:                                  400 nodes
+   Temperature:                                         500.0000 K
+   Pressure:                                              0.0000 atm
+----------------------------------POLYMER PROPERTIES---------------------------------
+   Chain characteristic ratio C_infinity:                 9.8530
+   Bond length:                                           1.5400 Angstrom
+   Monomer mass:                                         52.0000 g/mol
+   Mass density:                                          0.9530 g/cm^3
+--------------------------------SIMULATION PARAMETERS--------------------------------
+   Field input file not specified.              
+   Reading default field input file:            ./in.field.bin  
+   Field error tolerance:                                 0.0000 J/k_BT
+   Field mixing fraction:                            0.000850000
+   *Edwards solver not set.. we will use the imp
+   Maximum iterations:                                   1000000 iterations
+   Spacing for chain contour discret:                    uniform
+   Spacing for spatial discret:                          uniform
+   Chain contour integration rule:                  Simpson rule
+   Spatial integration rule:                      Recrangle rule
+-------------------------------------MATRIX CHAINS-----------------------------------
+   Chain contour discretization:                 0.250000000E+00 monomers
+   Chain length:                                   100.000000000 monomers
+   matrix boundary condition for lo edge:              Dirichlet q=0
+   matrix boundary condition for hi edge:              Dirichlet q=1
+------------------------------SETUP THE EQUATION OF STATE----------------------------
+   The Sanchez-Lacombe EoS was chosen with coeff
+   *rho_star :                                         1105.0000 kg/m^3
+   *T_star   :                                          735.0000 K
+   *P_star   :                                    357000000.0000 Pa
+   Reduced influence parameter:                           0.5500
+------------------------------------SETUP THE WALLS----------------------------------
+   *wall type not found.. it was set to vacuum  
+   *Side of the solid wall not detected..       
+                  ..it will be set to both sides
+   *Hard sphere wall position not found. Auto:            0.0000 Angstrom
+-----------------------------INITIALIZE THE SCF PARAMETERS---------------------------
+   Matrix radious of gyration:                           19.7346 Angstrom
+   Matrix nodes along chain contour:                         400 nodes
+   Computation of the mass density from SL EoS..
+   mass density was recomputed as:                        0.9433 g/cm3
+   Sanchez-Lacombe influence parameter:           0.22334493E-66 J m^5
+   Sanchez-Lacombe isothermal compressibility:        0.1450E-08 Pa-1
+   molar density in bulk                              18140.1037 mol/m3
+---------------------------------BEGIN THE SIMULATION--------------------------------
+        Iteration    energy (mN/m)    error (k_B T)         gdens_lo         gdens_hi            nch_m          nch_glo          nch_ghi         fraction
+                0    0.2767646E+02    0.9999925E-07    0.0000000E+00    0.0000000E+00    0.2069422E-01    0.0000000E+00    0.0000000E+00    0.8500000E-03
+
+Convergence of max field error   0.9999925E-07 k_B T
+-------------------------------------FINAL OUTPUT------------------------------------
+   Free energy:        0.2767646E+02 mN/m
+-------------------------------------MATRIX CHAINS-----------------------------------
+   matrix chains:      0.2069422E-01 chains

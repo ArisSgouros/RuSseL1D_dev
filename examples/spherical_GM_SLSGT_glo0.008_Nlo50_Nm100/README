@@ -1,0 +1,12 @@
+Description:
+    A polymer-grafted nanoparticle embedded in a matrix phase (spherical grafted-matrix interface, GM) with SL-SGT EoS.
+    The system corresponds to the one in Figure 2(GM), in the main document.
+Parameters:
+    Folder name:                     spherical_GM_SLSGT_glo0.008_Nlo50_Nm100
+    Geometry:                        spherical, GM
+    EoS:                             SL-SGT
+    Grafting density of g- chains:   0.008 (Angstrom^-2)
+    Chain length of g- chains:       50
+    Chain length of m chains:        100
+    Polymer-solid potential:         Hybrid: Hamaker + ramp
+

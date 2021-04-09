@@ -1,0 +1,8 @@
+Description:
+    A planar vacuum/matrix interphase (VM), SL-SGT EoS.
+    The system corresponds to the one in Figure 1(VM), in the main document.
+Parameters:
+    Folder name:              planar_VM_SLSGT_Nm100
+    Geometry:                 Planar, VM
+    EoS:                      SL-SGT
+    Chain length of m chains: 100

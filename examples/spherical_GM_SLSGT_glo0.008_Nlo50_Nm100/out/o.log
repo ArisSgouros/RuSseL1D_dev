@@ -1,0 +1,86 @@
+-----------------------------------SYSTEM PARAMETERS---------------------------------
+   System geometry:                                       sphere
+   Sphere radius:                                        20.0000 Angstrom
+   Domain in Angstroms:                                 200.0000 Angstrom
+   Domain discretization:                                 0.5000 Angstrom
+   Nodes across the domain:                                  400 nodes
+   Temperature:                                         500.0000 K
+   Pressure:                                              0.0000 atm
+----------------------------------POLYMER PROPERTIES---------------------------------
+   Chain characteristic ratio C_infinity:                 9.8530
+   Bond length:                                           1.5400 Angstrom
+   Monomer mass:                                         52.0000 g/mol
+   Mass density:                                          0.9530 g/cm^3
+--------------------------------SIMULATION PARAMETERS--------------------------------
+   Output q:                                                   F
+   Output chain shape:                                         F
+   Output ads free:                                            F
+   Field input file not specified.              
+   Reading default field input file:            ./in.field.bin  
+   Field error tolerance:                                 0.0000 J/k_BT
+   Field mixing fraction:                            0.000850000
+   Edwards solver                                       implicit
+   Maximum iterations:                                   1000000 iterations
+   Spacing for chain contour discret:                    uniform
+   Spacing for spatial discret:                          uniform
+   Chain contour integration rule:                  Simpson rule
+   Spatial integration rule:                      Recrangle rule
+-------------------------------------MATRIX CHAINS-----------------------------------
+   Chain contour discretization:                 0.250000000E+00 monomers
+   Chain length:                                   100.000000000 monomers
+----------------------------------GRAFTED LO CHAINS----------------------------------
+   Chain contour discretization:                 0.250000000E+00 monomers
+   Chain length:                                    50.000000000 monomers
+   Grafting density:                             0.800000000E-02 chains/Angstrom^2
+   Solid-grafted point distance:                               1 nodes
+   matrix boundary condition for lo edge:              Dirichlet q=0
+   matrix boundary condition for hi edge:              Dirichlet q=1
+   grafted boundary condition for lo edge:             Dirichlet q=0
+   grafted boundary condition for hi edge:             Dirichlet q=0
+------------------------------SETUP THE EQUATION OF STATE----------------------------
+   The Sanchez-Lacombe EoS was chosen with coeff
+   *rho_star :                                         1105.0000 kg/m^3
+   *T_star   :                                          735.0000 K
+   *P_star   :                                    357000000.0000 Pa
+   Reduced influence parameter:                           0.5500
+------------------------------------SETUP THE WALLS----------------------------------
+   Hybrid wall potential was selected:          
+   Coefficients of the Hamaker potential:       
+   *sigma polymer:                                        3.7000 Angstrom
+   *sigma solid:                                          3.0000 Angstrom
+   *Hamaker constant of polymer:                          5.8400 10^-20 J
+   *Hamaker constant of solid:                            6.4300 10^-20 J
+   Coefficients of the ramp potential:          
+   *Energy barrier:                                      -3.9750 10^-20 J
+   *Energy barrier:                                      -5.7582 kBT
+   *sigma:                                               12.8000 Angstrom
+   Side of the solid wall:                                    lo
+   *Hard sphere wall position not found. Auto:            0.0000 Angstrom
+   Recalibration of hard-sphere wall. E-target:           5.0000 k_B T
+-----------------------------INITIALIZE THE SCF PARAMETERS---------------------------
+   Matrix radious of gyration:                           19.7346 Angstrom
+   Matrix nodes along chain contour:                         400 nodes
+   grafted lo radious of gyration:                       13.9545 Angstrom
+   grafted lo nodes along chain contour:                     200 nodes
+   Computation of the mass density from SL EoS..
+   mass density was recomputed as:                        0.9433 g/cm3
+   Sanchez-Lacombe influence parameter:           0.22334493E-66 J m^5
+   Sanchez-Lacombe isothermal compressibility:        0.1450E-08 Pa-1
+   molar density in bulk                              18140.1037 mol/m3
+   automatic recalibration of wall position..   
+   wall_pos was recalibrated to                      3.906718100 Angstrom
+---------------------------------BEGIN THE SIMULATION--------------------------------
+        Iteration    energy (mN/m)    error (k_B T)         gdens_lo         gdens_hi            nch_m          nch_glo          nch_ghi         fraction
+                0   -0.9591580E+02    0.9990313E-07    0.8000000E-02    0.0000000E+00    0.5126507E+04    0.4021239E+02    0.0000000E+00    0.8500000E-03
+
+Convergence of max field error   0.9990313E-07 k_B T
+-------------------------------------FINAL OUTPUT------------------------------------
+   Free energy:       -0.9591580E+02 mN/m
+-------------------------------------MATRIX CHAINS-----------------------------------
+   matrix chains:      0.5126507E+04 chains
+---------------------------------GRAFTED LO CHAINS-----------------------------------
+   grafted lo chains   0.4021239E+02 chains
+   q_f(r_gi,0):        0.1223332E+00
+   q_g(r_gi,N_g):      0.4019722E+03
+   grafting density:   0.8000000E-02 chains/angstrom
+   error:              0.1504747E-05

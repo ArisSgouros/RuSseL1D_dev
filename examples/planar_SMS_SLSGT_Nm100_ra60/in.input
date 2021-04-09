@@ -1,0 +1,49 @@
+ # system setup
+ 0                             ! domain geometry (Film
+ 1.600000000e+02               ! domain lx (Angstrom)
+ 0.5                           ! domain dx
+ 5.000000000e+02               ! system temperature (K)
+ 0.000000000D+00               ! system pressure (atm)
+
+ # polymer parameters
+ 0.985300000D+01               ! polymer C_inf
+ 0.520000000D+02               ! polymer monomer_mass (g/mol)
+ 0.953000000D+00               ! polymer mass_density (g/cm3)
+ 1.540000000D+00               ! polymer bond_length (Angstrom)
+
+ # simulation parameters
+ 1000000                       ! field iterations
+ True                          ! field read
+ 0.100000000D-06               ! field max_error (J/k_BT)
+ 0.002000000e-00               ! field mixing_fraction
+ 0                             ! discret contour (uniform)
+ 0                             ! discret spatial (uniform)
+ 1                             ! integr contour (Simpson rule)
+ 0                             ! integr spatial (Rectangle rule)
+
+ # computes
+
+ # wall parameters
+ -1                                                                ! wall type (hybrid)
+ 1 3.700000000E+00 3.000000000E+00 5.840000000D+00 6.430000000D+00 ! wall coeffs (Hamaker)
+ 3 1.280000000E+01 -3.975042293                                    ! wall coeffs (ramp)
+ 5.000000000D+00                                                   ! wall pos auto (k_B T)
+ 0                                                                 ! wall side (both)
+
+ # matrix chains
+ True                          ! matrix set
+ 100.0                         ! matrix chain_length
+ 0.25                          ! matrix ds
+ 6.000000000D+01               ! chain r_ads_hi (Angstrom)
+ 6.000000000D+01               ! chain r_ads_lo (Angstrom)
+
+ # boundary conditions
+ 0                             ! boundary_condition lo matrix (Dirichlet q=0)
+ 0                             ! boundary_condition hi matrix (Dirichlet q=0)
+
+ # equation of state
+ 1                             ! EOS type (Sanchez-Lacombe)
+ 1105.0 735.0 3.57D+08         ! EOS coeffs (rho_star,T_star, P_star)
+ 0.550000000D+00               ! EOS influence_parameter (reduced units)
+
+ False                         ! export q

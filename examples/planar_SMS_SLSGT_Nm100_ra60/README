@@ -1,0 +1,10 @@
+Description:
+    A planar solid/matrix/solid geometry (SMS), with the SL-SGT EoS that reproduces the adsorbed chain states in Figure 10 in the main document.
+Parameters:
+    Folder name:                  planar_SMS_SLSGT_Nm100_ra60
+    Geometry:                     Planar, SMS
+    EoS:                          SL-SGT
+    Chain length of m chains:     100
+    Polymer-solid potential:      hybrid: Hamaker + ramp
+    Critical adsorption distance: 60 Angstrom
+

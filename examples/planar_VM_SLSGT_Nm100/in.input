@@ -1,0 +1,36 @@
+ # system setup
+ 0                             ! domain geometry (Film)
+ 2.000000000e+02               ! domain lx (Angstrom)
+ 0.5                           ! domain dx
+ 5.000000000e+02               ! system temperature (K)
+ 0.000000000D+00               ! system pressure (atm)
+
+ # polymer parameters
+ 0.985300000D+01               ! polymer C_inf
+ 0.520000000D+02               ! polymer monomer_mass (g/mol)
+ 0.953000000D+00               ! polymer mass_density (g/cm3)
+ 1.540000000D+00               ! polymer bond_length (Angstrom)
+
+ # simulation parameters
+ 1000000                       ! field iterations
+ True                          ! field read
+ 0.100000000D-06               ! field max_error (J/k_BT)
+ 0.000850000e-00               ! field mixing_fraction
+ 0                             ! discret contour (uniform)
+ 0                             ! discret spatial (uniform)
+ 1                             ! integr contour (Simpson rule)
+ 0                             ! integr spatial (Rectangle rule)
+
+ # matrix chains
+ True                          ! matrix set
+ 100.0                         ! matrix chain_length
+ 0.25                          ! matrix ds
+
+ # boundary conditions
+ 0                             ! boundary_condition lo matrix (Dirichlet q=0)
+ 1                             ! boundary_condition hi matrix (Dirichlet q=1)
+
+ # equation of state
+ 1                             ! EOS type (Sanchez-Lacombe)
+ 1105.0 735.0 3.57D+08         ! EOS coeffs (rho_star,T_star, P_star)
+ 0.550000000D+00               ! EOS influence_parameter (reduced units)

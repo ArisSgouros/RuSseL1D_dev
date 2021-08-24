@@ -1,3 +1,7 @@
+!RuSseL1D - Copyright (C) 2021 C. J. Revelas, A. P. Sgouros, A. T. Lakkas
+!
+!See the LICENSE file in the root directory for license information.
+
 module parser_vars
 !----------------------------------------------------------------------------------------------------------!
 logical :: grafted_lo_exist, grafted_hi_exist, matrix_exist
@@ -9,7 +13,7 @@ logical :: out_chainshape, out_ads_free, out_brush_thickness
 logical :: wall_hamaker, wall_square_well, wall_ramp, wall_vacuum, wall_hybrid, wall_custom, wall_table
 
 integer :: bc_hi_matrix, bc_lo_matrix, bc_hi_grafted, bc_lo_grafted
-integer :: edwards_solver
+integer :: edwards_solver, linear_solver
 integer :: contour_discret_scheme, spatial_discret_scheme
 integer :: contour_integr_scheme, spatial_integr_scheme
 integer :: nx, ns_matrix, ns_matrix_aux, ns_grafted_lo, ns_grafted_hi

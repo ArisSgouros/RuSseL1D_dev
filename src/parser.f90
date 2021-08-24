@@ -1,9 +1,13 @@
+!RuSseL1D - Copyright (C) 2021 C. J. Revelas, A. P. Sgouros, A. T. Lakkas
+!
+!See the LICENSE file in the root directory for license information.
+
 subroutine parser()
 !----------------------------------------------------------------------------------------------------------!
 use flags,        only: F_bc_dirichlet_eq_0, F_bc_dirichlet_eq_1, F_bc_neuman, F_both, F_custom, F_film,  &
                       & F_sphere, F_implicit, F_semi_implicit, F_helfand, F_sanchez_lacombe, F_hi, F_lo,  &
                       & F_vacuum, F_hybrid, F_square_well, F_table, F_ramp, F_hamaker, F_uniform,         &
-                      & F_nonuniform, F_simpson_rule, F_rectangle_rule
+                      & F_nonuniform, F_simpson_rule, F_rectangle_rule, F_tridag, F_gelim, F_bc_periodic
 use constants,    only: gr_cm3_to_kg_m3, atm_to_pa, iow, tol, boltz_const_joule_K
 use eos,          only: eos_type, hf_kappa_T, T_star, P_star, rho_star
 use write_helper, only: adjl
@@ -57,6 +61,7 @@ logical :: log_out_phi_seg_set             = .false.
 logical :: log_out_brush_thickness         = .false.
 
 logical :: log_edwards_solver              = .false.
+logical :: log_linear_solver               = .false.
 logical :: log_spatial_discret_scheme      = .false.
 logical :: log_contour_discret_scheme      = .false.
 logical :: log_spatial_integr_scheme       = .false.
@@ -199,6 +204,9 @@ do
         elseif (index(line,"! edwards solver") > 0) then
             read(line,*) edwards_solver
             log_edwards_solver = .true.
+        elseif (index(line,"! linear solver") > 0) then
+            read(line,*) linear_solver
+            log_linear_solver = .true.
         elseif (index(line,"! discret contour") > 0) then
             read(line,*) contour_discret_scheme
             log_contour_discret_scheme = .true.
@@ -701,6 +709,24 @@ else
     write(*  ,'(3X,A45)')adjl('*Edwards solver not set.. we will use the implicit..',45)
 endif
 
+if (log_linear_solver) then
+    if (linear_solver.eq.F_tridag) then
+        write(iow,'(3X,A45,A16)')adjl('Linear solver',45),adjustl('tridag')
+        write(*  ,'(3X,A45,A16)')adjl('Linear solver',45),adjustl('tridag')
+    elseif (linear_solver.eq.F_gelim) then
+        write(iow,'(3X,A45,A16)')adjl('Linear solver',45),adjustl('gelim')
+        write(*  ,'(3X,A45,A16)')adjl('Linear solver',45),adjustl('gelim')
+    else
+        write(iow,'(3X,A61)')adjl('*Linear solver flag must be set to either 0 or 1..',45)
+        write(*  ,'(3X,A61)')adjl('*Linear solver flag must be set to either 0 or 1..',45)
+        STOP
+    endif
+else
+    linear_solver = F_tridag
+    write(iow,'(3X,A45)')adjl('*Linear solver not set.. we will use tridag..',45)
+    write(*  ,'(3X,A45)')adjl('*Linear solver not set.. we will use tridag..',45)
+endif
+
 if (log_number_of_iterations) then
     write(iow,'(3X,A45,I16,'' iterations'')')adjl('Maximum iterations:',45),max_iter
     write(*  ,'(3X,A45,I16,'' iterations'')')adjl('Maximum iterations:',45),max_iter
@@ -718,8 +744,10 @@ if (log_contour_discret_scheme) then
         write(iow,'(3X,A45,A16)')adjl("Spacing for chain contour discret:",45),adjustl('nonuniform')
         write(*  ,'(3X,A45,A16)')adjl("Spacing for chain contour discret:",45),adjustl('nonuniform')
     else
-        write(iow,'(3X,A61,I3,'' or '',I3)')adjl('*Error: Spacing for chain contour discret must be set to',61),F_uniform,F_nonuniform
-        write(*  ,'(3X,A61,I3,'' or '',I3)')adjl('*Error: Spacing for chain contour discret must be set to',61),F_uniform,F_nonuniform
+        write(iow,'(3X,A61,I3,'' or '',I3)')adjl('*Error: Spacing for chain contour discret must be set to',61),&
+&                                               F_uniform,F_nonuniform
+        write(*  ,'(3X,A61,I3,'' or '',I3)')adjl('*Error: Spacing for chain contour discret must be set to',61),&
+&                                               F_uniform,F_nonuniform
     endif
 else
     contour_discret_scheme = F_uniform
@@ -736,8 +764,10 @@ if (log_spatial_discret_scheme) then
         write(iow,'(3X,A45,A16)')adjl("Spacing for spatial discret:",45),adjustl('nonuniform')
         write(*  ,'(3X,A45,A16)')adjl("Spacing for spatial discret:",45),adjustl('nonuniform')
     else
-        write(iow,'(3X,A61,I3,'' or '',I3)')adjl('*Error: Spacing for spatial discret must be set to',61),F_uniform,F_nonuniform
-        write(*  ,'(3X,A61,I3,'' or '',I3)')adjl('*Error: Spacing for spatial discret must be set to',61),F_uniform,F_nonuniform
+        write(iow,'(3X,A61,I3,'' or '',I3)')adjl('*Error: Spacing for spatial discret must be set to',61),&
+&                                               F_uniform,F_nonuniform
+        write(*  ,'(3X,A61,I3,'' or '',I3)')adjl('*Error: Spacing for spatial discret must be set to',61),&
+&                                               F_uniform,F_nonuniform
     endif
 else
     spatial_discret_scheme = F_uniform
@@ -753,8 +783,10 @@ if (log_contour_integr_scheme) then
         write(iow,'(3X,A45,A16)')adjl("Chain contour integration rule:",45),adjustl('Simpson rule')
         write(*  ,'(3X,A45,A16)')adjl("Chain contour integration rule:",45),adjustl('Simpson rule')
     else
-        write(iow,'(3X,A61,I3,'' or '',I3)')adjl('*Error: Chain contour integr rule must be set to',61),F_rectangle_rule, F_simpson_rule
-        write(*  ,'(3X,A61,I3,'' or '',I3)')adjl('*Error: Chain contour integr rule must be set to',61),F_rectangle_rule, F_simpson_rule
+        write(iow,'(3X,A61,I3,'' or '',I3)')adjl('*Error: Chain contour integr rule must be set to',61),&
+&                                               F_rectangle_rule, F_simpson_rule
+        write(*  ,'(3X,A61,I3,'' or '',I3)')adjl('*Error: Chain contour integr rule must be set to',61),&
+&                                               F_rectangle_rule, F_simpson_rule
     endif
 else
     contour_integr_scheme = F_simpson_rule
@@ -770,8 +802,10 @@ if (log_spatial_integr_scheme) then
         write(iow,'(3X,A45,A16)')adjl("Spatial integration rule:",45),adjustl('Simpson rule')
         write(*  ,'(3X,A45,A16)')adjl("Spatial integration rule:",45),adjustl('Simpson rule')
     else
-        write(iow,'(3X,A61,I3,'' or '',I3)')adjl('*Error: Spatial integr rule must be set to',61),F_rectangle_rule, F_simpson_rule
-        write(*  ,'(3X,A61,I3,'' or '',I3)')adjl('*Error: Spatial integr rule must be set to',61),F_rectangle_rule, F_simpson_rule
+        write(iow,'(3X,A61,I3,'' or '',I3)')adjl('*Error: Spatial integr rule must be set to',61),&
+&                                               F_rectangle_rule, F_simpson_rule
+        write(*  ,'(3X,A61,I3,'' or '',I3)')adjl('*Error: Spatial integr rule must be set to',61),&
+&                                               F_rectangle_rule, F_simpson_rule
     endif
 else
     spatial_integr_scheme = F_simpson_rule
@@ -956,11 +990,14 @@ if (log_lo_BC_of_grafted) then
     else if(bc_lo_grafted == F_bc_dirichlet_eq_1) then
         write(iow,'(3X,A45,A16,'' q=1'')')adjl('grafted boundary condition for lo edge:',45),adjustl('Dirichlet')
         write(*  ,'(3X,A45,A16,'' q=1'')')adjl('grafted boundary condition for lo edge:',45),adjustl('Dirichlet')
+    else if(bc_lo_grafted == F_bc_periodic) then
+        write(iow,'(3X,A45,A16,'' q0=qN'')')adjl('grafted boundary condition for lo edge:',45),adjustl('Periodic')
+        write(*  ,'(3X,A45,A16,'' q0=qN'')')adjl('grafted boundary condition for lo edge:',45),adjustl('Periodic')
     else
-        write(iow,'(3X,A150)')adjl('Error: wrong grafted boundary condition for lo edge.. (choose between -1, 0 and 1',150)
-        write(*  ,'(3X,A150)')adjl('Error: wrong grafted boundary condition for lo edge.. (choose between -1, 0 and 1',150)
+        write(iow,'(3X,A150)')adjl('Error: wrong grafted boundary condition for lo edge.. (choose between -1, 0, 1, 2',150)
+        write(*  ,'(3X,A150)')adjl('Error: wrong grafted boundary condition for lo edge.. (choose between -1, 0, 1, 2',150)
         STOP
-    end if 
+    endif 
 else
     if (grafted_lo_exist.or.grafted_hi_exist) then
         write(iow,'(3X,A150)')adjl('Error: grafted boundary condition for lo edge not found..',150)
@@ -981,9 +1018,12 @@ if (log_hi_BC_of_grafted) then
     else if(bc_hi_grafted == F_bc_dirichlet_eq_1) then
         write(iow,'(3X,A45,A16,'' q=1'')')adjl('grafted boundary condition for hi edge:',45),adjustl('Dirichlet')
         write(*  ,'(3X,A45,A16,'' q=1'')')adjl('grafted boundary condition for hi edge:',45),adjustl('Dirichlet')
+    else if(bc_hi_grafted == F_bc_periodic) then
+        write(iow,'(3X,A45,A16,'' q0=qN'')')adjl('grafted boundary condition for hi edge:',45),adjustl('Periodic')
+        write(*  ,'(3X,A45,A16,'' q0=qN'')')adjl('grafted boundary condition for hi edge:',45),adjustl('Periodic')
     else
-        write(iow,'(3X,A150)')adjl('Error: wrong grafted boundary condition for hi edge.. (choose between -1, 0 and 1',150)
-        write(*  ,'(3X,A150)')adjl('Error: wrong grafted boundary condition for hi edge.. (choose between -1, 0 and 1',150)
+        write(iow,'(3X,A150)')adjl('Error: wrong grafted boundary condition for hi edge.. (choose between -1, 0, 1, 2',150)
+        write(*  ,'(3X,A150)')adjl('Error: wrong grafted boundary condition for hi edge.. (choose between -1, 0, 1, 2',150)
         STOP
     end if 
 else
@@ -1007,11 +1047,14 @@ if (log_lo_BC_of_matrix) then
     else if(bc_lo_matrix == F_bc_dirichlet_eq_1) then
         write(iow,'(3X,A45,A16,'' q=1'')')adjl('matrix boundary condition for lo edge:',45),adjustl('Dirichlet')
         write(*  ,'(3X,A45,A16,'' q=1'')')adjl('matrix boundary condition for lo edge:',45),adjustl('Dirichlet')
+    else if(bc_lo_matrix == F_bc_periodic) then
+        write(iow,'(3X,A45,A16,'' q0=qN'')')adjl('matrix boundary condition for lo edge:',45),adjustl('Periodic')
+        write(*  ,'(3X,A45,A16,'' q0=qN'')')adjl('matrix boundary condition for lo edge:',45),adjustl('Periodic')
     else
-        write(iow,'(3X,A150)')adjl('Error: wrong matrix boundary condition for lo edge.. (choose between -1, 0 and 1',150)
-        write(*  ,'(3X,A150)')adjl('Error: wrong matrix boundary condition for lo edge.. (choose between -1, 0 and 1',150)
+        write(iow,'(3X,A150)')adjl('Error: wrong matrix boundary condition for lo edge.. (choose between -1, 0, 1, 2',150)
+        write(*  ,'(3X,A150)')adjl('Error: wrong matrix boundary condition for lo edge.. (choose between -1, 0, 1, 2',150)
         STOP
-    end if 
+    endif 
 else
     if (matrix_exist) then
         write(iow,'(3X,A150)')adjl('Error: matrix boundary condition for lo edge not found..',150)
@@ -1032,11 +1075,14 @@ if (log_hi_BC_of_matrix) then
     else if(bc_hi_matrix == F_bc_dirichlet_eq_1) then
         write(iow,'(3X,A45,A16,'' q=1'')')adjl('matrix boundary condition for hi edge:',45),adjustl('Dirichlet')
         write(*  ,'(3X,A45,A16,'' q=1'')')adjl('matrix boundary condition for hi edge:',45),adjustl('Dirichlet')
+    else if(bc_hi_matrix == F_bc_periodic) then
+        write(iow,'(3X,A45,A16,'' q0=qN'')')adjl('matrix boundary condition for hi edge:',45),adjustl('Periodic')
+        write(*  ,'(3X,A45,A16,'' q0=qN'')')adjl('matrix boundary condition for hi edge:',45),adjustl('Periodic')
     else
-        write(iow,'(3X,A150)')adjl('Error: wrong matrix boundary condition for hi edge.. (choose between -1, 0 and 1',150)
-        write(*  ,'(3X,A150)')adjl('Error: wrong matrix boundary condition for hi edge.. (choose between -1, 0 and 1',150)
+        write(iow,'(3X,A150)')adjl('Error: wrong matrix boundary condition for hi edge.. (choose between -1, 0, 1, 2',150)
+        write(*  ,'(3X,A150)')adjl('Error: wrong matrix boundary condition for hi edge.. (choose between -1, 0, 1, 2',150)
         STOP
-    end if 
+    endif 
 else
     if (matrix_exist) then
         write(iow,'(3X,A150)')adjl('Error: matrix boundary condition for hi edge not found..',150)
@@ -1047,8 +1093,17 @@ else
     endif
 endif
 
+if ((bc_hi_grafted == F_bc_periodic).and.(bc_hi_grafted.ne.bc_lo_grafted)) then
+    write(iow,'(3X,A150)')adjl('Error: periodic boundary condition in one face..',150)
+    write(*  ,'(3X,A150)')adjl('Error: periodic boundary condition in one face..',150)
+    STOP
+endif
 
-
+if ((bc_hi_grafted == F_bc_periodic).and.(linear_solver.ne.F_gelim)) then
+    write(iow,'(3X,A150)')adjl('Error: periodic boundary conditions w/o gelim',150)
+    write(*  ,'(3X,A150)')adjl('Error: periodic boundary conditions w/o gelim',150)
+    STOP
+endif
 
 if (log_r_ads_lo) then
     if (r_ads_lo .ge. 0.d0)then

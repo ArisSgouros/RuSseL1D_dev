@@ -1,3 +1,7 @@
+!RuSseL1D - Copyright (C) 2021 C. J. Revelas, A. P. Sgouros, A. T. Lakkas
+!
+!See the LICENSE file in the root directory for license information.
+
 subroutine init_scf_params()
 !----------------------------------------------------------------------------------------------------------!
 use eos,          only: rsl_N, T_tilde, P_tilde, rho_tilde_bulk, T_star, P_star, V_star, rho_star, chainlen_sl,&
@@ -84,16 +88,16 @@ if (eos_type.eq.F_sanchez_lacombe) then
     write(iow,'(3X,A45,E16.8," J m^5")')adjl("Sanchez-Lacombe influence parameter:",45), k_gr
     write(*  ,'(3X,A45,E16.8," J m^5")')adjl("Sanchez-Lacombe influence parameter:",45), k_gr
 
-    SL_kappa_T = 1.0d0 / (  P_star * T_tilde * rho_tilde_bulk * ( 1.d0 / (1.d0 / rho_tilde_bulk - 1.d0) + 1.d0 / (rsl_N*chainlen_sl)) - 2.d0*rho_tilde_bulk**2*P_star     )
+    SL_kappa_T = 1.0d0 / (  P_star * T_tilde * rho_tilde_bulk * ( 1.d0 / (1.d0 / rho_tilde_bulk - 1.d0) + &
+&                                          1.d0 / (rsl_N*chainlen_sl)) - 2.d0*rho_tilde_bulk**2*P_star)
     write(iow,'(3X,A45,E16.4," Pa-1")')adjl("Sanchez-Lacombe isothermal compressibility:",45), SL_kappa_T
     write(*  ,'(3X,A45,E16.4," Pa-1")')adjl("Sanchez-Lacombe isothermal compressibility:",45), SL_kappa_T
-end if
+endif
 
 rho_mol_bulk = rho_mass_bulk/mon_mass*gr_cm3_to_kg_m3
 rho_seg_bulk = rho_mol_bulk*N_avog
 
 write(iow,'(3X,A45,F16.4," mol/m3")')adjl("molar density in bulk",45), rho_mol_bulk
 write(*  ,'(3X,A45,F16.4," mol/m3")')adjl("molar density in bulk",45), rho_mol_bulk
-
 !----------------------------------------------------------------------------------------------------------!
 end subroutine init_scf_params

@@ -1,3 +1,7 @@
+!RuSseL1D - Copyright (C) 2021 C. J. Revelas, A. P. Sgouros, A. T. Lakkas
+!
+!See the LICENSE file in the root directory for license information.
+
 subroutine init_arrays()
 !----------------------------------------------------------------------------------------------------------!
 use parser_vars, only: ns_matrix, ns_matrix_aux, ns_grafted_lo, ns_grafted_hi, nx
@@ -13,7 +17,8 @@ allocate(phi_total(0:nx),phi_matrix(0:nx),phi_gr_lo(0:nx),phi_gr_hi(0:nx))
 allocate(qmatrix(0:nx,2),qgr_lo(0:nx,2),qgr_hi(0:nx,2))
 allocate(qmatrix_final(0:nx,0:ns_matrix_aux),qgr_final_lo(0:nx,0:ns_grafted_lo),qgr_final_hi(0:nx,0:ns_grafted_hi))
 allocate(coeff_nx(0:nx))
-allocate(coeff_ns_matrix(0:ns_matrix),coeff_ns_matrix_aux(0:ns_matrix_aux),coeff_ns_grafted_lo(0:ns_grafted_lo),coeff_ns_grafted_hi(0:ns_grafted_hi))
+allocate(coeff_ns_matrix(0:ns_matrix),coeff_ns_matrix_aux(0:ns_matrix_aux),coeff_ns_grafted_lo(0:ns_grafted_lo), &
+&                                                                          coeff_ns_grafted_hi(0:ns_grafted_hi))
 allocate(dir_nodes_id(0:nx), dir_nodes_rdiag(0:nx))
 allocate(dphi_dr(0:nx), d2phi_dr2(0:nx))
 allocate(dx(0:nx),rx(0:nx))

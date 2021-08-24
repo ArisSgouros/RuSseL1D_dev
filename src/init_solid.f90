@@ -1,3 +1,7 @@
+!RuSseL1D - Copyright (C) 2021 C. J. Revelas, A. P. Sgouros, A. T. Lakkas
+!
+!See the LICENSE file in the root directory for license information.
+
 subroutine init_solid()
 !----------------------------------------------------------------------------------------------------------!
 use flags
@@ -84,7 +88,8 @@ do kk = 0, nx
             if (xx < sigma_ramp) Uatt = Uatt + A_ramp * (sigma_ramp - xx) / sigma_ramp
         endif
         if (wall_custom) then
-            Uatt = Uatt + exp(-xx/wall_custom_vars(2)) * ( wall_custom_vars(4) + wall_custom_vars(1) * sin((2 * PI / wall_custom_vars(3)) * (xx+ wall_custom_vars(5)) ))
+            Uatt = Uatt + exp(-xx/wall_custom_vars(2)) * ( wall_custom_vars(4) + wall_custom_vars(1) * &
+&                         sin((2 * PI / wall_custom_vars(3)) * (xx+ wall_custom_vars(5)) ))
         endif
         if (wall_table) then
             Uatt = Uatt + u_table(kk)

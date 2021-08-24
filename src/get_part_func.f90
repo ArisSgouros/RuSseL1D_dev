@@ -1,3 +1,7 @@
+!RuSseL1D - Copyright (C) 2021 C. J. Revelas, A. P. Sgouros, A. T. Lakkas
+!
+!See the LICENSE file in the root directory for license information.
+
 function get_part_func(nx, ns, layer_area, volume, coeff_x, q_final)
 !----------------------------------------------------------------------------------------------------------!
 implicit none

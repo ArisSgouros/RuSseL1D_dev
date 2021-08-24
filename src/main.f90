@@ -1,3 +1,7 @@
+!RuSseL1D - Copyright (C) 2021 C. J. Revelas, A. P. Sgouros, A. T. Lakkas
+!
+!See the LICENSE file in the root directory for license information.
+
 program fd_1d
 !----------------------------------------------------------------------------------------------------------!
 use constants,    only: iow
@@ -5,11 +9,11 @@ use eos,          only: eos_df_drho
 use write_helper, only: adjl
 use flags,        only: F_bc_dirichlet_eq_0, F_bc_dirichlet_eq_1, F_sphere
 use parser_vars,  only: bc_hi_matrix, bc_lo_matrix, bc_hi_grafted, bc_lo_grafted, beta, k_gr, delta,      &
-                      & chainlen_matrix, chainlen_grafted_hi, edwards_solver, chainlen_grafted_lo,        &
-                      & check_stability_every, compute_every, field_every, thermo_every, geometry, frac,  &
-                      & nx, ns_matrix, ns_matrix_aux, ns_grafted_lo, ns_grafted_hi, matrix_exist,         &
+                      & chainlen_matrix, chainlen_grafted_hi, edwards_solver, linear_solver, geometry,    &
+                      & chainlen_grafted_lo, check_stability_every, compute_every, field_every, frac, nx, &
+                      & ns_matrix, ns_matrix_aux, ns_grafted_lo, ns_grafted_hi, matrix_exist,             &
                       & grafted_hi_exist, grafted_lo_exist, Rg2_per_mon, gnode_lo, gnode_hi, rho_seg_bulk,&
-                      & gdens_lo, gdens_hi, max_iter, max_wa_error, square_gradient
+                      & gdens_lo, gdens_hi, max_iter, max_wa_error, square_gradient, thermo_every
 use arrays,       only: qmatrix, qmatrix_final, qgr_lo, qgr_final_lo, qgr_hi, qgr_final_hi, dir_nodes_id, &
                       & dir_nodes_rdiag, phi_total, dphi_dr, d2phi_dr2, coeff_nx, coeff_ns_matrix,        &
                       & coeff_ns_grafted_lo, coeff_ns_grafted_hi, Ufield, dx, ds_matrix, ds_matrix_aux,   &
@@ -41,8 +45,10 @@ call init_field
 write(iow,'(A85)')adjl("---------------------------------BEGIN THE SIMULATION--------------------------------",85)
 write(*  ,'(A85)')adjl("---------------------------------BEGIN THE SIMULATION--------------------------------",85)
 
-write(iow,'(2X,A15,9(2X,A15))') "Iteration", "energy (mN/m)", "error (k_B T)", "gdens_lo", 'gdens_hi', "nch_m", "nch_glo", "nch_ghi", "fraction"
-write(*  ,'(2X,A15,9(2X,A15))') "Iteration", "energy (mN/m)", "error (k_B T)", "gdens_lo", 'gdens_hi', "nch_m", "nch_glo", "nch_ghi", "fraction"
+write(iow,'(2X,A15,9(2X,A15))') "Iteration", "energy (mN/m)", "error (k_B T)", "gdens_lo", 'gdens_hi', "nch_m", &
+&                               "nch_glo", "nch_ghi", "fraction"
+write(*  ,'(2X,A15,9(2X,A15))') "Iteration", "energy (mN/m)", "error (k_B T)", "gdens_lo", 'gdens_hi', "nch_m", &
+&                               "nch_glo", "nch_ghi", "fraction"
 
 do iter = 0, max_iter
 
@@ -86,7 +92,8 @@ do iter = 0, max_iter
     endif
  
     call solver_edwards(bc_lo_matrix, bc_hi_matrix, n_dir_nodes, dir_nodes_id, dir_nodes_rdiag, &
-&           Rg2_per_mon, nx, ns_matrix_aux, dx, ds_matrix_aux, edwards_solver, wa_ifc, qmatrix, qmatrix_final)
+&                       Rg2_per_mon, nx, ns_matrix_aux, dx, ds_matrix_aux, edwards_solver,      &
+&                       linear_solver, wa_ifc, qmatrix, qmatrix_final)
 
     if (geometry.eq.F_sphere) then
         do tt = 0, ns_matrix_aux
@@ -96,7 +103,8 @@ do iter = 0, max_iter
         enddo
     endif
 
-    if (matrix_exist) call contour_convolution(chainlen_matrix, nx, ns_matrix, coeff_ns_matrix, qmatrix_final, qmatrix_final, phi_matrix)
+    if (matrix_exist) call contour_convolution(chainlen_matrix, nx, ns_matrix, coeff_ns_matrix, &
+&                                              qmatrix_final, qmatrix_final, phi_matrix)
 
     !edwards diffusion for grafted chains in the lower boundary
     if (grafted_lo_exist) then
@@ -144,7 +152,8 @@ do iter = 0, max_iter
         endif
 
         call solver_edwards(bc_lo_grafted, bc_hi_grafted, n_dir_nodes, dir_nodes_id, dir_nodes_rdiag, &
-&                Rg2_per_mon, nx, ns_grafted_lo, dx, ds_grafted_lo, edwards_solver, wa_ifc, qgr_lo, qgr_final_lo)
+&                           Rg2_per_mon, nx, ns_grafted_lo, dx, ds_grafted_lo, edwards_solver,        &
+&                           linear_solver, wa_ifc, qgr_lo, qgr_final_lo)
 
         if (geometry.eq.F_sphere) then
             do tt = 0, ns_grafted_lo
@@ -154,7 +163,8 @@ do iter = 0, max_iter
             enddo
         endif
 
-        call contour_convolution(chainlen_grafted_lo, nx, ns_grafted_lo, coeff_ns_grafted_lo, qmatrix_final, qgr_final_lo, phi_gr_lo)
+        call contour_convolution(chainlen_grafted_lo, nx, ns_grafted_lo, coeff_ns_grafted_lo,  &
+&                                qmatrix_final, qgr_final_lo, phi_gr_lo)
     endif
 
 
@@ -204,7 +214,8 @@ do iter = 0, max_iter
         endif
 
         call solver_edwards(bc_hi_grafted, bc_hi_grafted, n_dir_nodes, dir_nodes_id, dir_nodes_rdiag, &
-&                Rg2_per_mon, nx, ns_grafted_hi, dx, ds_grafted_hi, edwards_solver, wa_ifc, qgr_hi, qgr_final_hi)
+&                           Rg2_per_mon, nx, ns_grafted_hi, dx, ds_grafted_hi, edwards_solver,        &
+&                           linear_solver, wa_ifc, qgr_hi, qgr_final_hi)
 
         if (geometry.eq.F_sphere) then
             do tt = 0, ns_grafted_hi
@@ -214,7 +225,8 @@ do iter = 0, max_iter
             enddo
         endif
 
-        call contour_convolution(chainlen_grafted_hi, nx, ns_grafted_hi, coeff_ns_grafted_hi, qmatrix_final, qgr_final_hi, phi_gr_hi)
+        call contour_convolution(chainlen_grafted_hi, nx, ns_grafted_hi, coeff_ns_grafted_hi, &
+&                                qmatrix_final, qgr_final_hi, phi_gr_hi)
     endif
 
     phi_total = 0.d0
@@ -313,9 +325,12 @@ do iter = 0, max_iter
         if (mod(iter,compute_every).eq.0.or.convergence) call export_computes(qinit_lo, qinit_hi)
     endif
     if (mod(iter,thermo_every) .eq.0.or.convergence) then
-        if (matrix_exist)     nch_matrix = get_nchains(coeff_nx, nx, layer_area, phi_matrix, rho_seg_bulk, chainlen_matrix)
-        if (grafted_lo_exist) nchgr_lo   = get_nchains(coeff_nx, nx, layer_area, phi_gr_lo,  rho_seg_bulk, chainlen_grafted_lo)
-        if (grafted_hi_exist) nchgr_hi   = get_nchains(coeff_nx, nx, layer_area, phi_gr_hi,  rho_seg_bulk, chainlen_grafted_hi)
+        if (matrix_exist)     nch_matrix = get_nchains(coeff_nx, nx, layer_area, phi_matrix, &
+&                                                      rho_seg_bulk, chainlen_matrix)
+        if (grafted_lo_exist) nchgr_lo   = get_nchains(coeff_nx, nx, layer_area, phi_gr_lo,  &
+&                                                      rho_seg_bulk, chainlen_grafted_lo)
+        if (grafted_hi_exist) nchgr_hi   = get_nchains(coeff_nx, nx, layer_area, phi_gr_hi,  &
+&                                                      rho_seg_bulk, chainlen_grafted_hi)
 
         call compute_energies(free_energy)
 
@@ -323,8 +338,10 @@ do iter = 0, max_iter
         close(iow)
         open(unit=iow, file = "o.log", position = 'append')
 
-        write(iow,'(2X,I15,9(2X,E15.7))') iter, free_energy, wa_error_new, nchgr_lo / surface_area, nchgr_hi / surface_area, nch_matrix, nchgr_lo, nchgr_hi, frac
-        write(*  ,'(2X,I15,9(2X,E15.7))') iter, free_energy, wa_error_new, nchgr_lo / surface_area, nchgr_hi / surface_area, nch_matrix, nchgr_lo, nchgr_hi, frac
+        write(iow,'(2X,I15,9(2X,E15.7))') iter, free_energy, wa_error_new, nchgr_lo / surface_area, &
+&                                         nchgr_hi / surface_area, nch_matrix, nchgr_lo, nchgr_hi, frac
+        write(*  ,'(2X,I15,9(2X,E15.7))') iter, free_energy, wa_error_new, nchgr_lo / surface_area, &
+&                                         nchgr_hi / surface_area, nch_matrix, nchgr_lo, nchgr_hi, frac
     endif
     if (convergence) exit
 enddo

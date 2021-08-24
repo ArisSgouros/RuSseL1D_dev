@@ -1,3 +1,7 @@
+!RuSseL1D - Copyright (C) 2021 C. J. Revelas, A. P. Sgouros, A. T. Lakkas
+!
+!See the LICENSE file in the root directory for license information.
+
 subroutine init_mesh()
 !----------------------------------------------------------------------------------------------------------!
 use flags
@@ -22,11 +26,17 @@ call generate_mesh(spatial_integr_scheme, spatial_discret_scheme, symmetric, lx,
 !discretize the chain contour retrieve ds, rs and coeff_ns
 symmetric = .true.
 
-call generate_mesh(contour_integr_scheme, contour_discret_scheme, symmetric, chainlen_matrix_aux, ns_matrix_aux, ds_matrix_aux, rs_matrix_aux, coeff_ns_matrix_aux)
+call generate_mesh(contour_integr_scheme, contour_discret_scheme, symmetric, chainlen_matrix_aux, ns_matrix_aux, &
+&                                                             ds_matrix_aux, rs_matrix_aux, coeff_ns_matrix_aux)
 
-if (matrix_exist)     call generate_mesh(contour_integr_scheme, contour_discret_scheme, symmetric, chainlen_matrix,     ns_matrix,     ds_matrix,     rs_matrix,     coeff_ns_matrix)
-if (grafted_lo_exist) call generate_mesh(contour_integr_scheme, contour_discret_scheme, symmetric, chainlen_grafted_lo, ns_grafted_lo, ds_grafted_lo, rs_grafted_lo, coeff_ns_grafted_lo)
-if (grafted_hi_exist) call generate_mesh(contour_integr_scheme, contour_discret_scheme, symmetric, chainlen_grafted_hi, ns_grafted_hi, ds_grafted_hi, rs_grafted_hi, coeff_ns_grafted_hi)
+if (matrix_exist)     call generate_mesh(contour_integr_scheme, contour_discret_scheme, symmetric, &
+&                                        chainlen_matrix, ns_matrix, ds_matrix, rs_matrix, coeff_ns_matrix)
+if (grafted_lo_exist) call generate_mesh(contour_integr_scheme, contour_discret_scheme, symmetric, &
+&                                        chainlen_grafted_lo, ns_grafted_lo, ds_grafted_lo,        &
+&                                        rs_grafted_lo, coeff_ns_grafted_lo)
+if (grafted_hi_exist) call generate_mesh(contour_integr_scheme, contour_discret_scheme, symmetric, &
+&                                        chainlen_grafted_hi, ns_grafted_hi, ds_grafted_hi,        &
+&                                        rs_grafted_hi, coeff_ns_grafted_hi)
 
 return
 !----------------------------------------------------------------------------------------------------------!

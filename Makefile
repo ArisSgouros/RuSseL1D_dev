@@ -1,11 +1,9 @@
 .SUFFIXES:	(.SUFFIXES) .F .h .p .f90
 
-<<<<<<< HEAD
 
 #new change from cjrevelas
-=======
 #Aris added line 3
->>>>>>> 9a959737fa654999177307f18af42aaf8cfa15e8
+#Aris added line 3
 
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  ##
 # 1. PREPROCESSOR                                                             ##

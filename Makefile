@@ -1,5 +1,7 @@
 .SUFFIXES:	(.SUFFIXES) .F .h .p .f90
 
+aris new line
+
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  ##
 # 1. PREPROCESSOR                                                             ##
 # 1.1 System Specific C PreProcessor                                          ##

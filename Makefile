@@ -1,6 +1,10 @@
 .SUFFIXES:	(.SUFFIXES) .F .h .p .f90
 
+<<<<<<< HEAD
 aris new line
+=======
+#cjrevelas line 3
+>>>>>>> 3fe0e0f7c3c9ac23152b14ba13e42e528ac593bc
 
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  ##
 # 1. PREPROCESSOR                                                             ##

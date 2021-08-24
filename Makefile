@@ -3,7 +3,6 @@
 
 #new change from cjrevelas
 #Aris added line 3
-#Aris added line 3
 
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  ##
 # 1. PREPROCESSOR                                                             ##

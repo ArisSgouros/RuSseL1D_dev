@@ -1,5 +1,5 @@
 .SUFFIXES:	(.SUFFIXES) .F .h .p .f90
-# test comment 2
+
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  ##
 # 1. PREPROCESSOR                                                             ##
 # 1.1 System Specific C PreProcessor                                          ##

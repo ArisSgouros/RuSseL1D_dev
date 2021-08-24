@@ -1,5 +1,8 @@
 .SUFFIXES:	(.SUFFIXES) .F .h .p .f90
 
+
+#new change from cjrevelas
+
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  ##
 # 1. PREPROCESSOR                                                             ##
 # 1.1 System Specific C PreProcessor                                          ##

@@ -8,8 +8,6 @@ CPP = /usr/bin/cpp -P -traditional -t -W
 CPPFLAGS = -I./include/ 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< ##
 
-#change from cjrevelas
-
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ##
 # 2. SHARED SOURCE                                                            ##
 # Shared source files directories:

@@ -9,8 +9,19 @@
 #    from the simulation
 #
 #################################################################
-EXEC_NAME="RuSseL1D"
 
+root_path=$(pwd)"/"
+
+
+run_path=$root_path"/run/"
+test_path=$root_path"/test_integrity/"
+exec_path=$run_path"RSL1D"
+
+
+
+
+
+#exit
 # Beware! Set it to true only if you know what you know what you are doing!
 replace_log=false
 #replace_log=true
@@ -24,30 +35,30 @@ if [ "$replace_log" = true ] ; then
    echo -e "Flag replace_log is set to true. You will have the option to \e[32mREPLACE\e[0m log files."
 fi
 
-#cd run
-
-mv in.input TEMP.in.input
+mv $run_path"/in.input" $run_path"/TEMP.in.input"
 
 declare -a TEST_LIST=( \
-   "test_integrity/0.ps_fg_sph_ham_it1/" \
-   "test_integrity/1.ps_fg_sph_ham/" \
-   "test_integrity/2.cafe222_ps_fg_sph_neumann_ham/" \
-   "test_integrity/3.cafe222_ps_fg_planar_dirichlet_ham/" \
-   "test_integrity/4.isolated/" \
-   "test_integrity/5.isolated_planar/" \
-   "test_integrity/6.ps_fg_sph_ham_nconst/" \
-   "test_integrity/7.pe_f_SL_thomas2.0/" \
-   "test_integrity/8.ps_fgg_HF_ham" \
-   "test_integrity/9.test_with_tolis_wo_sqgrad" \
-   "test_integrity/10.test_with_tolis_w_sqgrad" \
-   "test_integrity/11.test_with_tolis_w_sqgrad_rect" \
-   "test_integrity/12.ps_f_hybrid" \
+   $test_path"/0.ps_fg_sph_ham_it1/" \
+   $test_path"/1.ps_fg_sph_ham/" \
+   $test_path"/2.cafe222_ps_fg_sph_neumann_ham/" \
+   $test_path"/3.cafe222_ps_fg_planar_dirichlet_ham/" \
+   $test_path"/4.isolated/" \
+   $test_path"/5.isolated_planar/" \
+   $test_path"/6.ps_fg_sph_ham_nconst/" \
+   $test_path"/7.pe_f_SL_thomas2.0/" \
+   $test_path"/8.ps_fgg_HF_ham" \
+   $test_path"/9.test_with_tolis_wo_sqgrad" \
+   $test_path"/10.test_with_tolis_w_sqgrad" \
+   $test_path"/11.test_with_tolis_w_sqgrad_rect" \
+   $test_path"/12.ps_f_hybrid" \
 )
 
 
 echo 'Compiling..'
 make cleantest >/dev/null
 make >/dev/null
+
+cd $run_path
 
 tests_failed=false
 echo 'Initiating tests..'
@@ -67,18 +78,20 @@ for TEST_FOLDER in "${TEST_LIST[@]}"; do
       cp "$TEST_FOLDER"/"$SOURCE" "$SOURCE"
    done
 
+   cd $root_path
    make cleanout
+   cd $run_path
 
-   echo "Running $EXEC_NAME.."
+   echo "Running $exec_path.."
 
-   if test ! -f "$EXEC_NAME"; then
+   if test ! -f "$exec_path"; then
       echo -e "Compilation \e[31mFAILED!\e[0m"
       echo -e "Current test is aborted.."
       continue;
    fi
 
-   ./"$EXEC_NAME" > LOG."$ii"
-   #mpirun -np 2 ./"$EXEC_NAME" > LOG."$ii"
+   "$exec_path" > LOG."$ii"
+   #mpirun -np 2 ./"$exec_path" > LOG."$ii"
 
    # This reads the logs to be compared from the LOG_LISTS
    # file in each folder.
@@ -135,4 +148,5 @@ if [ "$tests_failed" = true ] ; then
    echo -e '\e[36mNote: in case some tests are failed/skipped make sure the Makefile is set on DEBUG mode, MAKE_PRODUCTION_RUN=0\e[0m'
 fi
 
+cd $run_path
 mv TEMP.in.input in.input

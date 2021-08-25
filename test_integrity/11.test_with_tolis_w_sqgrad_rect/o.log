@@ -15,6 +15,7 @@
    Field error tolerance:                                 0.0005 J/k_BT
    Field mixing fraction:                            0.001000000
    Edwards solver                                       implicit
+   *Linear solver not set.. we will use tridag..
    Maximum iterations:                                    100000 iterations
    Spacing for chain contour discret:                    uniform
    Spacing for spatial discret:                          uniform

@@ -18,9 +18,24 @@ chains.
 
 The RuSseL1D repository includes the following files and directories:
 
-README        the current file
-LICENSE       the GNU General Public License (GPL)
-doc           directory containing code documentation 
-examples      directory containing simple test problems
-src           directory containing the fortran source files
-tools         directory containing the pre- and post-processing tools of the code
+README          the current file
+LICENSE         the GNU General Public License (GPL)
+CMakeLists.txt  the file controlling the compilation process
+clean.sh        bash script removing all CMAKE built files
+doc/            directory containing code documentation 
+examples/       directory containing simple test problems
+src/            directory containing the fortran source files
+run/            directory containing the generated executable file (RSL1D)
+tools/          directory containing the pre- and post-processing tools of the code
+test_integrity/ directory containing integrity tests
+
+To configure and compile the code:
+   1) Edit the CMakeLists.txt file and set the following:
+      a) choose the type of compiler (intel/gnu)
+      b) choose the compilatiom mode (Debug/Release)
+      c) set the path of the compiler
+   2) type the following commands inside the root directory of the code:
+         cmake .
+         make
+
+After successful compilation the executable RSL1D is created inside the run/ directory

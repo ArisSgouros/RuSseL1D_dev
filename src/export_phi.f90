@@ -1,3 +1,7 @@
+!RuSseL1D - Copyright (C) 2021 C. J. Revelas, A. P. Sgouros, A. T. Lakkas
+!
+!See the LICENSE file in the root directory for license information.
+
 subroutine export_phi(rx, phi_matrix, phi_gr_lo, phi_gr_hi, phi_total)
 !----------------------------------------------------------------------------------------------------------!
 use parser_vars, only: nx

@@ -1,3 +1,7 @@
+!RuSseL1D - Copyright (C) 2021 C. J. Revelas, A. P. Sgouros, A. T. Lakkas
+!
+!See the LICENSE file in the root directory for license information.
+
 subroutine compute_phi_seg(iseg, chainlen, coeff_ns, ns, nx, rx, q1_final, qmatrix_final, chain_type)
 !----------------------------------------------------------------------------------------------------------!
 implicit none

@@ -1,3 +1,7 @@
+!RuSseL1D - Copyright (C) 2021 C. J. Revelas, A. P. Sgouros, A. T. Lakkas
+!
+!See the LICENSE file in the root directory for license information.
+
 subroutine compute_brush_thickness(nx, layer_area, rx, coeff_x, phi, side, chain_type)
 !----------------------------------------------------------------------------------------------------------!
 use flags, only: F_lo, F_hi

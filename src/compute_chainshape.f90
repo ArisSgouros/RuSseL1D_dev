@@ -1,12 +1,16 @@
-subroutine compute_chainshape(rho_seg_bulk, Rg2_per_mon, geometry, gnode, edwards_solver, &
-                            & bc_lower_type, bc_upper_type, qinit, coeff_x, rr,           &
+!RuSseL1D - Copyright (C) 2021 C. J. Revelas, A. P. Sgouros, A. T. Lakkas
+!
+!See the LICENSE file in the root directory for license information.
+
+subroutine compute_chainshape(rho_seg_bulk, Rg2_per_mon, geometry, gnode, edwards_solver,       &
+                            & linear_solver, bc_lower_type, bc_upper_type, qinit, coeff_x, rr,  &
                             & layer_area, rx, nx, dx, chainlen, ns, ds, wa, phi, q_final, chain_type)
 !----------------------------------------------------------------------------------------------------------!
 use flags, only: F_bc_dirichlet_eq_0, F_bc_dirichlet_eq_1, F_sphere
 !----------------------------------------------------------------------------------------------------------!
 implicit none
 !----------------------------------------------------------------------------------------------------------!
-integer, intent(in)      :: bc_lower_type, bc_upper_type, geometry, edwards_solver, ns, nx
+integer, intent(in)      :: bc_lower_type, bc_upper_type, geometry, edwards_solver, linear_solver, ns, nx
 integer, intent(in)      :: gnode
 integer, dimension(0:nx) :: dir_nodes_id
 integer                  :: tt, kk, ii, mm, n_dir_nodes
@@ -86,7 +90,7 @@ do kk = 1, nx-1
         enddo
     endif
     call solver_edwards(bc_lower_type, bc_upper_type, n_dir_nodes, dir_nodes_id, dir_nodes_rdiag, Rg2_per_mon, &
-               & nx, ns, dx, ds, edwards_solver, wa, qshape, qshape_final)
+               & nx, ns, dx, ds, edwards_solver, linear_solver, wa, qshape, qshape_final)
 
     if (geometry.eq.F_sphere) then
         do tt = 0, ns

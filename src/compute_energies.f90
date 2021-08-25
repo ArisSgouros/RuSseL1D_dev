@@ -1,3 +1,7 @@
+!RuSseL1D - Copyright (C) 2021 C. J. Revelas, A. P. Sgouros, A. T. Lakkas
+!
+!See the LICENSE file in the root directory for license information.
+
 subroutine compute_energies(free_energy)
 !----------------------------------------------------------------------------------------------------------!
 use eos,         only: eos_ff, eos_df_drho
@@ -131,8 +135,9 @@ if (grafted_hi_exist) then
 endif
 
 if (wall_side.eq.F_both.and.wall_hamaker) then
-   E_solid_solid = (surface_area * 1.e-20) * (Asolid/PI) * ( + (sig_solid*1.e-10)**6 / (360.d0*((lx+2.d0*wall_pos)*1.0d-10)**8) &
-&                                                            -         1.d0          / (12.d0 *((lx+2.d0*wall_pos)*1.0d-10)**2) )
+   E_solid_solid = (surface_area * 1.e-20) * (Asolid/PI) *                              &
+&                  ( + (sig_solid*1.e-10)**6 / (360.d0*((lx+2.d0*wall_pos)*1.0d-10)**8) &
+&                    -         1.d0          / (12.d0 *((lx+2.d0*wall_pos)*1.0d-10)**2) )
 endif
 !
 ! estimate the contribution due to chain stretching
@@ -210,12 +215,15 @@ E_solid_solid     = E_solid_solid     / (surface_area * 1.e-20) * 1e+3
 free_energy = E_eos_f + E_sgt_f + E_eos_rdfdr + E_sgt_rdfdr + E_rhoVkTQ + E_nkTlnQm + E_solid_solid
 
 open(unit=777, file = "o.energies")
-write(777,'(20(A16))')  "eos_f", "eos_rdfdr", "sgt_f", "sgt_rdfdr", "rhoVkTQ", "nkTlnQm_ns", "field", "solid", "free_energy",       &
-&                       "E_rhoglo_wifc", "E_rhoghi_wifc","E_rhomx_wifc", "E_str_glo", "E_str_add_glo", "E_str_ghi", "E_str_add_ghi",&
+write(777,'(20(A16))')  "eos_f", "eos_rdfdr", "sgt_f", "sgt_rdfdr", "rhoVkTQ", "nkTlnQm_ns",       &
+&                       "field", "solid", "free_energy", "E_rhoglo_wifc", "E_rhoghi_wifc",         &
+&                       "E_rhomx_wifc", "E_str_glo", "E_str_add_glo", "E_str_ghi", "E_str_add_ghi",&
 &                       "solid_glo", "solid_ghi", "solid_m", "solid_solid"
-write(777,'(20(E16.7))')E_eos_f, E_eos_rdfdr, E_sgt_f, E_sgt_rdfdr, E_rhoVkTQ, E_nkTlnQm, E_field, E_solid, free_energy,               &
-                        E_rhoglo_wifc, E_rhoghi_wifc, E_rhomx_wifc, E_stretch_glo, E_stretch_add_glo, E_stretch_ghi, E_stretch_add_ghi,&
-&                       E_solid_glo, E_solid_ghi, E_solid_m, E_solid_solid
+
+write(777,'(20(E16.7))') E_eos_f, E_eos_rdfdr, E_sgt_f, E_sgt_rdfdr, E_rhoVkTQ, E_nkTlnQm, E_field,       &
+&                        E_solid, free_energy, E_rhoglo_wifc, E_rhoghi_wifc, E_rhomx_wifc, E_stretch_glo, &
+&                        E_stretch_add_glo, E_stretch_ghi, E_stretch_add_ghi, E_solid_glo, E_solid_ghi,   &
+&                        E_solid_m, E_solid_solid
 close(777)
 
 return

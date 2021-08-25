@@ -1,3 +1,7 @@
+!RuSseL1D - Copyright (C) 2021 C. J. Revelas, A. P. Sgouros, A. T. Lakkas
+!
+!See the LICENSE file in the root directory for license information.
+
 module constants
 !----------------------------------------------------------------------------------------------------------!
 real(8), parameter :: N_avog                 = 6.02214085700E+23 !Avogadro's Constant

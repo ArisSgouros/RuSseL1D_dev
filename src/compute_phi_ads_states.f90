@@ -1,6 +1,12 @@
-subroutine compute_phi_ads_states(coeff, rr, rx, dx, ds, wa, phi_matrix, qmatrix_final, bc_lo_type, bc_hi_type, geometry, r_ads_lo, r_ads_hi, chainlen, ns, chain_type)
+!RuSseL1D - Copyright (C) 2021 C. J. Revelas, A. P. Sgouros, A. T. Lakkas
+!
+!See the LICENSE file in the root directory for license information.
+
+subroutine compute_phi_ads_states(coeff, rr, rx, dx, ds, wa, phi_matrix, qmatrix_final, &
+&                                 bc_lo_type, bc_hi_type, geometry, r_ads_lo, r_ads_hi, &
+&                                 chainlen, ns, chain_type)
 !----------------------------------------------------------------------------------------------------------!
-use parser_vars, only: nx, edwards_solver, Rg2_per_mon, lx, wall_pos
+use parser_vars, only: nx, edwards_solver, linear_solver, Rg2_per_mon, lx, wall_pos
 use flags, only: F_bc_dirichlet_eq_0, F_bc_dirichlet_eq_1, F_sphere
 !----------------------------------------------------------------------------------------------------------!
 implicit none
@@ -18,10 +24,11 @@ real(8), intent(in), dimension(0:nx)      :: wa, phi_matrix, rr
 real(8), intent(in), dimension(0:nx,0:ns) :: qmatrix_final
 real(8), dimension(0:nx+4)                :: dir_nodes_rdiag
 real(8), dimension(0:nx,0:ns)             :: q_not_alo_final, qalo_full_final, qalo_part_final, qf_full_final, &
-                                                    q_not_ahi_final, qahi_full_final, qahi_part_final
-real(8), dimension(0:nx)                  :: phi_not_alo, phi_alo, phi_alo_full, phi_alo_part, phi_loop_flo, phi_tail_flo, phi_loop_alo, phi_tail_alo, &
-&                                                   phi_not_ahi, phi_ahi, phi_ahi_full, phi_ahi_part, phi_loop_fhi, phi_tail_fhi, phi_loop_ahi, phi_tail_ahi, &
-&                                                   phi_free, phi_bridge
+&                                            q_not_ahi_final, qahi_full_final, qahi_part_final
+real(8), dimension(0:nx)                  :: phi_not_alo, phi_alo, phi_alo_full, phi_alo_part, phi_loop_flo,   &
+&                                            phi_tail_flo, phi_loop_alo, phi_tail_alo, phi_not_ahi, phi_ahi,   &
+&                                            phi_ahi_full, phi_ahi_part, phi_loop_fhi, phi_tail_fhi,           &
+&                                            phi_loop_ahi, phi_tail_ahi, phi_free, phi_bridge
 real(8), dimension(0:nx,1:2)              :: q_part
 real(8)                                   :: distance
 
@@ -114,7 +121,7 @@ if (geometry.eq.F_sphere) then
 endif
 
 call solver_edwards(bc_lo_type, bc_hi_type, n_dir_nodes, dir_nodes_id, dir_nodes_rdiag, &
-           & Rg2_per_mon, nx, ns, dx, ds, edwards_solver, wa, q_part, qalo_full_final)
+           & Rg2_per_mon, nx, ns, dx, ds, edwards_solver, linear_solver, wa, q_part, qalo_full_final)
 
 if (geometry.eq.F_sphere) then
     do tt = 0, ns
@@ -182,7 +189,7 @@ if (geometry.eq.F_sphere) then
 endif
 
 call solver_edwards(bc_lo_type, bc_hi_type, n_dir_nodes, dir_nodes_id, dir_nodes_rdiag, &
-           & Rg2_per_mon, nx, ns, dx, ds, edwards_solver, wa, q_part, q_not_alo_final)
+           & Rg2_per_mon, nx, ns, dx, ds, edwards_solver, linear_solver, wa, q_part, q_not_alo_final)
 
 if (geometry.eq.F_sphere) then
     do tt = 0, ns
@@ -249,7 +256,7 @@ if (geometry.eq.F_sphere) then
 endif
 
 call solver_edwards(bc_lo_type, bc_hi_type, n_dir_nodes, dir_nodes_id, dir_nodes_rdiag, &
-           & Rg2_per_mon, nx, ns, dx, ds, edwards_solver, wa, q_part, qf_full_final)
+           & Rg2_per_mon, nx, ns, dx, ds, edwards_solver, linear_solver, wa, q_part, qf_full_final)
 
 if (geometry.eq.F_sphere) then
     do tt = 0, ns
@@ -317,7 +324,7 @@ if (geometry.eq.F_sphere) then
 endif
 
 call solver_edwards(bc_lo_type, bc_hi_type, n_dir_nodes, dir_nodes_id, dir_nodes_rdiag, &
-           & Rg2_per_mon, nx, ns, dx, ds, edwards_solver, wa, q_part, q_not_ahi_final)
+           & Rg2_per_mon, nx, ns, dx, ds, edwards_solver, linear_solver, wa, q_part, q_not_ahi_final)
 
 if (geometry.eq.F_sphere) then
     do tt = 0, ns
@@ -385,7 +392,7 @@ if (geometry.eq.F_sphere) then
 endif
 
 call solver_edwards(bc_lo_type, bc_hi_type, n_dir_nodes, dir_nodes_id, dir_nodes_rdiag, &
-           & Rg2_per_mon, nx, ns, dx, ds, edwards_solver, wa, q_part, qahi_full_final)
+           & Rg2_per_mon, nx, ns, dx, ds, edwards_solver, linear_solver, wa, q_part, qahi_full_final)
 
 if (geometry.eq.F_sphere) then
     do tt = 0, ns
@@ -425,14 +432,18 @@ phi_bridge   = max(phi_alo + phi_ahi - phi_matrix + phi_free, 0.d0)
 write(filename,'("o.phi_states_",A6)') chain_type
 open (unit=37, file=filename)
 write(37,'(A14,17(2X,A20))')          'r'            , "phi_m"       , "f"             , &
-&                                     "!a+"          , "a-"          , "afull-"        , "apart-"        , "loop_f-"       , "tail_f-"        , "tail_a-"       , &
-&                                     "!a-"          , "a+"          , "afull+"        , "apart+"        , "loop_f+"       , "tail_f+"        , "tail_a+"       , &
-&                                     "bridge"
+&                                     "!a+"          , "a-"          , "afull-"        , &
+&                                     "apart-"       , "loop_f-"     , "tail_f-"       , &
+&                                     "tail_a-"      , "!a-"         , "a+"            , &
+&                                     "afull+"       , "apart+"      , "loop_f+"       , &
+&                                     "tail_f+"      , "tail_a+"     , "bridge"
 do kk = 0, nx
-    write(37,'(F14.7,17(2X,F20.11))') rx(kk)         , phi_matrix(kk), phi_free(kk)    , &
-&                                     phi_not_ahi(kk), phi_alo(kk)   , phi_alo_full(kk), phi_alo_part(kk), phi_loop_flo(kk),  phi_tail_flo(kk), phi_tail_alo(kk), &
-&                                     phi_not_alo(kk), phi_ahi(kk)   , phi_ahi_full(kk), phi_ahi_part(kk), phi_loop_fhi(kk),  phi_tail_fhi(kk), phi_tail_ahi(kk), &
-&                                     phi_bridge(kk)
+    write(37,'(F14.7,17(2X,F20.11))') rx(kk)         , phi_matrix(kk), phi_free(kk)    ,     &
+&                                     phi_not_ahi(kk), phi_alo(kk)   , phi_alo_full(kk),     &
+&                                     phi_alo_part(kk), phi_loop_flo(kk),  phi_tail_flo(kk), &
+&                                     phi_tail_alo(kk), phi_not_alo(kk), phi_ahi(kk),        &
+&                                     phi_ahi_full(kk), phi_ahi_part(kk), phi_loop_fhi(kk),  &
+&                                     phi_tail_fhi(kk), phi_tail_ahi(kk), phi_bridge(kk)
 enddo
 close (37)
 

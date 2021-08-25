@@ -1,3 +1,7 @@
+!RuSseL1D - Copyright (C) 2021 C. J. Revelas, A. P. Sgouros, A. T. Lakkas
+!
+!See the LICENSE file in the root directory for license information.
+
 subroutine generate_mesh(integr_scheme, discret_scheme, symmetric, domain_size, nu, du, ru, coeff)
 !------------------------------------------------------------------------------------------------------!
 use flags,         only: F_uniform, F_nonuniform, F_simpson_rule, F_rectangle_rule

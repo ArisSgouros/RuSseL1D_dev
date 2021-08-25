@@ -1,3 +1,7 @@
+!RuSseL1D - Copyright (C) 2021 C. J. Revelas, A. P. Sgouros, A. T. Lakkas
+!
+!See the LICENSE file in the root directory for license information.
+
 subroutine contour_convolution(chainlen, nx, ns, coeff, q1, q2, phi)
 !----------------------------------------------------------------------------------------------------------!
 implicit none

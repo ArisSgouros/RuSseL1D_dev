@@ -1,0 +1,39 @@
+add_executable(RSL1D
+     arrays.f90
+     constants.f90
+     eos.f90
+     flags.f90
+     force_fields.f90
+     parser_vars.f90
+     write_helper.f90
+     compute_brush_thickness.f90
+     compute_chainshape.f90
+     compute_phi_ads_states.f90
+     compute_phi_seg.f90
+     compute_energies.f90
+     contour_convolution.f90
+     solver_edwards.f90
+     solver_tridag.f90
+     solver_gelim.f90
+     export_computes.f90
+     export_field_binary.f90
+     export_field.f90
+     export_phi.f90
+     export_q.f90
+     generate_mesh.f90
+     get_auto_wall_pos.f90
+     get_nchains.f90
+     get_part_func.f90
+     init_arrays.f90
+     init_solid.f90
+     init_field.f90
+     init_geom.f90
+     init_mesh.f90
+     init_scf_params.f90
+     integr_coeffs.f90
+     tools_interp.f90
+     main.f90
+     parser.f90
+)
+
+set_target_properties(RSL1D PROPERTIES LINKER_LANGUAGE Fortran)

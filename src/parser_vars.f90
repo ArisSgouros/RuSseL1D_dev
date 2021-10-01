@@ -6,11 +6,12 @@ module parser_vars
 !----------------------------------------------------------------------------------------------------------!
 logical :: grafted_lo_exist, grafted_hi_exist, matrix_exist
 logical :: read_field
-logical :: wall_auto
 logical :: square_gradient
 logical :: out_phi, out_q, out_field, out_phi_seg
 logical :: out_chainshape, out_ads_free, out_brush_thickness
-logical :: wall_hamaker, wall_square_well, wall_ramp, wall_vacuum, wall_hybrid, wall_custom, wall_table
+logical :: wall_auto
+logical :: wall_hamaker, wall_square_well, wall_ramp, wall_vacuum, wall_hybrid
+logical :: wall_custom, wall_table, wall_hamaker_well
 
 integer :: bc_hi_matrix, bc_lo_matrix, bc_hi_grafted, bc_lo_grafted
 integer :: edwards_solver, linear_solver
@@ -34,6 +35,7 @@ real(8) :: mon_mass, sphere_radius
 real(8) :: Apol, Asolid, sig_pol, sig_solid
 real(8) :: A_sq_well, sigma_sq_well
 real(8) :: A_ramp, sigma_ramp
+real(8) :: hamaker_well_constant, hamaker_well_rc
 real(8) :: wall_pos, E_wall_target
 real(8) :: k_gr, k_gr_tilde
 

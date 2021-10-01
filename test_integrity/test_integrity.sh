@@ -12,14 +12,9 @@
 
 root_path=$(pwd)"/"
 
-
 run_path=$root_path"/run/"
 test_path=$root_path"/test_integrity/"
 exec_path=$run_path"RSL1D"
-
-
-
-
 
 #exit
 # Beware! Set it to true only if you know what you know what you are doing!

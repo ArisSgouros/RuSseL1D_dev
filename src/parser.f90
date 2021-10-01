@@ -6,8 +6,9 @@ subroutine parser()
 !----------------------------------------------------------------------------------------------------------!
 use flags,        only: F_bc_dirichlet_eq_0, F_bc_dirichlet_eq_1, F_bc_neuman, F_both, F_custom, F_film,  &
                       & F_sphere, F_implicit, F_semi_implicit, F_helfand, F_sanchez_lacombe, F_hi, F_lo,  &
-                      & F_vacuum, F_hybrid, F_square_well, F_table, F_ramp, F_hamaker, F_uniform,         &
-                      & F_nonuniform, F_simpson_rule, F_rectangle_rule, F_tridag, F_gelim, F_bc_periodic
+                      & F_vacuum, F_hybrid, F_square_well, F_table, F_ramp, F_hamaker, F_hamaker_well,    &
+                      & F_uniform, F_nonuniform, F_simpson_rule, F_rectangle_rule, F_tridag, F_gelim,     &
+                      & F_bc_periodic
 use constants,    only: gr_cm3_to_kg_m3, atm_to_pa, iow, tol, boltz_const_joule_K
 use eos,          only: eos_type, hf_kappa_T, T_star, P_star, rho_star
 use write_helper, only: adjl
@@ -69,6 +70,7 @@ logical :: log_contour_integr_scheme       = .false.
 
 logical :: log_wall_type                   = .false.
 logical :: log_wall_coeffs_hamaker         = .false.
+logical :: log_wall_coeffs_hamaker_well    = .false.
 logical :: log_wall_coeffs_square_well     = .false.
 logical :: log_wall_coeffs_ramp            = .false.
 logical :: log_wall_coeffs_custom          = .false.
@@ -104,13 +106,14 @@ logical :: log_eos_coeffs                  = .false.
 logical :: log_influence_param             = .false.
 logical :: log_real_influence_param        = .false.
 !----------------------------------------------------------------------------------------------------------!
-wall_hamaker     = .false.
-wall_square_well = .false.
-wall_ramp        = .false.
-wall_vacuum      = .false.
-wall_hybrid      = .false.
-wall_custom      = .false.
-wall_table       = .false.
+wall_hamaker      = .false.
+wall_hamaker_well = .false.
+wall_square_well  = .false.
+wall_ramp         = .false.
+wall_vacuum       = .false.
+wall_hybrid       = .false.
+wall_custom       = .false.
+wall_table        = .false.
 !----------------------------------------------------------------------------------------------------------!
 call GET_COMMAND_ARGUMENT(1,input_filename)
 
@@ -249,13 +252,14 @@ do
         ! wall section
         elseif (index(line,"! wall type") > 0) then
             read(line,'(I10)') wall_type
-            if (wall_type == F_vacuum)      wall_vacuum = .true.
-            if (wall_type == F_hamaker)     wall_hamaker = .true.
-            if (wall_type == F_square_well) wall_square_well = .true.
-            if (wall_type == F_ramp)        wall_ramp = .true.
-            if (wall_type == F_custom)      wall_custom = .true.
-            if (wall_type == F_table)       wall_table = .true.
-            if (wall_type == F_hybrid)      wall_hybrid = .true.
+            if (wall_type == F_vacuum)       wall_vacuum = .true.
+            if (wall_type == F_hamaker)      wall_hamaker = .true.
+            if (wall_type == F_hamaker_well) wall_hamaker_well = .true.
+            if (wall_type == F_square_well)  wall_square_well = .true.
+            if (wall_type == F_ramp)         wall_ramp = .true.
+            if (wall_type == F_custom)       wall_custom = .true.
+            if (wall_type == F_table)        wall_table = .true.
+            if (wall_type == F_hybrid)       wall_hybrid = .true.
             log_wall_type = .true.
         elseif (index(line,"! wall coeffs") > 0) then
             if (wall_hybrid) then
@@ -264,6 +268,11 @@ do
                     read(line,*) wall_itype, sig_pol, sig_solid, Apol, Asolid
                     wall_hamaker = .true.
                     log_wall_coeffs_hamaker = .true.
+                endif
+                if (wall_itype.eq.F_hamaker_well) then
+                    read(line,*) wall_itype, hamaker_well_rc, hamaker_well_constant
+                    wall_hamaker_well = .true.
+                    log_wall_coeffs_hamaker_well = .true.
                 endif
                 if (wall_itype.eq.F_square_well) then
                     read(line,*) wall_itype, sigma_sq_well, A_sq_well
@@ -286,6 +295,10 @@ do
                 if (wall_hamaker) then
                     read(line,*) sig_pol, sig_solid, Apol, Asolid
                     log_wall_coeffs_hamaker = .true.
+                endif
+                if (wall_hamaker_well) then
+                    read(line,*) hamaker_well_rc, hamaker_well_constant
+                    log_wall_coeffs_hamaker_well = .true.
                 endif
                 if (wall_square_well) then
                     read(line,*) sigma_sq_well, A_sq_well
@@ -1227,6 +1240,19 @@ if (log_wall_type) then
             STOP
         endif
     endif
+    if (wall_hamaker_well.and.log_wall_coeffs_hamaker_well) then
+        write(iow,'(3X,A45)')adjl('Coefficients of the hamaker_well potential:',45)
+        write(*  ,'(3X,A45)')adjl('Coefficients of the hamaker_well potential:',45)
+        write(iow,'(3X,A45,D16.4,'' J / m^3'')')adjl('*Energy barrier:',45), hamaker_well_constant
+        write(iow,'(3X,A45,D16.4,'' Angstrom'')')adjl('*sigma:',45),hamaker_well_rc
+        write(*  ,'(3X,A45,D16.4,'' J / m^3'')')adjl('*Energy barrier:',45), hamaker_well_constant
+        write(*  ,'(3X,A45,D16.4,'' Angstrom'')')adjl('*sigma:',45),hamaker_well_rc
+    endif
+    if (wall_hamaker_well.and..not.log_wall_coeffs_hamaker_well) then
+        write(iow,'(3X,A150)')adjl('Error: The coefficients of the hamaker_well potential were not found!',150)
+        write(*  ,'(3X,A150)')adjl('Error: The coefficients of the hamaker_well potential were not found!',150)
+        STOP
+    endif
     if (wall_square_well.and.log_wall_coeffs_square_well) then
         write(iow,'(3X,A45)')adjl('Coefficients of the square well potential:',45)
         write(*  ,'(3X,A45)')adjl('Coefficients of the square well potential:',45)
@@ -1259,7 +1285,6 @@ if (log_wall_type) then
         write(*  ,'(3X,A150)')adjl('Error: The coefficients of the ramp potential were not found!',150)
         STOP
     endif
-
     if (wall_custom.and.log_wall_coeffs_custom) then
         write(iow,'(3X,A45)')adjl('Coefficients of the custom wall potential:',45)
         write(*  ,'(3X,A45)')adjl('Coefficients of the custom wall potential:',45)

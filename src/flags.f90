@@ -25,6 +25,7 @@ integer, parameter :: F_vacuum            = 0
 integer, parameter :: F_hamaker           = 1
 integer, parameter :: F_square_well       = 2
 integer, parameter :: F_ramp              = 3
+integer, parameter :: F_hamaker_well      = 4
 integer, parameter :: F_custom            = 9
 integer, parameter :: F_table             = 10
 ! chain types

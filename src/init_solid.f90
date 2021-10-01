@@ -42,7 +42,6 @@ if (wall_table) then
       read(iot,"(A200)",iostat=io) line
       if (io/=0) exit
       READ(line, *) aux, u_table(kk)
-      !write(*,*) kk, aux, u_table(kk)
    END DO
    CLOSE(iot)
 endif
@@ -63,13 +62,13 @@ do kk = 0, nx
         if (wall_hamaker) then
             r_pol = (3./4./pi/(rho_mol_bulk*N_avog))**(1./3.)*1.e10
             r_solid = sphere_radius
-            h12 = xx - r_pol
+            h12 = xx - r_pol ! surface-surface distance
 
             if (geometry.eq.F_sphere) then
                 call hamaker_sphere_sphere(h12*1.e-10, r_pol*1.e-10, r_solid*1.e-10, sig_pol*1.e-10, &
 &                    sig_solid*1.e-10, Apol, Asolid, iUrep, iUatt)
             elseif (geometry.eq.F_film) then
-                call hamaker_sphere_plate( h12*1.e-10, r_pol*1.e-10,                 sig_pol*1.e-10, &
+                call hamaker_sphere_plate(h12*1.e-10, r_pol*1.e-10, sig_pol*1.e-10, &
 &                    sig_solid*1.e-10, Apol, Asolid, iUrep, iUatt)
             endif
             Urep = Urep + iUrep
@@ -81,22 +80,41 @@ do kk = 0, nx
                 STOP
             endif
         endif
+
         if (wall_square_well) then
-            if (xx < sigma_sq_well) Uatt = Uatt + A_sq_well
+            call square_well_potential(xx, sigma_sq_well, A_sq_well, iUatt)
+            Uatt = Uatt + iUatt
         endif
+
         if (wall_ramp) then
-            if (xx < sigma_ramp) Uatt = Uatt + A_ramp * (sigma_ramp - xx) / sigma_ramp
+            call ramp_potential(xx, sigma_ramp, A_ramp, iUatt)
+            Uatt = Uatt + iUatt
         endif
+
+        if (wall_hamaker_well) then
+            h12 = xx ! point-surface distance
+            if (geometry.eq.F_sphere) then
+                r_solid = sphere_radius
+                call hamaker_well_point_sphere(h12*1.e-10, hamaker_well_rc*1.e-10, hamaker_well_constant, r_solid*1.e-10, iUatt)
+            elseif (geometry.eq.F_film) then
+                call hamaker_well_point_plate(h12*1.e-10, hamaker_well_rc*1.e-10, hamaker_well_constant, iUatt)
+            endif
+            Uatt = Uatt + iUatt
+        endif
+
         if (wall_custom) then
             Uatt = Uatt + exp(-xx/wall_custom_vars(2)) * ( wall_custom_vars(4) + wall_custom_vars(1) * &
 &                         sin((2 * PI / wall_custom_vars(3)) * (xx+ wall_custom_vars(5)) ))
         endif
+
         if (wall_table) then
             Uatt = Uatt + u_table(kk)
         endif
+
         if (wall_vacuum) then
             continue
         endif
+
         Urep = Urep * beta
         Uatt = Uatt * beta
         Ufield(kk) = Ufield(kk) + Urep + Uatt

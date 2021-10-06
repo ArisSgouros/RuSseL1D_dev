@@ -1,46 +1,38 @@
-cmake_minimum_required (VERSION 2.6)
+cmake_minimum_required(VERSION 2.6)
 
-#set(compiler "intel")
-set(compiler "gnu")
+project("RuSseL1D" LANGUAGES Fortran) # remove the "LANGUAGES" keyword, if Cmake version is older than 2.6
 
-set(CMAKE_BUILD_TYPE "Release")
-#set(CMAKE_BUILD_TYPE "Debug")
+#If selection is made as command-line argument, both the following lines must be commented out.
+#set(CMAKE_BUILD_TYPE "Release" CACHE STRING "release_compiler_configuration" FORCE)
+set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "debug_compiler_configuration" FORCE)
+
+if (CMAKE_Fortran_COMPILER_ID STREQUAL "GNU")
+  message("Building project with GNU compiler")
+
+  set(gcc_debug_flags "-O0 -fcheck=all -Wextra -m64 -pedantic-errors -frepack-arrays -fdump-core -fbounds-check -fimplicit-none -fbacktrace -frange-check -Waliasing -Wampersand -Wsurprising -Wunderflow -W -ffree-line-length-none")
+  set(CMAKE_Fortran_FLAGS_DEBUG ${gcc_debug_flags} CACHE STRING "gcc_debug_flags" FORCE)
+
+  set(gcc_release_flags "-O3 -ffree-line-length-none")
+  set(CMAKE_Fortran_FLAGS_RELEASE ${gcc_release_flags} CACHE STRING "gcc_release_flags" FORCE)
+elseif (CMAKE_Fortran_COMPILER_ID STREQUAL "Intel")
+  message("Building project with Intel compiler")
+
+  set(intel_debug_flags "-O0 -g -traceback -fpe0 -fp-stack-check -heap-arrays -ftrapuv -check pointers -check bounds -warn all")
+  set(CMAKE_Fortran_FLAGS_DEBUG ${intel_debug_flags} CACHE STRING "intel_debug_flags" FORCE)
+
+  set(intel_release_flags "-O3 -prec-sqrt -prec-div -align -static -ip -ipo -heap-arrays")
+  set(CMAKE_Fortran_FLAGS_RELEASE ${intel_release_flags} CACHE STRING "intel_release_flags" FORCE)
+elseif (CMAKE_Fortran_COMPILER_ID STREQUAL "MSVC")
+  message("Building project with Visual Studio")
+endif()
+
+set(CMAKE_BINARY_DIR ./build)
+file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR})
 
 set(CMAKE_Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/modules)
 file(MAKE_DIRECTORY ${CMAKE_Fortran_MODULE_DIRECTORY})
 
-if (compiler MATCHES "gnu")
-  set(CMAKE_Fortran_COMPILER /usr/bin/gfortran)
-  message("Selected ${compiler} compiler.")
-  if (CMAKE_BUILD_TYPE MATCHES "Release")
-    set(CMAKE_Fortran_FLAGS "-O3 -ffree-line-length-none")
-    message("Release configuration successful.")
-  elseif(CMAKE_BUILD_TYPE MATCHES "Debug")
-    set(CMAKE_Fortran_FLAGS "-O0  -g -fcheck=all -Wextra -m64 -pedantic-errors -frepack-arrays -fdump-core -fbounds-check -fimplicit-none -fbacktrace -frange-check -Waliasing -Wampersand -Wsurprising -Wunderflow -W -ffree-line-length-none")
-    message("Debug configuration successful.")
-  else()
-    message("ERROR: select a compiler configuration to proceed.")
-  endif()
-elseif(compiler MATCHES "intel")
-  set(CMAKE_Fortran_COMPILER ifort)
-  message("Selected ${compiler} compiler!")
-  if (CMAKE_BUILD_TYPE MATCHES "Release")
-    set(CMAKE_Fortran_FLAGS "-O2 -prec-sqrt -prec-div -align -static -ip -ipo -heap-arrays")
-    message("Release configuration successful.")
-  elseif(CMAKE_BUILD_TYPE MATCHES "Debug")
-    set(CMAKE_Fortran_FLAGS "-O0 -g -traceback -fpe0 -fp-stack-check -heap-arrays -ftrapuv -check pointers -check bounds -warn all")
-    message("Debug configuration successful.")
-  else()
-    message("ERROR: select a compiler configuration to proceed.")
-  endif()
-else()
-  message("ERROR: select a compiler type to proceed.")
-endif()
-
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ../run)
-
-enable_language(Fortran)
-project (RuSseL1D)
 
 add_subdirectory(src)
 

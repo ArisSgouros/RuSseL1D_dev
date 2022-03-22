@@ -1,3 +1,9 @@
 build/
 run/
 modules/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+src/Makefile
+BK.*

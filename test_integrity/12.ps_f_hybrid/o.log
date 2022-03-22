@@ -24,6 +24,9 @@
 -------------------------------------MATRIX CHAINS-----------------------------------
    Chain contour discretization:                 0.192000000E+01 monomers
    Chain length:                                   192.000000000 monomers
+------------------------------------ BULK CHAINS ------------------------------------
+   Chain length (auto):                            192.000000000 monomers
+---------------------------------BOUNDARY CONDITIONS---------------------------------
    grafted boundary condition for lo edge:             Dirichlet q=0
    grafted boundary condition for hi edge:             Dirichlet q=0
    matrix boundary condition for lo edge:              Dirichlet q=0

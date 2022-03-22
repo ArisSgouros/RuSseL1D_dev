@@ -9,6 +9,7 @@ logical :: read_field
 logical :: square_gradient
 logical :: out_phi, out_q, out_field, out_phi_seg
 logical :: out_chainshape, out_ads_free, out_brush_thickness
+logical :: out_equimolar
 logical :: wall_auto
 logical :: wall_hamaker, wall_square_well, wall_ramp, wall_vacuum, wall_hybrid
 logical :: wall_custom, wall_table, wall_hamaker_well
@@ -25,7 +26,7 @@ integer :: wall_type, wall_side
 integer :: n_wall_custom_vars
 
 real(8) :: max_wa_error, r_ads_lo, r_ads_hi
-real(8) :: chainlen_matrix, chainlen_matrix_aux, chainlen_grafted_lo, chainlen_grafted_hi
+real(8) :: chainlen_matrix, chainlen_matrix_aux, chainlen_grafted_lo, chainlen_grafted_hi, chainlen_bulk
 real(8) :: ds_ave_matrix, ds_ave_grafted_lo, ds_ave_grafted_hi
 real(8) :: lx, dx_ave
 real(8) :: graft_pos, gdens_lo, gdens_hi, delta

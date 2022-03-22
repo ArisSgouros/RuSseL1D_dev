@@ -26,7 +26,7 @@
  # wall parameters
  -1                                                                ! wall type, (0: vacuum; 1: Hamaker)
  1 3.700000000E+00 3.000000000E+00 5.840000000D+00 6.430000000D+00 ! wall coeffs, (Hamaker: sig_pol, sig_sol, A_pol, A_sol
- 3 10.0            -0.69032426                                      ! wall coeffs, (Hamaker: sig_pol, sig_sol, A_pol, A_sol
+ 3 10.0            -0.69032426                                     ! wall coeffs, (Hamaker: sig_pol, sig_sol, A_pol, A_sol
  5.000000000D+00                                                   ! wall pos auto, (k_B T)
  0                                                                 ! wall side (-1: lo, 0: both, 1: hi)
 

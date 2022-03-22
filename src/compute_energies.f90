@@ -12,8 +12,8 @@ use constants,   only: pi
 use flags,       only: F_both
 use parser_vars, only: wall_hamaker, rho_seg_bulk, lx, ns_grafted_lo, ns_grafted_hi, ns_matrix, wall_side, &
                      & grafted_lo_exist, grafted_hi_exist, matrix_exist, k_gr, lx, nx, chainlen_matrix,    &
-                     & chainlen_grafted_lo, chainlen_grafted_hi, gnode_lo, gnode_hi, gdens_lo, gdens_hi,   &
-                     & beta, Rg2_per_mon, sig_solid, wall_pos, asolid
+                     & chainlen_grafted_lo, chainlen_grafted_hi, chainlen_bulk, gnode_lo, gnode_hi,        &
+                     & gdens_lo, gdens_hi, beta, Rg2_per_mon, sig_solid, wall_pos, asolid
 !----------------------------------------------------------------------------------------------------------!
 implicit none
 !----------------------------------------------------------------------------------------------------------!

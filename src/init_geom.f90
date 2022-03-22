@@ -28,7 +28,7 @@ if (geometry.eq.F_film) then
     do kk = 0, nx
         rx(kk)  = rx(kk) + wall_pos
         rr(kk)  = rx(kk)
-        irr(kk) = 1.d0 / rr(kk)
+        if (rr(kk) > 1.d-10) irr(kk) = 1.d0 / rr(kk)
         layer_area(kk) = 1.d0
     enddo
     surface_area = layer_area(0)
@@ -36,7 +36,7 @@ elseif (geometry.eq.F_sphere) then
     do kk = 0, nx
         rx(kk)  = rx(kk) + wall_pos
         rr(kk)  = rx(kk) + sphere_radius
-        irr(kk) = 1.d0 / rr(kk)
+        if (rr(kk) > 1.d-10) irr(kk) = 1.d0 / rr(kk)
         layer_area(kk) = 4.d0*pi*rr(kk)**2.
     enddo
     surface_area = 4.d0 * pi * sphere_radius**2

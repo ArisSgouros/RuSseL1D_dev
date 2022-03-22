@@ -53,6 +53,7 @@ logical :: log_fraction_of_new_field       = .false.
 logical :: log_read_field                  = .false.
 
 logical :: log_out_phi                     = .false.
+logical :: log_out_equimolar               = .false.
 logical :: log_out_field                   = .false.
 logical :: log_out_q                       = .false.
 logical :: log_out_chainshape              = .false.
@@ -95,6 +96,8 @@ logical :: log_ds_ave_grafted_hi           = .false.
 logical :: log_gdens_hi                    = .false.
 
 logical :: log_position_of_grafted         = .false.
+
+logical :: log_chain_length_bulk           = .false.
 
 logical :: log_hi_BC_of_matrix             = .false.
 logical :: log_lo_BC_of_matrix             = .false.
@@ -156,7 +159,7 @@ do
             read(line,*) dx_ave
             log_dx = .true.
         elseif (index(line,"! domain sphere_radius") > 0) then
-            read(line,'(E16.9)') sphere_radius
+            read(line,*) sphere_radius
             log_sphere_radius = .true.
         elseif (index(line,"! system temperature") > 0) then
             read(line,'(E16.9)') Temp
@@ -227,6 +230,9 @@ do
         elseif (index(line,"! export phi") > 0) then
             read(line,'(L10)') out_phi
             log_out_phi = .true.
+        elseif (index(line,"! export equimolar") > 0) then
+            read(line,'(L10)') out_equimolar
+            log_out_equimolar = .true.
         elseif (index(line,"! export field") > 0) then
             read(line,'(L10)') out_field
             log_out_field = .true.
@@ -370,6 +376,10 @@ do
         elseif (index(line,"! grafted distance_from_solid") > 0) then
             read(line,*) graft_pos
             log_position_of_grafted = .true.
+        ! reference bulk chain length
+        elseif (index(line,"! bulk chain_length") > 0) then
+            read(line,*) chainlen_bulk
+            log_chain_length_bulk = .true.
         ! boundary condition
         elseif (index(line,"! boundary_condition lo matrix") > 0) then
             read(line,'(I10)') bc_lo_matrix
@@ -566,6 +576,14 @@ if (log_out_phi) then
     write(6  ,'(3X,A45,L16)')adjl('Output phi:',45),out_phi
 else
     out_phi = .True.
+    continue
+endif
+
+if (log_out_equimolar) then
+    write(iow,'(3X,A45,L16)')adjl('Output equimolar:',45),out_equimolar
+    write(6  ,'(3X,A45,L16)')adjl('Output equimolar:',45),out_equimolar
+else
+    out_equimolar = .True.
     continue
 endif
 
@@ -992,7 +1010,27 @@ endif
 gnode_hi = nx - gnode_lo
 endif
 
+! Reference bulk chain length
+write(iow,'(A85)')adjl('------------------------------------ BULK CHAINS ------------------------------------',85)
+write(*  ,'(A85)')adjl('------------------------------------ BULK CHAINS ------------------------------------',85)
+if (log_chain_length_bulk) then
+    write(iow,'(3X,A45,F16.9,'' monomers'')')adjl('Chain length (set):',45), chainlen_bulk
+    write(*  ,'(3X,A45,F16.9,'' monomers'')')adjl('Chain length (set):',45), chainlen_bulk
+else
+    if (matrix_exist) then
+        chainlen_bulk = chainlen_matrix
+    else
+        chainlen_bulk = (gdens_lo * chainlen_grafted_lo + gdens_hi * chainlen_grafted_hi) &
+                      / (gdens_lo + gdens_hi)
+    endif
 
+    write(iow,'(3X,A45,F16.9,'' monomers'')')adjl('Chain length (auto):',45), chainlen_bulk
+    write(*  ,'(3X,A45,F16.9,'' monomers'')')adjl('Chain length (auto):',45), chainlen_bulk
+endif
+
+! Boundary conditions
+write(iow,'(A85)')adjl('---------------------------------BOUNDARY CONDITIONS---------------------------------',85)
+write(*  ,'(A85)')adjl('---------------------------------BOUNDARY CONDITIONS---------------------------------',85)
 if (log_lo_BC_of_grafted) then
     if (bc_lo_grafted == F_bc_neuman)then
         write(iow,'(3X,A45,A16,'' (dq/dr=0)'')')adjl('grafted boundary condition for lo edge:',45),adjustl('Neumann')

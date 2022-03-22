@@ -35,6 +35,9 @@
  1.92                          ! matrix ds
  9.000000000D+00               ! chain r_ads_lo, (Angstrom)
  0.000000000D+00               ! chain r_ads_hi, (Angstrom)
+ 192.0                         ! bulk chain_length
+
+ # bulk chains
 
  # grafted lo chains
  True                          ! grafted lo set (1: yes, 0: no)

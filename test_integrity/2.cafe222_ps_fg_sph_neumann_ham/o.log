@@ -30,6 +30,9 @@
    Chain length:                                   192.000000000 monomers
    Grafting density:                             0.498015688E-02 chains/Angstrom^2
    Solid-grafted point distance:                               1 nodes
+------------------------------------ BULK CHAINS ------------------------------------
+   Chain length (set):                             192.000000000 monomers
+---------------------------------BOUNDARY CONDITIONS---------------------------------
    grafted boundary condition for lo edge:             Dirichlet q=0
    grafted boundary condition for hi edge:               Neumann (dq/dr=0)
    matrix boundary condition for lo edge:              Dirichlet q=0

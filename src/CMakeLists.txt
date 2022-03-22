@@ -9,6 +9,7 @@ add_executable(RSL1D
      compute_brush_thickness.f90
      compute_chainshape.f90
      compute_phi_ads_states.f90
+     compute_equimolar.f90
      compute_phi_seg.f90
      compute_energies.f90
      contour_convolution.f90

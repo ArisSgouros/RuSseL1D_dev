@@ -10,7 +10,7 @@ use flags,       only: F_helfand, F_sanchez_lacombe
 !----------------------------------------------------------------------------------------------------------!
 integer :: eos_type
 
-real(8) :: HF_kappa_T, chainlen_sl
+real(8) :: HF_kappa_T
 real(8) :: T_star, P_star, V_star, rho_star
 real(8) :: T_tilde, P_tilde, rho_tilde_bulk, rsl_N
 !----------------------------------------------------------------------------------------------------------!

@@ -7,34 +7,34 @@ subroutine init_scf_params()
 use eos,          only: rsl_N, T_tilde, P_tilde, rho_tilde_bulk, T_star, P_star, V_star, rho_star,             &
                       & eos_type, eos_rho_tilde_0
 use flags,        only: F_sanchez_lacombe
-use parser_vars,  only: bond_length, chainlen_matrix, chainlen_grafted_lo, chainlen_grafted_hi, ds_ave_matrix, &
-                      & ds_ave_grafted_lo, ds_ave_grafted_hi, ns_matrix, ns_grafted_lo, ns_grafted_hi,         &
-                      & matrix_exist, grafted_lo_exist, grafted_hi_exist, Rg2_per_mon, CN, rho_seg_bulk,       &
+use parser_vars,  only: bond_length, chainlen_matrixA, chainlen_grafted_lo, chainlen_grafted_hi, ds_ave_matrixA, &
+                      & ds_ave_grafted_lo, ds_ave_grafted_hi, ns_matrixA, ns_grafted_lo, ns_grafted_hi,         &
+                      & matrix_existA, grafted_lo_exist, grafted_hi_exist, Rg2_per_mon, CN, rho_seg_bulk,       &
                       & rho_mol_bulk, rho_mass_bulk, pressure, Temp, k_gr, k_gr_tilde, mon_mass,               &
-                      & square_gradient, gdens_hi, gdens_lo, ns_matrix_aux, chainlen_matrix_aux, chainlen_bulk
+                      & square_gradient, gdens_hi, gdens_lo, ns_matrix_auxA, chainlen_matrix_auxA, chainlen_bulk
 use constants,    only: N_avog, boltz_const_Joule_molK, boltz_const_Joule_K, gr_cm3_to_kg_m3, iow, tol
 use write_helper, only: adjl
 !----------------------------------------------------------------------------------------------------------!
 implicit none
 !----------------------------------------------------------------------------------------------------------!
-real(8) :: ds_matrix_aux, SL_kappa_T
+real(8) :: ds_matrix_auxA, SL_kappa_T
 !----------------------------------------------------------------------------------------------------------!
 write(iow,'(A85)')adjl("-----------------------------INITIALIZE THE SCF PARAMETERS---------------------------",85)
 write(*  ,'(A85)')adjl("-----------------------------INITIALIZE THE SCF PARAMETERS---------------------------",85)
 
 Rg2_per_mon  = bond_length**2 * CN / 6.d00
 
-if (matrix_exist) then
-    ns_matrix           = 2 * nint(0.5d0 * chainlen_matrix / ds_ave_matrix)
-    ds_matrix_aux       = ds_ave_matrix
-    write(iow,'(3X,A45,F16.4," Angstrom")')adjl("Matrix radious of gyration:",45), sqrt(Rg2_per_mon*chainlen_matrix)
-    write(*  ,'(3X,A45,F16.4," Angstrom")')adjl("Matrix radious of gyration:",45), sqrt(Rg2_per_mon*chainlen_matrix)
-    write(iow,'(3X,A45,I16," nodes")')     adjl("Matrix nodes along chain contour:",45), ns_matrix
-    write(*  ,'(3X,A45,I16," nodes")')     adjl("Matrix nodes along chain contour:",45), ns_matrix
+if (matrix_existA) then
+    ns_matrixA           = 2 * nint(0.5d0 * chainlen_matrixA / ds_ave_matrixA)
+    ds_matrix_auxA       = ds_ave_matrixA
+    write(iow,'(3X,A45,F16.4," Angstrom")')adjl("Matrix radious of gyration:",45), sqrt(Rg2_per_mon*chainlen_matrixA)
+    write(*  ,'(3X,A45,F16.4," Angstrom")')adjl("Matrix radious of gyration:",45), sqrt(Rg2_per_mon*chainlen_matrixA)
+    write(iow,'(3X,A45,I16," nodes")')     adjl("Matrix nodes along chain contour:",45), ns_matrixA
+    write(*  ,'(3X,A45,I16," nodes")')     adjl("Matrix nodes along chain contour:",45), ns_matrixA
 endif
 if (grafted_lo_exist) then
     ns_grafted_lo       = 2 * nint(0.5d0 * chainlen_grafted_lo / ds_ave_grafted_lo)
-    ds_matrix_aux       = ds_ave_grafted_lo
+    ds_matrix_auxA       = ds_ave_grafted_lo
     write(iow,'(3X,A45,F16.4," Angstrom")')adjl("grafted lo radious of gyration:",45), sqrt(Rg2_per_mon*chainlen_grafted_lo)
     write(*  ,'(3X,A45,F16.4," Angstrom")')adjl("grafted lo radious of gyration:",45), sqrt(Rg2_per_mon*chainlen_grafted_lo)
     write(iow,'(3X,A45,I16," nodes")')     adjl("grafted lo nodes along chain contour:",45), ns_grafted_lo
@@ -42,21 +42,21 @@ if (grafted_lo_exist) then
 endif
 if (grafted_hi_exist) then
     ns_grafted_hi       = 2 * nint(0.5d0 * chainlen_grafted_hi / ds_ave_grafted_hi)
-    ds_matrix_aux       = ds_ave_grafted_hi
+    ds_matrix_auxA       = ds_ave_grafted_hi
     write(iow,'(3X,A45,F16.4," Angstrom")')adjl("grafted hi radious of gyration:",45), sqrt(Rg2_per_mon*chainlen_grafted_hi)
     write(*  ,'(3X,A45,F16.4," Angstrom")')adjl("grafted hi radious of gyration:",45), sqrt(Rg2_per_mon*chainlen_grafted_hi)
     write(iow,'(3X,A45,I16," nodes")')     adjl("grafted hi nodes along chain contour:",45), ns_grafted_hi
     write(*  ,'(3X,A45,I16," nodes")')     adjl("grafted hi nodes along chain contour:",45), ns_grafted_hi
 endif
 
-ns_matrix_aux       = max(ns_matrix, ns_grafted_lo, ns_grafted_hi)
-chainlen_matrix_aux = max(chainlen_matrix, chainlen_grafted_lo,chainlen_grafted_hi)
-ds_matrix_aux       = max(ds_ave_matrix, ds_ave_grafted_lo, ds_ave_grafted_hi)
+ns_matrix_auxA       = max(ns_matrixA, ns_grafted_lo, ns_grafted_hi)
+chainlen_matrix_auxA = max(chainlen_matrixA, chainlen_grafted_lo,chainlen_grafted_hi)
+ds_matrix_auxA       = max(ds_ave_matrixA, ds_ave_grafted_lo, ds_ave_grafted_hi)
 
 ! miscellenious checks 
-if ((matrix_exist    .and.abs(ds_matrix_aux-ds_ave_matrix)    >tol) .or. &
-&   (grafted_lo_exist.and.abs(ds_matrix_aux-ds_ave_grafted_lo)>tol) .or. &
-&   (grafted_hi_exist.and.abs(ds_matrix_aux-ds_ave_grafted_hi)>tol)) then
+if ((matrix_existA    .and.abs(ds_matrix_auxA-ds_ave_matrixA)    >tol) .or. &
+&   (grafted_lo_exist.and.abs(ds_matrix_auxA-ds_ave_grafted_lo)>tol) .or. &
+&   (grafted_hi_exist.and.abs(ds_matrix_auxA-ds_ave_grafted_hi)>tol)) then
     write(iow,*) "Error: the nonconstant contour discret scheme does not work with different chain lengths."
     write(*  ,*) "Error: the nonconstant contour discret scheme does not work with different chain lengths."
     STOP

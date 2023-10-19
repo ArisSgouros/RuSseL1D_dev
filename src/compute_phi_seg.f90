@@ -2,7 +2,7 @@
 !
 !See the LICENSE file in the root directory for license information.
 
-subroutine compute_phi_seg(iseg, chainlen, coeff_ns, ns, nx, rx, q1_final, qmatrix_final, chain_type)
+subroutine compute_phi_seg(iseg, chainlen, coeff_ns, ns, nx, rx, q1_final, qmatrix_finalA, chain_type)
 !----------------------------------------------------------------------------------------------------------!
 implicit none
 !----------------------------------------------------------------------------------------------------------!
@@ -11,7 +11,7 @@ integer             :: kk, ii
 
 real(8), intent(in), dimension(0:ns)      :: coeff_ns
 real(8), intent(in), dimension(0:nx)      :: rx
-real(8), intent(in), dimension(0:nx,0:ns) :: q1_final, qmatrix_final
+real(8), intent(in), dimension(0:nx,0:ns) :: q1_final, qmatrix_finalA
 real(8), intent(in)                       :: chainlen
 real(8), dimension(0:nx)                  :: phi_seg
 
@@ -26,7 +26,7 @@ open(unit=122, file=filename)
 if (iseg.ne.-1) then
     !start profile post-processing
     do kk = 0, nx
-        phi_seg(kk) = (q1_final(kk,ns-iseg) * qmatrix_final(kk,iseg)) / chainlen
+        phi_seg(kk) = (q1_final(kk,ns-iseg) * qmatrix_finalA(kk,iseg)) / chainlen
     enddo
 
     write(122,'(2(2X,A16))') 'r', "phi_seg(r)"
@@ -49,7 +49,7 @@ if (iseg.eq.-1) then
     do kk = 0, nx
         write (122,'(2X,E16.9)',advance='no') rx(kk)
         do ii = 0, ns
-           write(122,'(2X,E16.9)',advance='no') (q1_final(kk,ii) * qmatrix_final(kk,ns-ii)) / chainlen
+           write(122,'(2X,E16.9)',advance='no') (q1_final(kk,ii) * qmatrix_finalA(kk,ns-ii)) / chainlen
         enddo
         write(122,*)
     enddo

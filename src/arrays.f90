@@ -12,13 +12,14 @@ real(8), allocatable, dimension(:)   :: wall_custom_vars
 real(8), allocatable, dimension(:)   :: rr, irr, layer_area
 real(8), allocatable, dimension(:)   :: wa, wa_ifc, wa_ifc_new, wa_ifc_backup, Ufield, df_drho
 real(8), allocatable, dimension(:)   :: dx, rx, coeff_nx
-real(8), allocatable, dimension(:)   :: ds_matrix, ds_matrix_aux, ds_grafted_lo, ds_grafted_hi
-real(8), allocatable, dimension(:)   :: coeff_ns_matrix, coeff_ns_matrix_aux, coeff_ns_grafted_lo, coeff_ns_grafted_hi
-real(8), allocatable, dimension(:)   :: rs_matrix, rs_matrix_aux, rs_grafted_lo, rs_grafted_hi
+real(8), allocatable, dimension(:)   :: ds_matrixA, ds_matrix_auxA, ds_grafted_lo, ds_grafted_hi
+
+real(8), allocatable, dimension(:)   :: coeff_ns_matrixA, coeff_ns_matrix_auxA, coeff_ns_grafted_lo, coeff_ns_grafted_hi
+real(8), allocatable, dimension(:)   :: rs_matrixA, rs_matrix_auxA, rs_grafted_lo, rs_grafted_hi
 real(8), allocatable, dimension(:)   :: dir_nodes_rdiag
 real(8), allocatable, dimension(:)   :: dphi_dr, d2phi_dr2
-real(8), allocatable, dimension(:)   :: phi_total, phi_matrix, phi_gr_lo, phi_gr_hi
-real(8), allocatable, dimension(:,:) :: qmatrix, qgr_lo, qgr_hi
-real(8), allocatable, dimension(:,:) :: qmatrix_final, qgr_final_lo, qgr_final_hi
+real(8), allocatable, dimension(:)   :: phi_total, phi_matrixA, phi_gr_lo, phi_gr_hi
+real(8), allocatable, dimension(:,:) :: qmatrixA, qgr_lo, qgr_hi
+real(8), allocatable, dimension(:,:) :: qmatrix_finalA, qgr_final_lo, qgr_final_hi
 !----------------------------------------------------------------------------------------------------------!
 end module arrays

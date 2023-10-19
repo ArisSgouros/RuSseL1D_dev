@@ -35,6 +35,7 @@ n_shape = 0.d0
 
 do kk = 1, nx-1
 
+    !fixit chainge matrix to matrixA; note that currently the string supports 6 letters. maybe change matrixA/B o mtrixA/B?
     if (chain_type.eq."matrix") then
         do ii = 0, nx
             qshape(ii,1)       = 1.d0

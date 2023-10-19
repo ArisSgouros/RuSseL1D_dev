@@ -2,7 +2,7 @@
 !
 !See the LICENSE file in the root directory for license information.
 
-subroutine compute_phi_ads_states(coeff, rr, rx, dx, ds, wa, phi_matrix, qmatrix_final, &
+subroutine compute_phi_ads_states(coeff, rr, rx, dx, ds, wa, phi_matrixA, qmatrix_finalA, &
 &                                 bc_lo_type, bc_hi_type, geometry, r_ads_lo, r_ads_hi, &
 &                                 chainlen, ns, chain_type)
 !----------------------------------------------------------------------------------------------------------!
@@ -20,8 +20,8 @@ integer, intent(in)        :: bc_lo_type, bc_hi_type, geometry, ns
 real(8), intent(in), dimension(0:nx)      :: dx, rx
 real(8), intent(in), dimension(0:ns)      :: ds
 real(8), intent(in), dimension(0:ns)      :: coeff
-real(8), intent(in), dimension(0:nx)      :: wa, phi_matrix, rr
-real(8), intent(in), dimension(0:nx,0:ns) :: qmatrix_final
+real(8), intent(in), dimension(0:nx)      :: wa, phi_matrixA, rr
+real(8), intent(in), dimension(0:nx,0:ns) :: qmatrix_finalA
 real(8), dimension(0:nx+4)                :: dir_nodes_rdiag
 real(8), dimension(0:nx,0:ns)             :: q_not_alo_final, qalo_full_final, qalo_part_final, qf_full_final, &
 &                                            q_not_ahi_final, qahi_full_final, qahi_part_final
@@ -402,8 +402,9 @@ if (geometry.eq.F_sphere) then
     enddo
 endif
 
-qalo_part_final = qmatrix_final - q_not_alo_final - qalo_full_final
-qahi_part_final = qmatrix_final - q_not_ahi_final - qahi_full_final
+
+qalo_part_final = qmatrix_finalA - q_not_alo_final - qalo_full_final
+qahi_part_final = qmatrix_finalA - q_not_ahi_final - qahi_full_final
 
 call contour_convolution(chainlen, nx, ns, coeff, qf_full_final,   qf_full_final,   phi_free)
 call contour_convolution(chainlen, nx, ns, coeff, qalo_full_final, qalo_full_final, phi_alo_full)
@@ -419,15 +420,15 @@ call contour_convolution(chainlen, nx, ns, coeff, qahi_full_final, qahi_part_fin
 call contour_convolution(chainlen, nx, ns, coeff, qalo_part_final, qalo_part_final, phi_loop_flo)
 call contour_convolution(chainlen, nx, ns, coeff, qahi_part_final, qahi_part_final, phi_loop_fhi)
 
-phi_alo      = phi_matrix - phi_not_alo
-phi_ahi      = phi_matrix - phi_not_ahi
+phi_alo      = phi_matrixA - phi_not_alo
+phi_ahi      = phi_matrixA - phi_not_ahi
 phi_tail_flo = 2.d0 * phi_tail_flo
 phi_tail_fhi = 2.d0 * phi_tail_fhi
 phi_tail_alo = 2.d0 * phi_tail_alo
 phi_tail_ahi = 2.d0 * phi_tail_ahi
 phi_alo_part = phi_alo - phi_alo_full
 phi_ahi_part = phi_ahi - phi_ahi_full
-phi_bridge   = max(phi_alo + phi_ahi - phi_matrix + phi_free, 0.d0)
+phi_bridge   = max(phi_alo + phi_ahi - phi_matrixA + phi_free, 0.d0)
 
 write(filename,'("o.phi_states_",A6)') chain_type
 open (unit=37, file=filename)
@@ -438,7 +439,7 @@ write(37,'(A14,17(2X,A20))')          'r'            , "phi_m"       , "f"      
 &                                     "afull+"       , "apart+"      , "loop_f+"       , &
 &                                     "tail_f+"      , "tail_a+"     , "bridge"
 do kk = 0, nx
-    write(37,'(F14.7,17(2X,F20.11))') rx(kk)         , phi_matrix(kk), phi_free(kk)    ,     &
+    write(37,'(F14.7,17(2X,F20.11))') rx(kk)         , phi_matrixA(kk), phi_free(kk)    ,     &
 &                                     phi_not_ahi(kk), phi_alo(kk)   , phi_alo_full(kk),     &
 &                                     phi_alo_part(kk), phi_loop_flo(kk),  phi_tail_flo(kk), &
 &                                     phi_tail_alo(kk), phi_not_alo(kk), phi_ahi(kk),        &

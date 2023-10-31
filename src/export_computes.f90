@@ -27,7 +27,7 @@ if (out_field) call export_field(rx, wa_ifc, wa_ifc_new)
 if (out_q)     call export_q(qmatrixA_final, ns_matrixA_aux, nx, rs_matrixA_aux, rx, "mataux")
 
 if (matrixA_exist) then
-    if (out_q)          call export_q(qmatrixA_final, ns_matrixA, nx, rs_matrixA, rx, "matrixA")
+    if (out_q)          call export_q(qmatrixA_final, ns_matrixA, nx, rs_matrixA, rx, "matrix")
     if (out_phi_seg)    call compute_phi_seg(export_phi_seg_id, chainlen_matrixA, coeff_ns_matrixA, ns_matrixA, nx,  &
 &                                            rx, qmatrixA_final, qmatrixA_final,"matrixA")
     if (out_ads_free)   call compute_phi_ads_states(coeff_ns_matrixA, rr, rx, dx, ds_matrixA, wa_ifc, phi_matrixA,   &

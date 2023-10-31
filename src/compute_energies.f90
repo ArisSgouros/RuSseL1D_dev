@@ -5,13 +5,13 @@
 subroutine compute_energies(free_energy)
 !----------------------------------------------------------------------------------------------------------!
 use eos,         only: eos_ff, eos_df_drho
-use arrays,      only: ufield, layer_area, coeff_nx, qmatrix_finalA, wa_ifc_new, wa, wa_bulk, phi_matrixA,   & 
+use arrays,      only: ufield, layer_area, coeff_nx, qmatrixA_final, wa_ifc_new, wa, wa_bulk, phi_matrixA,   & 
                      & phi_gr_hi, phi_gr_lo, phi_total, dphi_dr, d2phi_dr2, qgr_final_lo, qgr_final_hi,    &
                      & surface_area, volume, rx
 use constants,   only: pi
 use flags,       only: F_both
 use parser_vars, only: wall_hamaker, rho_seg_bulk, lx, ns_grafted_lo, ns_grafted_hi, ns_matrixA, wall_side, &
-                     & grafted_lo_exist, grafted_hi_exist, matrix_existA, k_gr, lx, nx, chainlen_matrixA,    &
+                     & grafted_lo_exist, grafted_hi_exist, matrixA_exist, k_gr, lx, nx, chainlen_matrixA,    &
                      & chainlen_grafted_lo, chainlen_grafted_hi, chainlen_bulk, gnode_lo, gnode_hi,        &
                      & gdens_lo, gdens_hi, beta, Rg2_per_mon, sig_solid, wall_pos, asolid
 !----------------------------------------------------------------------------------------------------------!
@@ -79,7 +79,7 @@ do kk = 0, nx
     prof_solid_m(kk)     =  phi_matrixA(kk) * Ufield(kk) / beta
 end do
 
-if (matrix_existA) then       
+if (matrixA_exist) then       
     do kk = 0, nx
         prof_eos_f(kk)     = prof_eos_f(kk)     - eos_ff(1.d0)
         prof_eos_rdfdr(kk) = prof_eos_rdfdr(kk) + 1.d0*eos_df_drho(1.d0)
@@ -119,19 +119,19 @@ E_solid_glo   = E_solid_glo   * 1.d-30 * rho_seg_bulk
 E_solid_ghi   = E_solid_ghi   * 1.d-30 * rho_seg_bulk
 E_solid_m     = E_solid_m     * 1.d-30 * rho_seg_bulk
 
-if (matrix_existA) then       
-   part_func_matrixA = get_part_func(nx, ns_matrixA, layer_area, volume, coeff_nx, qmatrix_finalA)
+if (matrixA_exist) then       
+   part_func_matrixA = get_part_func(nx, ns_matrixA, layer_area, volume, coeff_nx, qmatrixA_final)
    E_rhoVkTQ = volume*1.0d-30*rho_seg_bulk/beta/chainlen_matrixA*(1.d0-part_func_matrixA)
 endif
 
 E_nkTlnQm = 0.d0
 if (grafted_lo_exist) then
    nchgr_lo  = get_nchains(coeff_nx, nx, layer_area, phi_gr_lo, rho_seg_bulk, chainlen_grafted_lo)
-   E_nkTlnQm = E_nkTlnQm -nchgr_lo / beta * log(qmatrix_finalA(gnode_lo,ns_grafted_lo))
+   E_nkTlnQm = E_nkTlnQm -nchgr_lo / beta * log(qmatrixA_final(gnode_lo,ns_grafted_lo))
 endif
 if (grafted_hi_exist) then
    nchgr_hi  = get_nchains(coeff_nx, nx, layer_area, phi_gr_hi, rho_seg_bulk, chainlen_grafted_hi)
-   E_nkTlnQm = E_nkTlnQm -nchgr_hi / beta * log(qmatrix_finalA(gnode_hi,ns_grafted_hi))
+   E_nkTlnQm = E_nkTlnQm -nchgr_hi / beta * log(qmatrixA_final(gnode_hi,ns_grafted_hi))
 endif
 
 if (wall_side.eq.F_both.and.wall_hamaker) then
@@ -145,7 +145,7 @@ endif
 if (grafted_lo_exist) then
    !calculate the profile of the chain ends
    do kk = 0, nx
-       phi_end(kk) = 1.d0 / chainlen_grafted_lo * (qgr_final_lo(kk,ns_grafted_lo) * qmatrix_finalA(kk,0))
+       phi_end(kk) = 1.d0 / chainlen_grafted_lo * (qgr_final_lo(kk,ns_grafted_lo) * qmatrixA_final(kk,0))
    enddo
    rho_end = phi_end * rho_seg_bulk*1.d-30
    ! calculate the stretching free energy for every chain end abstained by dz from the grafting point
@@ -168,7 +168,7 @@ endif
 if (grafted_hi_exist) then
    !calculate the profile of the chain ends
    do kk = 0, nx
-       phi_end(kk) = 1.d0 / chainlen_grafted_hi * (qgr_final_hi(kk,ns_grafted_hi) * qmatrix_finalA(kk,0))
+       phi_end(kk) = 1.d0 / chainlen_grafted_hi * (qgr_final_hi(kk,ns_grafted_hi) * qmatrixA_final(kk,0))
    enddo
    rho_end = phi_end * rho_seg_bulk*1.d-30
    ! calculate the stretching free energy for every chain end abstained by dz from the grafting point

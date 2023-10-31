@@ -15,9 +15,8 @@ real(8), intent(in), dimension(0:nx) :: phi_matrixA, phi_gr_lo, phi_gr_hi, phi_t
 !----------------------------------------------------------------------------------------------------------!
 !export density profiles and fields
 
-!fixit: change phi_matrix to phi_matrixA
 open(unit=120, file="o.phi")
-write(120,'(5(A14,2X))')'r', "phi_matrix", "phi_gr_lo", "phi_gr_hi", "phi_tot"
+write(120,'(5(A14,2X))')'r', "phi_matrixA", "phi_gr_lo", "phi_gr_hi", "phi_tot"
 do ii = 0, nx
     write (120,'(5(E14.7E3,2X))') rx(ii), phi_matrixA(ii), phi_gr_lo(ii), phi_gr_hi(ii), phi_total(ii)
 enddo

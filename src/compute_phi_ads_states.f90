@@ -2,7 +2,7 @@
 !
 !See the LICENSE file in the root directory for license information.
 
-subroutine compute_phi_ads_states(coeff, rr, rx, dx, ds, wa, phi_matrixA, qmatrix_finalA, &
+subroutine compute_phi_ads_states(coeff, rr, rx, dx, ds, wa, phi_matrixA, qmatrixA_final, &
 &                                 bc_lo_type, bc_hi_type, geometry, r_ads_lo, r_ads_hi, &
 &                                 chainlen, ns, chain_type)
 !----------------------------------------------------------------------------------------------------------!
@@ -21,7 +21,7 @@ real(8), intent(in), dimension(0:nx)      :: dx, rx
 real(8), intent(in), dimension(0:ns)      :: ds
 real(8), intent(in), dimension(0:ns)      :: coeff
 real(8), intent(in), dimension(0:nx)      :: wa, phi_matrixA, rr
-real(8), intent(in), dimension(0:nx,0:ns) :: qmatrix_finalA
+real(8), intent(in), dimension(0:nx,0:ns) :: qmatrixA_final
 real(8), dimension(0:nx+4)                :: dir_nodes_rdiag
 real(8), dimension(0:nx,0:ns)             :: q_not_alo_final, qalo_full_final, qalo_part_final, qf_full_final, &
 &                                            q_not_ahi_final, qahi_full_final, qahi_part_final
@@ -403,8 +403,8 @@ if (geometry.eq.F_sphere) then
 endif
 
 
-qalo_part_final = qmatrix_finalA - q_not_alo_final - qalo_full_final
-qahi_part_final = qmatrix_finalA - q_not_ahi_final - qahi_full_final
+qalo_part_final = qmatrixA_final - q_not_alo_final - qalo_full_final
+qahi_part_final = qmatrixA_final - q_not_ahi_final - qahi_full_final
 
 call contour_convolution(chainlen, nx, ns, coeff, qf_full_final,   qf_full_final,   phi_free)
 call contour_convolution(chainlen, nx, ns, coeff, qalo_full_final, qalo_full_final, phi_alo_full)

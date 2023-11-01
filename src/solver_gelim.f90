@@ -40,7 +40,7 @@ do k=1, nx-1
 
 ! Check if the system has a sigular matrix
   if(pivot < 1.d-10) then
-    write(6,*) " The matrixA is singular.. "
+    write(6,*) " The matrix is singular.. "
     return
   endif
 

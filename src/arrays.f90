@@ -14,8 +14,8 @@ real(8), allocatable, dimension(:)   :: wa, wa_ifc, wa_ifc_new, wa_ifc_backup, U
 real(8), allocatable, dimension(:)   :: dx, rx, coeff_nx
 real(8), allocatable, dimension(:)   :: ds_matrixA,ds_matrixB, ds_grafted_lo, ds_grafted_hi
 
-real(8), allocatable, dimension(:)   :: coeff_ns_matrixA,coeff_ns_matrixB, coeff_ns_grafted_lo, coeff_ns_grafted_hi
-real(8), allocatable, dimension(:)   :: rs_matrixA,rs_matrixB, rs_grafted_lo, rs_grafted_hi
+real(8), allocatable, dimension(:)   :: coeff_ns_matrixA, coeff_ns_matrixB, coeff_ns_grafted_lo, coeff_ns_grafted_hi
+real(8), allocatable, dimension(:)   :: rs_matrixA, rs_matrixB, rs_grafted_lo, rs_grafted_hi
 real(8), allocatable, dimension(:)   :: dir_nodes_rdiag
 real(8), allocatable, dimension(:)   :: dphi_dr, d2phi_dr2
 real(8), allocatable, dimension(:)   :: phi_total, phi_matrixA,phi_matrixB, phi_gr_lo, phi_gr_hi

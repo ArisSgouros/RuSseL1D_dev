@@ -426,6 +426,7 @@ do
         elseif (index(line,"! bulk chain_length") > 0) then
             read(line,*) chainlen_bulk
             log_chain_length_bulk = .true.
+
         ! boundary condition
         elseif (index(line,"! boundary_condition lo matrixA") > 0) then
             read(line,'(I10)') bc_lo_matrixA
@@ -439,7 +440,6 @@ do
         elseif (index(line,"! boundary_condition hi matrixB") >0) then
             read(line,'(I10)') bc_hi_matrixB
             log_hi_BC_of_matrixB= .true.
- 
         elseif (index(line,"! boundary_condition lo grafted") > 0) then
             read(line,'(I10)') bc_lo_grafted
             log_lo_BC_of_grafted = .true.
@@ -879,7 +879,7 @@ else
     write(*  ,'(3X,A45,A16)')adjl("*Spatial integr rule not found. Auto:",45),adjustl('Simpson rule')
 endif
 
-if (log_matrixA_exist) then
+if (log_matrixA_exist) then  ! refactor
     if (matrixA_exist) then
         write(iow,'(A85)')adjl('-------------------------------------MATRIXA CHAINS-----------------------------------',85)
         write(*  ,'(A85)')adjl('-------------------------------------MATRIXA CHAINS-----------------------------------',85)
@@ -1248,26 +1248,26 @@ endif
 
 if (log_lo_BC_of_matrixA) then
     if (bc_lo_matrixA == F_bc_neuman)then
-        write(iow,'(3X,A45,A16,'' (dq/dr=0)'')')adjl('matrix boundary condition for lo edge:',45),adjustl('Neumann')
-        write(*  ,'(3X,A45,A16,'' (dq/dr=0)'')')adjl('matrix boundary condition for lo edge:',45),adjustl('Neumann')
+        write(iow,'(3X,A45,A16,'' (dq/dr=0)'')')adjl('matrixA boundary condition for lo edge:',45),adjustl('Neumann')
+        write(*  ,'(3X,A45,A16,'' (dq/dr=0)'')')adjl('matrixA boundary condition for lo edge:',45),adjustl('Neumann')
     else if(bc_lo_matrixA == F_bc_dirichlet_eq_0) then
-        write(iow,'(3X,A45,A16,'' q=0'')')adjl('matrix boundary condition for lo edge:',45),adjustl('Dirichlet')
-        write(*  ,'(3X,A45,A16,'' q=0'')')adjl('matrix boundary condition for lo edge:',45),adjustl('Dirichlet')
+        write(iow,'(3X,A45,A16,'' q=0'')')adjl('matrixA boundary condition for lo edge:',45),adjustl('Dirichlet')
+        write(*  ,'(3X,A45,A16,'' q=0'')')adjl('matrixA boundary condition for lo edge:',45),adjustl('Dirichlet')
     else if(bc_lo_matrixA == F_bc_dirichlet_eq_1) then
-        write(iow,'(3X,A45,A16,'' q=1'')')adjl('matrix boundary condition for lo edge:',45),adjustl('Dirichlet')
-        write(*  ,'(3X,A45,A16,'' q=1'')')adjl('matrix boundary condition for lo edge:',45),adjustl('Dirichlet')
+        write(iow,'(3X,A45,A16,'' q=1'')')adjl('matrixA boundary condition for lo edge:',45),adjustl('Dirichlet')
+        write(*  ,'(3X,A45,A16,'' q=1'')')adjl('matrixA boundary condition for lo edge:',45),adjustl('Dirichlet')
     else if(bc_lo_matrixA == F_bc_periodic) then
-        write(iow,'(3X,A45,A16,'' q0=qN'')')adjl('matrix boundary condition for lo edge:',45),adjustl('Periodic')
-        write(*  ,'(3X,A45,A16,'' q0=qN'')')adjl('matrix boundary condition for lo edge:',45),adjustl('Periodic')
+        write(iow,'(3X,A45,A16,'' q0=qN'')')adjl('matrixA boundary condition for lo edge:',45),adjustl('Periodic')
+        write(*  ,'(3X,A45,A16,'' q0=qN'')')adjl('matrixA boundary condition for lo edge:',45),adjustl('Periodic')
     else
-        write(iow,'(3X,A150)')adjl('Error: wrong matrix boundary condition for lo edge.. (choose between -1, 0, 1, 2',150)
-        write(*  ,'(3X,A150)')adjl('Error: wrong matrix boundary condition for lo edge.. (choose between -1, 0, 1, 2',150)
+        write(iow,'(3X,A150)')adjl('Error: wrong matrixA boundary condition for lo edge.. (choose between -1, 0, 1, 2',150)
+        write(*  ,'(3X,A150)')adjl('Error: wrong matrixA boundary condition for lo edge.. (choose between -1, 0, 1, 2',150)
         STOP
     endif 
 else
     if (matrixA_exist) then
-        write(iow,'(3X,A150)')adjl('Error: matrix boundary condition for lo edge not found..',150)
-        write(*  ,'(3X,A150)')adjl('Error: matrix boundary condition for lo edge not found..',150)
+        write(iow,'(3X,A150)')adjl('Error: matrixA boundary condition for lo edge not found..',150)
+        write(*  ,'(3X,A150)')adjl('Error: matrixA boundary condition for lo edge not found..',150)
         STOP
     else
         bc_lo_matrixA = bc_lo_grafted
@@ -1276,30 +1276,86 @@ endif
 
 if (log_hi_BC_of_matrixA) then
     if (bc_hi_matrixA == F_bc_neuman)then
-        write(iow,'(3X,A45,A16,'' (dq/dr=0)'')')adjl('matrix boundary condition for hi edge:',45),adjustl('Neumann')
-        write(*  ,'(3X,A45,A16,'' (dq/dr=0)'')')adjl('matrix boundary condition for hi edge:',45),adjustl('Neumann')
+        write(iow,'(3X,A45,A16,'' (dq/dr=0)'')')adjl('matrixA boundary condition for hi edge:',45),adjustl('Neumann')
+        write(*  ,'(3X,A45,A16,'' (dq/dr=0)'')')adjl('matrixA boundary condition for hi edge:',45),adjustl('Neumann')
     else if(bc_hi_matrixA == F_bc_dirichlet_eq_0) then
-        write(iow,'(3X,A45,A16,'' q=0'')')adjl('matrix boundary condition for hi edge:',45),adjustl('Dirichlet')
-        write(*  ,'(3X,A45,A16,'' q=0'')')adjl('matrix boundary condition for hi edge:',45),adjustl('Dirichlet')
+        write(iow,'(3X,A45,A16,'' q=0'')')adjl('matrixA boundary condition for hi edge:',45),adjustl('Dirichlet')
+        write(*  ,'(3X,A45,A16,'' q=0'')')adjl('matrixA boundary condition for hi edge:',45),adjustl('Dirichlet')
     else if(bc_hi_matrixA == F_bc_dirichlet_eq_1) then
-        write(iow,'(3X,A45,A16,'' q=1'')')adjl('matrix boundary condition for hi edge:',45),adjustl('Dirichlet')
-        write(*  ,'(3X,A45,A16,'' q=1'')')adjl('matrix boundary condition for hi edge:',45),adjustl('Dirichlet')
+        write(iow,'(3X,A45,A16,'' q=1'')')adjl('matrixA boundary condition for hi edge:',45),adjustl('Dirichlet')
+        write(*  ,'(3X,A45,A16,'' q=1'')')adjl('matrixA boundary condition for hi edge:',45),adjustl('Dirichlet')
     else if(bc_hi_matrixA == F_bc_periodic) then
-        write(iow,'(3X,A45,A16,'' q0=qN'')')adjl('matrix boundary condition for hi edge:',45),adjustl('Periodic')
-        write(*  ,'(3X,A45,A16,'' q0=qN'')')adjl('matrix boundary condition for hi edge:',45),adjustl('Periodic')
+        write(iow,'(3X,A45,A16,'' q0=qN'')')adjl('matrixA boundary condition for hi edge:',45),adjustl('Periodic')
+        write(*  ,'(3X,A45,A16,'' q0=qN'')')adjl('matrixA boundary condition for hi edge:',45),adjustl('Periodic')
     else
-        write(iow,'(3X,A150)')adjl('Error: wrong matrix boundary condition for hi edge.. (choose between -1, 0, 1, 2',150)
-        write(*  ,'(3X,A150)')adjl('Error: wrong matrix boundary condition for hi edge.. (choose between -1, 0, 1, 2',150)
+        write(iow,'(3X,A150)')adjl('Error: wrong matrixA boundary condition for hi edge.. (choose between -1, 0, 1, 2',150)
+        write(*  ,'(3X,A150)')adjl('Error: wrong matrixA boundary condition for hi edge.. (choose between -1, 0, 1, 2',150)
         STOP
     endif 
 else
     if (matrixA_exist) then
-        write(iow,'(3X,A150)')adjl('Error: matrix boundary condition for hi edge not found..',150)
-        write(*  ,'(3X,A150)')adjl('Error: matrix boundary condition for hi edge not found..',150)
+        write(iow,'(3X,A150)')adjl('Error: matrixA boundary condition for hi edge not found..',150)
+        write(*  ,'(3X,A150)')adjl('Error: matrixA boundary condition for hi edge not found..',150)
         STOP
     else
-
         bc_hi_matrixA = bc_hi_grafted
+    endif
+endif
+
+
+if (log_lo_BC_of_matrixB) then
+    if (bc_lo_matrixB == F_bc_neuman)then
+        write(iow,'(3X,A45,A16,'' (dq/dr=0)'')')adjl('matrixB boundary condition for lo edge:',45),adjustl('Neumann')
+        write(*  ,'(3X,A45,A16,'' (dq/dr=0)'')')adjl('matrixB boundary condition for lo edge:',45),adjustl('Neumann')
+    else if(bc_lo_matrixB == F_bc_dirichlet_eq_0) then
+        write(iow,'(3X,A45,A16,'' q=0'')')adjl('matrixB boundary condition for lo edge:',45),adjustl('Dirichlet')
+        write(*  ,'(3X,A45,A16,'' q=0'')')adjl('matrixB boundary condition for lo edge:',45),adjustl('Dirichlet')
+    else if(bc_lo_matrixB == F_bc_dirichlet_eq_1) then
+        write(iow,'(3X,A45,A16,'' q=1'')')adjl('matrixB boundary condition for lo edge:',45),adjustl('Dirichlet')
+        write(*  ,'(3X,A45,A16,'' q=1'')')adjl('matrixB boundary condition for lo edge:',45),adjustl('Dirichlet')
+    else if(bc_lo_matrixB == F_bc_periodic) then
+        write(iow,'(3X,A45,A16,'' q0=qN'')')adjl('matrixB boundary condition for lo edge:',45),adjustl('Periodic')
+        write(*  ,'(3X,A45,A16,'' q0=qN'')')adjl('matrixB boundary condition for lo edge:',45),adjustl('Periodic')
+    else
+        write(iow,'(3X,A150)')adjl('Error: wrong matrixB boundary condition for lo edge.. (choose between -1, 0, 1, 2',150)
+        write(*  ,'(3X,A150)')adjl('Error: wrong matrixB boundary condition for lo edge.. (choose between -1, 0, 1, 2',150)
+        STOP
+    endif 
+else
+    if (matrixB_exist) then
+        write(iow,'(3X,A150)')adjl('Error: matrixB boundary condition for lo edge not found..',150)
+        write(*  ,'(3X,A150)')adjl('Error: matrixB boundary condition for lo edge not found..',150)
+        STOP
+    else
+        bc_lo_matrixB = bc_lo_grafted
+    endif
+endif
+
+if (log_hi_BC_of_matrixB) then
+    if (bc_hi_matrixB == F_bc_neuman)then
+        write(iow,'(3X,A45,A16,'' (dq/dr=0)'')')adjl('matrixB boundary condition for hi edge:',45),adjustl('Neumann')
+        write(*  ,'(3X,A45,A16,'' (dq/dr=0)'')')adjl('matrixB boundary condition for hi edge:',45),adjustl('Neumann')
+    else if(bc_hi_matrixB == F_bc_dirichlet_eq_0) then
+        write(iow,'(3X,A45,A16,'' q=0'')')adjl('matrixB boundary condition for hi edge:',45),adjustl('Dirichlet')
+        write(*  ,'(3X,A45,A16,'' q=0'')')adjl('matrixB boundary condition for hi edge:',45),adjustl('Dirichlet')
+    else if(bc_hi_matrixB == F_bc_dirichlet_eq_1) then
+        write(iow,'(3X,A45,A16,'' q=1'')')adjl('matrixB boundary condition for hi edge:',45),adjustl('Dirichlet')
+        write(*  ,'(3X,A45,A16,'' q=1'')')adjl('matrixB boundary condition for hi edge:',45),adjustl('Dirichlet')
+    else if(bc_hi_matrixB == F_bc_periodic) then
+        write(iow,'(3X,A45,A16,'' q0=qN'')')adjl('matrixB boundary condition for hi edge:',45),adjustl('Periodic')
+        write(*  ,'(3X,A45,A16,'' q0=qN'')')adjl('matrixB boundary condition for hi edge:',45),adjustl('Periodic')
+    else
+        write(iow,'(3X,A150)')adjl('Error: wrong matrixB boundary condition for hi edge.. (choose between -1, 0, 1, 2',150)
+        write(*  ,'(3X,A150)')adjl('Error: wrong matrixB boundary condition for hi edge.. (choose between -1, 0, 1, 2',150)
+        STOP
+    endif 
+else
+    if (matrixB_exist) then
+        write(iow,'(3X,A150)')adjl('Error: matrixB boundary condition for hi edge not found..',150)
+        write(*  ,'(3X,A150)')adjl('Error: matrixB boundary condition for hi edge not found..',150)
+        STOP
+    else
+        bc_hi_matrixB = bc_hi_grafted
     endif
 endif
 

@@ -27,11 +27,10 @@ call generate_mesh(spatial_integr_scheme, spatial_discret_scheme, symmetric, lx,
 !discretize the chain contour retrieve ds, rs and coeff_ns
 symmetric = .true.
 
-if (matrixA_exist)     call generate_mesh(contour_integr_scheme, contour_discret_scheme, symmetric, &
+if (matrixA_exist) call generate_mesh(contour_integr_scheme, contour_discret_scheme, symmetric, &
 &                                        chainlen_matrixA, ns_matrixA, ds_matrixA, rs_matrixA, coeff_ns_matrixA)
-if (matrixB_exist) call generate_mesh ( contour_integr_scheme,contour_discret_scheme,symmetric, &
-&  chainlen_matrixB ,ns_matrixB,ds_matrixB,rs_matrixB,coeff_ns_matrixB)
-
+if (matrixB_exist) call generate_mesh(contour_integr_scheme, contour_discret_scheme, symmetric, &
+&                                        chainlen_matrixB, ns_matrixB, ds_matrixB, rs_matrixB, coeff_ns_matrixB)
 if (grafted_lo_exist) call generate_mesh(contour_integr_scheme, contour_discret_scheme, symmetric, &
 &                                        chainlen_grafted_lo, ns_grafted_lo, ds_grafted_lo,        &
 &                                        rs_grafted_lo, coeff_ns_grafted_lo)

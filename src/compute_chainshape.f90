@@ -35,7 +35,7 @@ n_shape = 0.d0
 
 do kk = 1, nx-1
 
-    if (chain_type.eq."matrix") then
+    if (chain_type.eq."matrix".or.chain_type.eq."mxb___") then
         do ii = 0, nx
             qshape(ii,1)       = 1.d0
             qshape_final(ii,0) = 1.d0

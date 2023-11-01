@@ -21,9 +21,11 @@
    Spacing for spatial discret:                          uniform
    Chain contour integration rule:                  Simpson rule
    Spatial integration rule:                        Simpson rule
--------------------------------------MATRIX CHAINS-----------------------------------
+-------------------------------------MATRIXA CHAINS----------------------------------
    Chain contour discretization:                 0.100000000E+01 monomers
    Chain length:                                   100.000000000 monomers
+   Chain characteristic ratio C_infinity:                 8.2656
+   Bond length:                                           1.5400 Angstrom
 ------------------------------------ BULK CHAINS ------------------------------------
    Chain length (auto):                            100.000000000 monomers
 ---------------------------------BOUNDARY CONDITIONS---------------------------------
@@ -43,8 +45,8 @@
    Side of the solid wall:                             lo and hi
    *Hard sphere wall position not found. Auto:            0.0000 Angstrom
 -----------------------------INITIALIZE THE SCF PARAMETERS---------------------------
-   Matrix radious of gyration:                           18.0752 Angstrom
-   Matrix nodes along chain contour:                         100 nodes
+   MatrixA radious of gyration:                          18.0752 Angstrom
+   MatrixA nodes along chain contour:                        100 nodes
    Computation of the mass density from SL EoS..
    mass density was recomputed as:                        0.7649 g/cm3
    Sanchez-Lacombe influence parameter:           0.00000000E+00 J m^5

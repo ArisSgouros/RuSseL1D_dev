@@ -21,16 +21,22 @@
    Spacing for spatial discret:                          uniform
    Chain contour integration rule:                  Simpson rule
    Spatial integration rule:                        Simpson rule
--------------------------------------MATRIX CHAINS-----------------------------------
+-------------------------------------MATRIXA CHAINS----------------------------------
    Chain contour discretization:                 0.192000000E+01 monomers
    Chain length:                                   192.000000000 monomers
+   Chain characteristic ratio C_infinity:                 9.8530
+   Bond length:                                           1.5400 Angstrom
 ----------------------------------GRAFTED LO CHAINS----------------------------------
    Chain contour discretization:                 0.192000000E+01 monomers
    Chain length:                                   192.000000000 monomers
+   Chain characteristic ratio C_infinity:                 9.8530
+   Bond length:                                           1.5400 Angstrom
    Grafting density:                             0.498015687E-02 chains/Angstrom^2
 ----------------------------------GRAFTED HI CHAINS----------------------------------
    Chain contour discretization:                 0.192000000E+01 monomers
    Chain length:                                   192.000000000 monomers
+   Chain characteristic ratio C_infinity:                 9.8530
+   Bond length:                                           1.5400 Angstrom
    Grafting density:                             0.498015687E-02 chains/Angstrom^2
    Solid-grafted point distance:                               1 nodes
 ------------------------------------ BULK CHAINS ------------------------------------
@@ -55,8 +61,8 @@
    *Hard sphere wall position not found. Auto:            0.0000 Angstrom
    Recalibration of hard-sphere wall. E-target:           5.0000 k_B T
 -----------------------------INITIALIZE THE SCF PARAMETERS---------------------------
-   Matrix radious of gyration:                           27.3451 Angstrom
-   Matrix nodes along chain contour:                         100 nodes
+   MatrixA radious of gyration:                          27.3451 Angstrom
+   MatrixA nodes along chain contour:                        100 nodes
    grafted lo radious of gyration:                       27.3451 Angstrom
    grafted lo nodes along chain contour:                     100 nodes
    grafted hi radious of gyration:                       27.3451 Angstrom

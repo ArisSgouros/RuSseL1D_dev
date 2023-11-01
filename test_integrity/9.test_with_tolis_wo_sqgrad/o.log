@@ -24,6 +24,8 @@
 ----------------------------------GRAFTED LO CHAINS----------------------------------
    Chain contour discretization:                 0.100000000E+01 monomers
    Chain length:                                   100.000000000 monomers
+   Chain characteristic ratio C_infinity:                 8.2656
+   Bond length:                                           1.5400 Angstrom
    Grafting density:                             0.500000000E-02 chains/Angstrom^2
    Solid-grafted point distance:                               1 nodes
 ------------------------------------ BULK CHAINS ------------------------------------

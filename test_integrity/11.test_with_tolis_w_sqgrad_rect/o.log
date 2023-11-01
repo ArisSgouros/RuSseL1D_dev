@@ -21,12 +21,16 @@
    Spacing for spatial discret:                          uniform
    Chain contour integration rule:                  Simpson rule
    Spatial integration rule:                      Recrangle rule
--------------------------------------MATRIX CHAINS-----------------------------------
+-------------------------------------MATRIXA CHAINS----------------------------------
    Chain contour discretization:                 0.100000000E+01 monomers
    Chain length:                                   100.000000000 monomers
+   Chain characteristic ratio C_infinity:                 8.2656
+   Bond length:                                           1.5400 Angstrom
 ----------------------------------GRAFTED LO CHAINS----------------------------------
    Chain contour discretization:                 0.100000000E+01 monomers
    Chain length:                                   100.000000000 monomers
+   Chain characteristic ratio C_infinity:                 8.2656
+   Bond length:                                           1.5400 Angstrom
    Grafting density:                             0.500000000E-02 chains/Angstrom^2
    Solid-grafted point distance:                               1 nodes
 ------------------------------------ BULK CHAINS ------------------------------------
@@ -48,8 +52,8 @@
    Side of the solid wall:                             lo and hi
    *Hard sphere wall position not found. Auto:            0.0000 Angstrom
 -----------------------------INITIALIZE THE SCF PARAMETERS---------------------------
-   Matrix radious of gyration:                           18.0752 Angstrom
-   Matrix nodes along chain contour:                         100 nodes
+   MatrixA radious of gyration:                          18.0752 Angstrom
+   MatrixA nodes along chain contour:                        100 nodes
    grafted lo radious of gyration:                       18.0752 Angstrom
    grafted lo nodes along chain contour:                     100 nodes
    Computation of the mass density from SL EoS..

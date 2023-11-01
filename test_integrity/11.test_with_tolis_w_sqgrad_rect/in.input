@@ -30,15 +30,19 @@
  0                                                               ! wall side (-1: lo, 0: both, 1: hi)
 
  # matrix chains
- True                          ! matrix set (1: yes, 0 : no)
- 100.0                         ! matrix chain_length
- 1                             ! matrix ds
+ True                          ! matrixA set (1: yes, 0 : no)
+ 100.0                         ! matrixA chain_length
+ 1                             ! matrixA ds
+ 0.826563810E+01               ! matrixA C_inf
+ 1.540000000D+00               ! matrixA bond_length, (Angstrom)
  5.800000000D+00               ! chain r_ads_lo, (Angstrom)
 
  # grafted lo chains
  True                          ! grafted lo set (1: yes, 0: no)
  100.0                         ! grafted lo chain_length
  1                             ! grafted lo ds
+ 0.826563810E+01               ! grafted lo C_inf
+ 1.540000000D+00               ! grafted lo bond_length, (Angstrom)
  0.500000000E-02               ! grafted lo grafting_density, (chains/Angstrom^2)
 
  # grafted hi chains
@@ -50,8 +54,8 @@
  0.000000000D+00               ! grafted distance_from_solid, (Angstrom)
 
  # boundary conditions
- 0                             ! boundary_condition lo matrix, (-1: Neuman, 0: Dirichlet q=0, 1: Dirichlet q=1)
- 0                             ! boundary_condition hi matrix, (-1: Neuman, 0: Dirichlet q=0, 1: Dirichlet q=1)
+ 0                             ! boundary_condition lo matrixA, (-1: Neuman, 0: Dirichlet q=0, 1: Dirichlet q=1)
+ 0                             ! boundary_condition hi matrixA, (-1: Neuman, 0: Dirichlet q=0, 1: Dirichlet q=1)
  0                             ! boundary_condition lo grafted, (-1: Neuman, 0: Dirichlet q=0, 1: Dirichlet q=1)
  0                             ! boundary_condition hi grafted, (-1: Neuman, 0: Dirichlet q=0, 1: Dirichlet q=1)
 

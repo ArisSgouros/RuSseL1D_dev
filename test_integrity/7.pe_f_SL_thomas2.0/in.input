@@ -7,10 +7,8 @@
  0.000000000D+00               ! system pressure, (atm)
 
  # polymer parameters
- 0.826563810E+01               ! polymer C_inf
  0.140000000D+02               ! polymer monomer_mass, (g/mol)
  0.766000000D+00               ! polymer mass_density, (g/cm3)
- 1.540000000D+00               ! polymer bond_length, (Angstrom)
 
  # simulation parameters
  10000000                      ! field iterations

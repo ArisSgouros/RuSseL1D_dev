@@ -7,8 +7,6 @@
    Temperature:                                         500.0000 K
    Pressure:                                              0.0000 atm
 ----------------------------------POLYMER PROPERTIES---------------------------------
-   Chain characteristic ratio C_infinity:                 9.8530
-   Bond length:                                           1.5400 Angstrom
    Monomer mass:                                         52.0000 g/mol
    Mass density:                                          0.9530 g/cm^3
 --------------------------------SIMULATION PARAMETERS--------------------------------

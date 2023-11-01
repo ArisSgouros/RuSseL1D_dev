@@ -17,10 +17,13 @@ allocate(rs_matrixB(0:ns_matrixB),rs_matrixB_aux(0:ns_matrixB_aux))
 allocate(wa(0:nx),wa_ifc(0:nx),wa_ifc_new(0:nx),wa_ifc_backup(0:nx), Ufield(0:nx),df_drho(0:nx))
 allocate(rr(0:nx),irr(0:nx),layer_area(0:nx))
 allocate(phi_total(0:nx),phi_matrixA(0:nx),phi_matrixB(0:nx), phi_gr_lo(0:nx),phi_gr_hi(0:nx))
-allocate(qmatrixA(0:nx,2),qgr_lo(0:nx,2),qgr_hi(0:nx,2))
+allocate(qmatrixA(0:nx,2))
 allocate(qmatrixB(0:nx,2))
-allocate(qmatrixA_final(0:nx,0:ns_matrixA_aux),qgr_final_lo(0:nx,0:ns_grafted_lo),qgr_final_hi(0:nx,0:ns_grafted_hi))
+allocate(qmatrixA_final(0:nx,0:ns_matrixA_aux))
 allocate(qmatrixB_final(0:nx,0:ns_matrixB_aux))
+allocate(qgr_lo(0:nx,2),qgr_lo_aux(0:nx,2),qgr_hi(0:nx,2), qgr_hi_aux(0:nx,2))
+allocate(qgr_final_lo(0:nx,0:ns_grafted_lo), qgr_final_lo_aux(0:nx,0:ns_grafted_lo))
+allocate(qgr_final_hi(0:nx,0:ns_grafted_hi), qgr_final_hi_aux(0:nx,0:ns_grafted_hi))
 allocate(coeff_nx(0:nx))
 allocate(coeff_ns_matrixA(0:ns_matrixA),coeff_ns_matrixA_aux(0:ns_matrixA_aux),coeff_ns_grafted_lo(0:ns_grafted_lo), &
 &                                                                          coeff_ns_grafted_hi(0:ns_grafted_hi))
@@ -49,11 +52,15 @@ phi_gr_hi           = 0.d0
 qmatrixA             = 0.d0
 qmatrixB           =0.d0
 qgr_lo              = 0.d0
+qgr_lo_aux          = 0.d0
 qgr_hi              = 0.d0
+qgr_hi_aux          = 0.d0
 qmatrixA_final       = 0.d0
 qmatrixB_final =0.d0
 qgr_final_lo        = 0.d0
+qgr_final_lo_aux    = 0.d0
 qgr_final_hi        = 0.d0
+qgr_final_hi_aux    = 0.d0
 dx                  = 0.d0
 ds_matrixA           = 0.d0
 ds_matrixB         = 0.d0

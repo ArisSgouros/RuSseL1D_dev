@@ -16,6 +16,7 @@ use flags,  only: F_lo, F_hi
 use arrays, only: rx, coeff_nx, layer_area, phi_matrixA, phi_gr_lo, phi_gr_hi, phi_total, qmatrixA_final,    &
                 & qgr_final_lo, qgr_final_hi, wa_ifc, wa_ifc_new, rx, dx, ds_matrixA, ds_grafted_lo, rr,    &
                 & ds_grafted_hi, coeff_ns_matrixA, rs_grafted_lo, rs_grafted_hi, rs_matrixA, rs_matrixA_aux,  &
+                & qgr_final_lo_aux, qgr_final_hi_aux,                                                       &
                 & coeff_ns_grafted_lo, coeff_ns_grafted_hi
 !----------------------------------------------------------------------------------------------------------!
 implicit none
@@ -42,7 +43,7 @@ endif
 if (grafted_lo_exist) then
     if (out_q)               call export_q(qgr_final_lo,  ns_grafted_lo, nx, rs_grafted_lo, rx, "gra_lo")
     if (out_phi_seg)         call compute_phi_seg(export_phi_seg_id, chainlen_grafted_lo, coeff_ns_grafted_lo,   &
-                                                  ns_grafted_lo, nx, rx, qgr_final_lo, qmatrixA_final,"gra_lo")
+                                                  ns_grafted_lo, nx, rx, qgr_final_lo, qgr_final_lo_aux,"gra_lo")
     if (out_brush_thickness) call compute_brush_thickness(nx, layer_area, rx, coeff_nx, phi_gr_lo, F_lo, "gra_lo")
     if (out_chainshape)    call compute_chainshape(rho_seg_bulk, Rg2_per_mon, geometry, gnode_lo, edwards_solver,&
 &                                             linear_solver, bc_lo_grafted, bc_hi_grafted, qinit_lo, coeff_nx,&  
@@ -53,7 +54,7 @@ endif
 if (grafted_hi_exist) then
     if (out_q)               call export_q(qgr_final_hi,  ns_grafted_hi, nx, rs_grafted_hi, rx, "gra_hi")
     if (out_phi_seg)         call compute_phi_seg(export_phi_seg_id, chainlen_grafted_hi, coeff_ns_grafted_hi,   &
-&                                                 ns_grafted_hi, nx, rx, qgr_final_hi, qmatrixA_final,"gra_hi")
+&                                                 ns_grafted_hi, nx, rx, qgr_final_hi, qgr_final_hi_aux ,"gra_hi")
     if (out_brush_thickness) call compute_brush_thickness(nx, layer_area, rx, coeff_nx, phi_gr_hi, F_hi, "gra_hi")
     if (out_chainshape)    call compute_chainshape(rho_seg_bulk, Rg2_per_mon, geometry, gnode_hi, edwards_solver, &
 &                                             linear_solver, bc_lo_grafted, bc_hi_grafted, qinit_hi, coeff_nx,&

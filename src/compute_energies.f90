@@ -7,7 +7,7 @@ subroutine compute_energies(free_energy)
 use eos,         only: eos_ff, eos_df_drho
 use arrays,      only: ufield, layer_area, coeff_nx, qmatrixA_final, wa_ifc_new, wa, wa_bulk, phi_matrixA,   & 
                      & phi_gr_hi, phi_gr_lo, phi_total, dphi_dr, d2phi_dr2, qgr_final_lo, qgr_final_hi,    &
-                     & surface_area, volume, rx
+                     & surface_area, volume, rx, qgr_final_lo_aux, qgr_final_hi_aux
 use constants,   only: pi
 use flags,       only: F_both
 use parser_vars, only: wall_hamaker, rho_seg_bulk, lx, ns_grafted_lo, ns_grafted_hi, ns_matrixA, wall_side, &
@@ -127,11 +127,11 @@ endif
 E_nkTlnQm = 0.d0
 if (grafted_lo_exist) then
    nchgr_lo  = get_nchains(coeff_nx, nx, layer_area, phi_gr_lo, rho_seg_bulk, chainlen_grafted_lo)
-   E_nkTlnQm = E_nkTlnQm -nchgr_lo / beta * log(qmatrixA_final(gnode_lo,ns_grafted_lo))
+   E_nkTlnQm = E_nkTlnQm -nchgr_lo / beta * log(qgr_final_lo_aux(gnode_lo,ns_grafted_lo))
 endif
 if (grafted_hi_exist) then
    nchgr_hi  = get_nchains(coeff_nx, nx, layer_area, phi_gr_hi, rho_seg_bulk, chainlen_grafted_hi)
-   E_nkTlnQm = E_nkTlnQm -nchgr_hi / beta * log(qmatrixA_final(gnode_hi,ns_grafted_hi))
+   E_nkTlnQm = E_nkTlnQm -nchgr_hi / beta * log(qgr_final_hi_aux(gnode_hi,ns_grafted_hi))
 endif
 
 if (wall_side.eq.F_both.and.wall_hamaker) then
@@ -145,7 +145,7 @@ endif
 if (grafted_lo_exist) then
    !calculate the profile of the chain ends
    do kk = 0, nx
-       phi_end(kk) = 1.d0 / chainlen_grafted_lo * (qgr_final_lo(kk,ns_grafted_lo) * qmatrixA_final(kk,0))
+       phi_end(kk) = 1.d0 / chainlen_grafted_lo * (qgr_final_lo(kk,ns_grafted_lo) * qgr_final_lo_aux(kk,0))
    enddo
    rho_end = phi_end * rho_seg_bulk*1.d-30
    ! calculate the stretching free energy for every chain end abstained by dz from the grafting point
@@ -168,7 +168,7 @@ endif
 if (grafted_hi_exist) then
    !calculate the profile of the chain ends
    do kk = 0, nx
-       phi_end(kk) = 1.d0 / chainlen_grafted_hi * (qgr_final_hi(kk,ns_grafted_hi) * qmatrixA_final(kk,0))
+       phi_end(kk) = 1.d0 / chainlen_grafted_hi * (qgr_final_hi(kk,ns_grafted_hi) * qgr_final_hi_aux(kk,0))
    enddo
    rho_end = phi_end * rho_seg_bulk*1.d-30
    ! calculate the stretching free energy for every chain end abstained by dz from the grafting point

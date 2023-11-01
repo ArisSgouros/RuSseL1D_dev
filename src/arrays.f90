@@ -19,7 +19,7 @@ real(8), allocatable, dimension(:)   :: rs_matrixA,rs_matrixB, rs_matrixA_aux,rs
 real(8), allocatable, dimension(:)   :: dir_nodes_rdiag
 real(8), allocatable, dimension(:)   :: dphi_dr, d2phi_dr2
 real(8), allocatable, dimension(:)   :: phi_total, phi_matrixA,phi_matrixB, phi_gr_lo, phi_gr_hi
-real(8), allocatable, dimension(:,:) :: qmatrixA,qmatrixB, qgr_lo, qgr_hi
-real(8), allocatable, dimension(:,:) :: qmatrixA_final,qmatrixB_final, qgr_final_lo, qgr_final_hi
+real(8), allocatable, dimension(:,:) :: qmatrixA, qmatrixB, qgr_lo, qgr_hi, qgr_lo_aux, qgr_hi_aux
+real(8), allocatable, dimension(:,:) :: qmatrixA_final, qmatrixB_final, qgr_final_lo, qgr_final_hi, qgr_final_lo_aux, qgr_final_hi_aux
 !----------------------------------------------------------------------------------------------------------!
 end module arrays

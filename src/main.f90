@@ -55,59 +55,59 @@ write(*  ,'(2X,A15,9(2X,A15))') "Iteration", "energy (mN/m)", "error (k_B T)", "
 do iter = 0, max_iter
 
     if (matrixA_exist) then
-    !set the dirichlet boundary conditions for matrix chains
-    n_dir_nodes = 0
-    !dirichlet lower bound
-    if (bc_lo_matrixA.eq.F_bc_dirichlet_eq_0) then
-        dir_nodes_id(n_dir_nodes) = 0
-        dir_nodes_rdiag(n_dir_nodes) = 0.d0
-        n_dir_nodes = n_dir_nodes + 1   
-    else if (bc_lo_matrixA.eq.F_bc_dirichlet_eq_1) then
-        dir_nodes_id(n_dir_nodes) = 0
-        dir_nodes_rdiag(n_dir_nodes) = 1.0d0
-        n_dir_nodes = n_dir_nodes + 1   
-    endif
-    !dirichlet upper bound
-    if (bc_hi_matrixA.eq.F_bc_dirichlet_eq_0) then
-        dir_nodes_id(n_dir_nodes) = nx
-        dir_nodes_rdiag(n_dir_nodes) = 0.d0
-        n_dir_nodes = n_dir_nodes + 1   
-    else if (bc_hi_matrixA.eq.F_bc_dirichlet_eq_1) then
-        dir_nodes_id(n_dir_nodes) = nx
-        dir_nodes_rdiag(n_dir_nodes) = 1.0d0
-        n_dir_nodes = n_dir_nodes + 1   
-    endif
+        !set the dirichlet boundary conditions for matrix chains
+        n_dir_nodes = 0
+        !dirichlet lower bound
+        if (bc_lo_matrixA.eq.F_bc_dirichlet_eq_0) then
+            dir_nodes_id(n_dir_nodes) = 0
+            dir_nodes_rdiag(n_dir_nodes) = 0.d0
+            n_dir_nodes = n_dir_nodes + 1   
+        else if (bc_lo_matrixA.eq.F_bc_dirichlet_eq_1) then
+            dir_nodes_id(n_dir_nodes) = 0
+            dir_nodes_rdiag(n_dir_nodes) = 1.0d0
+            n_dir_nodes = n_dir_nodes + 1   
+        endif
+        !dirichlet upper bound
+        if (bc_hi_matrixA.eq.F_bc_dirichlet_eq_0) then
+            dir_nodes_id(n_dir_nodes) = nx
+            dir_nodes_rdiag(n_dir_nodes) = 0.d0
+            n_dir_nodes = n_dir_nodes + 1   
+        else if (bc_hi_matrixA.eq.F_bc_dirichlet_eq_1) then
+            dir_nodes_id(n_dir_nodes) = nx
+            dir_nodes_rdiag(n_dir_nodes) = 1.0d0
+            n_dir_nodes = n_dir_nodes + 1   
+        endif
 
-    if (geometry.eq.F_sphere) then
-        do ii = 0, n_dir_nodes-1
-            dir_nodes_rdiag(ii) = dir_nodes_rdiag(ii)*rr(dir_nodes_id(ii))
-        enddo
-    endif
-
-    !matrix chains
-    do ii = 0, nx
-        qmatrixA(ii,1)       = 1.d0
-        qmatrixA_final(ii,0) = 1.d0
-    enddo
-
-    if (geometry.eq.F_sphere) then
-        do ii = 0, nx
-            qmatrixA(ii,1)       = qmatrixA(ii,1) * rr(ii)
-            qmatrixA_final(ii,0) = qmatrixA_final(ii,0) * rr(ii)
-        enddo
-    endif
- 
-    call solver_edwards(bc_lo_matrixA, bc_hi_matrixA, n_dir_nodes, dir_nodes_id, dir_nodes_rdiag, &
-&                       Rg2_per_mon, nx, ns_matrixA, dx, ds_matrixA, edwards_solver,      &
-&                       linear_solver, wa_ifc, qmatrixA, qmatrixA_final)
-
-    if (geometry.eq.F_sphere) then
-        do tt = 0, ns_matrixA
-            do ii = 0, nx
-                qmatrixA_final(ii,tt) = qmatrixA_final(ii,tt)*irr(ii)
+        if (geometry.eq.F_sphere) then
+            do ii = 0, n_dir_nodes-1
+                dir_nodes_rdiag(ii) = dir_nodes_rdiag(ii)*rr(dir_nodes_id(ii))
             enddo
+        endif
+
+        !matrix chains
+        do ii = 0, nx
+            qmatrixA(ii,1)       = 1.d0
+            qmatrixA_final(ii,0) = 1.d0
         enddo
-    endif
+
+        if (geometry.eq.F_sphere) then
+            do ii = 0, nx
+                qmatrixA(ii,1)       = qmatrixA(ii,1) * rr(ii)
+                qmatrixA_final(ii,0) = qmatrixA_final(ii,0) * rr(ii)
+            enddo
+        endif
+ 
+        call solver_edwards(bc_lo_matrixA, bc_hi_matrixA, n_dir_nodes, dir_nodes_id, dir_nodes_rdiag, &
+&                           Rg2_per_mon, nx, ns_matrixA, dx, ds_matrixA, edwards_solver,      &
+&                           linear_solver, wa_ifc, qmatrixA, qmatrixA_final)
+
+        if (geometry.eq.F_sphere) then
+            do tt = 0, ns_matrixA
+                do ii = 0, nx
+                    qmatrixA_final(ii,tt) = qmatrixA_final(ii,tt)*irr(ii)
+                enddo
+            enddo
+        endif
 
         call contour_convolution(chainlen_matrixA, nx, ns_matrixA, coeff_ns_matrixA, &
 &                                qmatrixA_final, qmatrixA_final, phi_matrixA)

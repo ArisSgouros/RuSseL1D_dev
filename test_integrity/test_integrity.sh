@@ -46,8 +46,13 @@ declare -a TEST_LIST=( \
    $test_path"/10.test_with_tolis_w_sqgrad" \
    $test_path"/11.test_with_tolis_w_sqgrad_rect" \
    $test_path"/12.ps_f_hybrid" \
+   $test_path"/13.8_w_matrixB/" \
 )
 
+: '
+
+
+'
 
 echo 'Compiling..'
 make cleantest >/dev/null

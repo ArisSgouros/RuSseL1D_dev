@@ -1,0 +1,17 @@
+o.Usolid
+o.energies
+o.q_mxb___
+o.q_gra_lo
+o.q_gra_hi
+o.chain_shape_mxb___
+o.chain_shape_gra_lo
+o.chain_shape_gra_hi
+o.phi_segs_mxb___
+o.phi_segs_gra_lo
+o.phi_segs_gra_hi
+o.phi
+o.field
+o.brush_thickness_gra_lo
+o.brush_thickness_gra_hi
+o.phi_states_mxb___
+o.log

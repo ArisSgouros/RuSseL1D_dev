@@ -87,7 +87,7 @@ Convergence of max field error   0.4997045E-04 k_B T
    matrix chains:      0.9326103E-02 chains
 ---------------------------------GRAFTED LO CHAINS-----------------------------------
    grafted lo chains   0.5003139E-02 chains
-   q_f(r_gi,0):        0.1938901E-02
-   q_g(r_gi,N_g):      0.1787344E+05
+   q_f(r_gi,0):        0.1938900E-02
+   q_g(r_gi,N_g):      0.1787345E+05
    grafting density:   0.5003139E-02 chains/angstrom
-   error:              0.4614791E+00
+   error:              0.4614798E+00

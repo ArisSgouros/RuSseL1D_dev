@@ -18,7 +18,7 @@ integer :: bc_hi_matrixA,bc_hi_matrixB, bc_lo_matrixA,bc_lo_matrixB, bc_hi_graft
 integer :: edwards_solver, linear_solver
 integer :: contour_discret_scheme, spatial_discret_scheme
 integer :: contour_integr_scheme, spatial_integr_scheme
-integer :: nx, ns_matrixA,ns_matrixB, ns_matrixA_aux,ns_matrixB_aux, ns_grafted_lo, ns_grafted_hi
+integer :: nx, ns_matrixA,ns_matrixB, ns_grafted_lo, ns_grafted_hi
 integer :: gnode_lo, gnode_hi, geometry, max_iter
 integer :: thermo_every, field_every, compute_every, check_stability_every
 integer :: export_phi_seg_id
@@ -26,7 +26,7 @@ integer :: wall_type, wall_side
 integer :: n_wall_custom_vars
 
 real(8) :: max_wa_error, r_ads_lo, r_ads_hi
-real(8) :: chainlen_matrixA,chainlen_matrixB, chainlen_matrixA_aux,chainlen_matrixB_aux, chainlen_grafted_lo, chainlen_grafted_hi, chainlen_bulk
+real(8) :: chainlen_matrixA,chainlen_matrixB, chainlen_grafted_lo, chainlen_grafted_hi, chainlen_bulk
 real(8) :: ds_ave_matrixA,ds_ave_matrixB, ds_ave_grafted_lo, ds_ave_grafted_hi
 real(8) :: lx, dx_ave
 real(8) :: graft_pos, gdens_lo, gdens_hi, delta

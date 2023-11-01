@@ -12,13 +12,13 @@ use flags,        only: F_bc_dirichlet_eq_0, F_bc_dirichlet_eq_1, F_sphere
 use parser_vars,  only: bc_hi_matrixA, bc_lo_matrixA, bc_hi_grafted, bc_lo_grafted, beta, k_gr, delta,      &
                       & chainlen_matrixA, chainlen_grafted_hi, edwards_solver, linear_solver, geometry,    &
                       & chainlen_grafted_lo, check_stability_every, compute_every, field_every, frac, nx, &
-                      & ns_matrixA, ns_matrixA_aux, ns_grafted_lo, ns_grafted_hi, matrixA_exist,             &
+                      & ns_matrixA, ns_grafted_lo, ns_grafted_hi, matrixA_exist,             &
                       & grafted_hi_exist, grafted_lo_exist, Rg2_per_mon, gnode_lo, gnode_hi, rho_seg_bulk,&
                       & gdens_lo, gdens_hi, max_iter, max_wa_error, square_gradient, thermo_every
 use arrays,       only: qmatrixA, qmatrixA_final, qgr_lo, qgr_final_lo, qgr_hi, qgr_final_hi, dir_nodes_id, &
                       & qgr_lo_aux, qgr_final_lo_aux, qgr_hi_aux, qgr_final_hi_aux, &
                       & dir_nodes_rdiag, phi_total, dphi_dr, d2phi_dr2, coeff_nx, coeff_ns_matrixA,        &
-                      & coeff_ns_grafted_lo, coeff_ns_grafted_hi, Ufield, dx, ds_matrixA, ds_matrixA_aux,   &
+                      & coeff_ns_grafted_lo, coeff_ns_grafted_hi, Ufield, dx, ds_matrixA, &
                       & ds_grafted_hi, ds_grafted_lo, wa, wa_bulk, wa_ifc, wa_ifc_new, wa_ifc_backup,     &
                       & surface_area, rr, irr, layer_area, phi_matrixA, phi_gr_hi, phi_gr_lo, n_dir_nodes
 !----------------------------------------------------------------------------------------------------------!
@@ -97,11 +97,11 @@ do iter = 0, max_iter
     endif
  
     call solver_edwards(bc_lo_matrixA, bc_hi_matrixA, n_dir_nodes, dir_nodes_id, dir_nodes_rdiag, &
-&                       Rg2_per_mon, nx, ns_matrixA_aux, dx, ds_matrixA_aux, edwards_solver,      &
+&                       Rg2_per_mon, nx, ns_matrixA, dx, ds_matrixA, edwards_solver,      &
 &                       linear_solver, wa_ifc, qmatrixA, qmatrixA_final)
 
     if (geometry.eq.F_sphere) then
-        do tt = 0, ns_matrixA_aux
+        do tt = 0, ns_matrixA
             do ii = 0, nx
                 qmatrixA_final(ii,tt) = qmatrixA_final(ii,tt)*irr(ii)
             enddo

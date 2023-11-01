@@ -7,7 +7,7 @@ subroutine export_computes(qinit_lo, qinit_hi)
 use parser_vars, only: geometry, Rg2_per_mon, ns_grafted_lo, ns_grafted_hi, gnode_lo, gnode_hi, out_phi,   &
                 & out_field, out_q, out_phi_seg, out_ads_free, out_chainshape, out_brush_thickness,        &
                 & out_equimolar,                                                                           &
-                & grafted_lo_exist, grafted_hi_exist, matrixA_exist, ns_matrixA, ns_matrixA_aux, rho_seg_bulk,&
+                & grafted_lo_exist, grafted_hi_exist, matrixA_exist, ns_matrixA, rho_seg_bulk,&
                 & edwards_solver, rho_seg_bulk, chainlen_matrixA, grafted_hi_exist, grafted_lo_exist,       &
                 & matrixA_exist, ns_grafted_lo, ns_grafted_hi, chainlen_grafted_lo, chainlen_grafted_hi,    &
                 & bc_lo_matrixA, bc_hi_matrixA, bc_lo_grafted, bc_hi_grafted, nx, export_phi_seg_id,         &
@@ -15,7 +15,7 @@ use parser_vars, only: geometry, Rg2_per_mon, ns_grafted_lo, ns_grafted_hi, gnod
 use flags,  only: F_lo, F_hi
 use arrays, only: rx, coeff_nx, layer_area, phi_matrixA, phi_gr_lo, phi_gr_hi, phi_total, qmatrixA_final,    &
                 & qgr_final_lo, qgr_final_hi, wa_ifc, wa_ifc_new, rx, dx, ds_matrixA, ds_grafted_lo, rr,    &
-                & ds_grafted_hi, coeff_ns_matrixA, rs_grafted_lo, rs_grafted_hi, rs_matrixA, rs_matrixA_aux,  &
+                & ds_grafted_hi, coeff_ns_matrixA, rs_grafted_lo, rs_grafted_hi, rs_matrixA,                &
                 & qgr_final_lo_aux, qgr_final_hi_aux,                                                       &
                 & coeff_ns_grafted_lo, coeff_ns_grafted_hi
 !----------------------------------------------------------------------------------------------------------!
@@ -25,7 +25,6 @@ real(8), intent(in) :: qinit_lo, qinit_hi
 !----------------------------------------------------------------------------------------------------------!
 if (out_phi)   call export_phi(rx, phi_matrixA, phi_gr_lo, phi_gr_hi, phi_total)
 if (out_field) call export_field(rx, wa_ifc, wa_ifc_new)
-if (out_q)     call export_q(qmatrixA_final, ns_matrixA_aux, nx, rs_matrixA_aux, rx, "mataux")
 
 if (matrixA_exist) then
     if (out_q)          call export_q(qmatrixA_final, ns_matrixA, nx, rs_matrixA, rx, "matrix")

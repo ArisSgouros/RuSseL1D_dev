@@ -38,12 +38,10 @@ logical :: log_dx                          = .false.
 logical :: log_temperature                 = .false.
 logical :: log_pressure                    = .false.
 
-logical :: log_characteristic_ratio        = .false.
 logical :: log_characteristic_ratio_matrixA = .false.
 logical :: log_characteristic_ratio_matrixB = .false.
 logical :: log_characteristic_ratio_gra_lo = .false.
 logical :: log_characteristic_ratio_gra_hi = .false.
-logical :: log_bond_length                 = .false.
 logical :: log_bond_length_matrixA         = .false.
 logical :: log_bond_length_matrixB         = .false.
 logical :: log_bond_length_gra_lo          = .false.
@@ -182,12 +180,6 @@ do
             log_pressure = .true.
     
         ! polymer parameters
-        elseif (index(line,"! polymer C_inf") > 0) then
-            read(line,'(E16.9)') CN
-            log_characteristic_ratio = .true.
-        elseif (index(line,"! polymer bond_length") > 0) then
-            read(line,'(E16.9)') bond_length
-            log_bond_length = .true.
         elseif (index(line,"! polymer monomer_mass") > 0) then
             read(line,'(E16.9)') mon_mass
             log_monomer_mass = .true.
@@ -553,24 +545,6 @@ endif
 
 write(iow,'(A85)')adjl('----------------------------------POLYMER PROPERTIES---------------------------------',85)
 write(*  ,'(A85)')adjl('----------------------------------POLYMER PROPERTIES---------------------------------',85)
-
-if (log_characteristic_ratio) then
-    write(iow,'(3X,A45,F16.4)')adjl('Chain characteristic ratio C_infinity:',45) ,CN
-    write(*  ,'(3X,A45,F16.4)')adjl('Chain characteristic ratio C_infinity:',45) ,CN
-else
-    write(iow,'(3X,A45)')adjl('Error: chain characteristic ratio not found..',45)
-    write(*  ,'(3X,A45)')adjl('Error: chain characteristic ratio not found..',45)
-    STOP
-endif
-
-if (log_bond_length) then
-    write(iow,'(3X,A45,F16.4,'' Angstrom'')')adjl('Bond length:',45), bond_length
-    write(*  ,'(3X,A45,F16.4,'' Angstrom'')')adjl('Bond length:',45), bond_length
-else
-    write(iow,'(3X,A45)') 'Error: bond length not found..'
-    write(*  ,'(3X,A45)') 'Error: bond length not found..'
-    STOP
-endif
 
 if (log_monomer_mass) then
     write(iow,'(3X,A45,F16.4,'' g/mol'')')adjl('Monomer mass:',45), mon_mass

@@ -4,14 +4,14 @@
 
 subroutine compute_phi_ads_states(coeff, rr, rx, dx, ds, wa, phi_matrixA, qmatrixA_final, &
 &                                 bc_lo_type, bc_hi_type, geometry, r_ads_lo, r_ads_hi, &
-&                                 chainlen, ns, chain_type)
+&                                 chainlen, Rg2_per_mon, ns, chain_type)
 !----------------------------------------------------------------------------------------------------------!
-use parser_vars, only: nx, edwards_solver, linear_solver, Rg2_per_mon, lx, wall_pos
+use parser_vars, only: nx, edwards_solver, linear_solver, lx, wall_pos
 use flags, only: F_bc_dirichlet_eq_0, F_bc_dirichlet_eq_1, F_sphere
 !----------------------------------------------------------------------------------------------------------!
 implicit none
 !----------------------------------------------------------------------------------------------------------!
-real(8), intent(in)        :: r_ads_lo, r_ads_hi, chainlen
+real(8), intent(in)        :: r_ads_lo, r_ads_hi, chainlen, Rg2_per_mon
 integer, dimension(0:nx+4) :: dir_nodes_id
 integer                    :: tt, kk, ii, counter, n_dir_nodes
 

@@ -4,7 +4,8 @@
 
 subroutine export_computes(qinit_lo, qinit_hi)
 !----------------------------------------------------------------------------------------------------------!
-use parser_vars, only: geometry, Rg2_per_mon, ns_grafted_lo, ns_grafted_hi, gnode_lo, gnode_hi, out_phi,   &
+use parser_vars, only: geometry, ns_grafted_lo, ns_grafted_hi, gnode_lo, gnode_hi, out_phi,   &
+                & Rg2_per_mon_matrixA, Rg2_per_mon_matrixB, Rg2_per_mon_gra_lo, Rg2_per_mon_gra_hi, &
                 & out_field, out_q, out_phi_seg, out_ads_free, out_chainshape, out_brush_thickness,        &
                 & out_equimolar,                                                                           &
                 & grafted_lo_exist, grafted_hi_exist, matrixA_exist, ns_matrixA, rho_seg_bulk,&
@@ -32,8 +33,8 @@ if (matrixA_exist) then
 &                                            rx, qmatrixA_final, qmatrixA_final,"matrixA")
     if (out_ads_free)   call compute_phi_ads_states(coeff_ns_matrixA, rr, rx, dx, ds_matrixA, wa_ifc, phi_matrixA,   &
 &                                                   qmatrixA_final, bc_lo_matrixA, bc_hi_matrixA, geometry, r_ads_lo,&
-&                                                    r_ads_hi, chainlen_matrixA, ns_matrixA, "matrixA")
-    if (out_chainshape) call compute_chainshape(rho_seg_bulk, Rg2_per_mon, geometry, gnode_lo, edwards_solver,    &
+&                                                    r_ads_hi, chainlen_matrixA, Rg2_per_mon_matrixA, ns_matrixA, "matrixA")
+    if (out_chainshape) call compute_chainshape(rho_seg_bulk, Rg2_per_mon_matrixA, geometry, gnode_lo, edwards_solver,&
 &                                               linear_solver, bc_lo_matrixA, bc_hi_matrixA, qinit_lo, coeff_nx,    &
 &                                               rr, layer_area, rx, nx, dx, chainlen_matrixA, ns_matrixA, ds_matrixA,&
 &                                               wa_ifc, phi_matrixA, qmatrixA_final, "matrixA")
@@ -44,7 +45,7 @@ if (grafted_lo_exist) then
     if (out_phi_seg)         call compute_phi_seg(export_phi_seg_id, chainlen_grafted_lo, coeff_ns_grafted_lo,   &
                                                   ns_grafted_lo, nx, rx, qgr_final_lo, qgr_final_lo_aux,"gra_lo")
     if (out_brush_thickness) call compute_brush_thickness(nx, layer_area, rx, coeff_nx, phi_gr_lo, F_lo, "gra_lo")
-    if (out_chainshape)    call compute_chainshape(rho_seg_bulk, Rg2_per_mon, geometry, gnode_lo, edwards_solver,&
+    if (out_chainshape)    call compute_chainshape(rho_seg_bulk, Rg2_per_mon_gra_lo, geometry, gnode_lo, edwards_solver,&
 &                                             linear_solver, bc_lo_grafted, bc_hi_grafted, qinit_lo, coeff_nx,&  
 &                                             rr, layer_area, rx, nx, dx, chainlen_grafted_lo, ns_grafted_lo, &
 &                                             ds_grafted_lo, wa_ifc, phi_gr_lo, qgr_final_lo, "gra_lo")
@@ -55,7 +56,7 @@ if (grafted_hi_exist) then
     if (out_phi_seg)         call compute_phi_seg(export_phi_seg_id, chainlen_grafted_hi, coeff_ns_grafted_hi,   &
 &                                                 ns_grafted_hi, nx, rx, qgr_final_hi, qgr_final_hi_aux ,"gra_hi")
     if (out_brush_thickness) call compute_brush_thickness(nx, layer_area, rx, coeff_nx, phi_gr_hi, F_hi, "gra_hi")
-    if (out_chainshape)    call compute_chainshape(rho_seg_bulk, Rg2_per_mon, geometry, gnode_hi, edwards_solver, &
+    if (out_chainshape)    call compute_chainshape(rho_seg_bulk, Rg2_per_mon_gra_hi, geometry, gnode_hi, edwards_solver, &
 &                                             linear_solver, bc_lo_grafted, bc_hi_grafted, qinit_hi, coeff_nx,&
 &                                             rr, layer_area, rx, nx, dx, chainlen_grafted_hi, ns_grafted_hi, &
 &                                             ds_grafted_hi, wa_ifc, phi_gr_hi, qgr_final_hi, "gra_hi")

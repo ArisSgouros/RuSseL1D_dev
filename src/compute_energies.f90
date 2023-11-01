@@ -13,7 +13,8 @@ use flags,       only: F_both
 use parser_vars, only: wall_hamaker, rho_seg_bulk, lx, ns_grafted_lo, ns_grafted_hi, ns_matrixA, wall_side, &
                      & grafted_lo_exist, grafted_hi_exist, matrixA_exist, k_gr, lx, nx, chainlen_matrixA,    &
                      & chainlen_grafted_lo, chainlen_grafted_hi, chainlen_bulk, gnode_lo, gnode_hi,        &
-                     & gdens_lo, gdens_hi, beta, Rg2_per_mon, sig_solid, wall_pos, asolid
+                     & gdens_lo, gdens_hi, beta, sig_solid, wall_pos, asolid, &
+                     & Rg2_per_mon_gra_lo, Rg2_per_mon_gra_hi
 !----------------------------------------------------------------------------------------------------------!
 implicit none
 !----------------------------------------------------------------------------------------------------------!
@@ -151,7 +152,7 @@ if (grafted_lo_exist) then
    ! calculate the stretching free energy for every chain end abstained by dz from the grafting point
    do kk = 0, nx
        dz = rx(kk)-rx(gnode_lo)
-       A_stretch(kk) = 3.0/(2.d0 * beta * (Rg2_per_mon*chainlen_grafted_lo*6.d0)) * dz**2
+       A_stretch(kk) = 3.0/(2.d0 * beta * (Rg2_per_mon_gra_lo*chainlen_grafted_lo*6.d0)) * dz**2
    end do
    ! calculate the total stretching free energy from all chain ends
    do kk = 0, nx
@@ -174,7 +175,7 @@ if (grafted_hi_exist) then
    ! calculate the stretching free energy for every chain end abstained by dz from the grafting point
    do kk = 0, nx
        dz = rx(kk)-rx(gnode_hi)
-       A_stretch(kk) = 3.0/(2.d0 * beta * (Rg2_per_mon*chainlen_grafted_hi*6.d0)) * dz**2
+       A_stretch(kk) = 3.0/(2.d0 * beta * (Rg2_per_mon_gra_hi*chainlen_grafted_hi*6.d0)) * dz**2
    end do
    ! calculate the total stretching free energy from all chain ends
    do kk = 0, nx

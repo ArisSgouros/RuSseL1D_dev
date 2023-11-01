@@ -13,7 +13,8 @@ use parser_vars,  only: bc_hi_matrixA, bc_lo_matrixA, bc_hi_grafted, bc_lo_graft
                       & chainlen_matrixA, chainlen_grafted_hi, edwards_solver, linear_solver, geometry,    &
                       & chainlen_grafted_lo, check_stability_every, compute_every, field_every, frac, nx, &
                       & ns_matrixA, ns_grafted_lo, ns_grafted_hi, matrixA_exist,             &
-                      & grafted_hi_exist, grafted_lo_exist, Rg2_per_mon, gnode_lo, gnode_hi, rho_seg_bulk,&
+                      & grafted_hi_exist, grafted_lo_exist, gnode_lo, gnode_hi, rho_seg_bulk,&
+                      & Rg2_per_mon_matrixA, Rg2_per_mon_matrixB, Rg2_per_mon_gra_lo, Rg2_per_mon_gra_hi, &
                       & gdens_lo, gdens_hi, max_iter, max_wa_error, square_gradient, thermo_every
 use arrays,       only: qmatrixA, qmatrixA_final, qgr_lo, qgr_final_lo, qgr_hi, qgr_final_hi, dir_nodes_id, &
                       & qgr_lo_aux, qgr_final_lo_aux, qgr_hi_aux, qgr_final_hi_aux, &
@@ -98,7 +99,7 @@ do iter = 0, max_iter
         endif
  
         call solver_edwards(bc_lo_matrixA, bc_hi_matrixA, n_dir_nodes, dir_nodes_id, dir_nodes_rdiag, &
-&                           Rg2_per_mon, nx, ns_matrixA, dx, ds_matrixA, edwards_solver,      &
+&                           Rg2_per_mon_matrixA, nx, ns_matrixA, dx, ds_matrixA, edwards_solver,      &
 &                           linear_solver, wa_ifc, qmatrixA, qmatrixA_final)
 
         if (geometry.eq.F_sphere) then
@@ -159,7 +160,7 @@ do iter = 0, max_iter
         endif
 
         call solver_edwards(bc_lo_grafted, bc_hi_grafted, n_dir_nodes, dir_nodes_id, dir_nodes_rdiag, &
-&                           Rg2_per_mon, nx, ns_grafted_lo, dx, ds_grafted_lo, edwards_solver,        &
+&                           Rg2_per_mon_gra_lo, nx, ns_grafted_lo, dx, ds_grafted_lo, edwards_solver,        &
 &                           linear_solver, wa_ifc, qgr_lo_aux, qgr_final_lo_aux)
 
         if (geometry.eq.F_sphere) then
@@ -192,7 +193,7 @@ do iter = 0, max_iter
 
 
         call solver_edwards(bc_lo_grafted, bc_hi_grafted, n_dir_nodes, dir_nodes_id, dir_nodes_rdiag, &
-&                           Rg2_per_mon, nx, ns_grafted_lo, dx, ds_grafted_lo, edwards_solver,        &
+&                           Rg2_per_mon_gra_lo, nx, ns_grafted_lo, dx, ds_grafted_lo, edwards_solver,        &
 &                           linear_solver, wa_ifc, qgr_lo, qgr_final_lo)
 
         if (geometry.eq.F_sphere) then
@@ -253,7 +254,7 @@ do iter = 0, max_iter
         endif
 
         call solver_edwards(bc_lo_grafted, bc_hi_grafted, n_dir_nodes, dir_nodes_id, dir_nodes_rdiag, &
-&                           Rg2_per_mon, nx, ns_grafted_hi, dx, ds_grafted_hi, edwards_solver,        &
+&                           Rg2_per_mon_gra_hi, nx, ns_grafted_hi, dx, ds_grafted_hi, edwards_solver,        &
 &                           linear_solver, wa_ifc, qgr_hi_aux, qgr_final_hi_aux)
 
         if (geometry.eq.F_sphere) then
@@ -285,7 +286,7 @@ do iter = 0, max_iter
         endif
 
         call solver_edwards(bc_lo_grafted, bc_hi_grafted, n_dir_nodes, dir_nodes_id, dir_nodes_rdiag, &
-&                           Rg2_per_mon, nx, ns_grafted_hi, dx, ds_grafted_hi, edwards_solver,        &
+&                           Rg2_per_mon_gra_hi, nx, ns_grafted_hi, dx, ds_grafted_hi, edwards_solver,        &
 &                           linear_solver, wa_ifc, qgr_hi, qgr_final_hi)
 
         if (geometry.eq.F_sphere) then

@@ -7,10 +7,10 @@ subroutine init_scf_params()
 use eos,          only: rsl_N, T_tilde, P_tilde, rho_tilde_bulk, T_star, P_star, V_star, rho_star,             &
                       & eos_type, eos_rho_tilde_0
 use flags,        only: F_sanchez_lacombe
-use parser_vars,  only: bond_length, chainlen_matrixA, chainlen_matrixB, chainlen_grafted_lo, chainlen_grafted_hi, &
+use parser_vars,  only: chainlen_matrixA, chainlen_matrixB, chainlen_grafted_lo, chainlen_grafted_hi, &
                       & ds_ave_matrixA, ds_ave_matrixB,  &
                       & ds_ave_grafted_lo, ds_ave_grafted_hi, ns_matrixA, ns_matrixB, ns_grafted_lo, ns_grafted_hi,         &
-                      & matrixA_exist, matrixB_exist, grafted_lo_exist, grafted_hi_exist, Rg2_per_mon, CN, rho_seg_bulk,       &
+                      & matrixA_exist, matrixB_exist, grafted_lo_exist, grafted_hi_exist, rho_seg_bulk,       &
                       & rho_mol_bulk, rho_mass_bulk, pressure, Temp, k_gr, k_gr_tilde, mon_mass,               &
                       & square_gradient, gdens_hi, gdens_lo, chainlen_bulk, &
                       & bond_length_matrixA, bond_length_matrixB, bond_length_gra_lo, bond_length_gra_hi,       &
@@ -25,8 +25,6 @@ real(8) :: SL_kappa_T
 !----------------------------------------------------------------------------------------------------------!
 write(iow,'(A85)')adjl("-----------------------------INITIALIZE THE SCF PARAMETERS---------------------------",85)
 write(*  ,'(A85)')adjl("-----------------------------INITIALIZE THE SCF PARAMETERS---------------------------",85)
-
-Rg2_per_mon  = bond_length**2 * CN / 6.d00
 
 if (matrixA_exist) then
     Rg2_per_mon_matrixA  = bond_length_matrixA**2 * CN_matrixA / 6.d00

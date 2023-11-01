@@ -39,7 +39,15 @@ logical :: log_temperature                 = .false.
 logical :: log_pressure                    = .false.
 
 logical :: log_characteristic_ratio        = .false.
+logical :: log_characteristic_ratio_matrixA = .false.
+logical :: log_characteristic_ratio_matrixB = .false.
+logical :: log_characteristic_ratio_gra_lo = .false.
+logical :: log_characteristic_ratio_gra_hi = .false.
 logical :: log_bond_length                 = .false.
+logical :: log_bond_length_matrixA         = .false.
+logical :: log_bond_length_matrixB         = .false.
+logical :: log_bond_length_gra_lo          = .false.
+logical :: log_bond_length_gra_hi          = .false.
 logical :: log_monomer_mass                = .false.
 logical :: log_mass_density                = .false.
 
@@ -335,32 +343,49 @@ do
         elseif (index(line,"! wall side") > 0) then
             read(line,'(I10)') wall_side
             log_wall_side = .true.
-        !matrix chains
-        elseif (index(line,"! matrix set") > 0) then
+
+        !matrixA chains
+        elseif (index(line,"! matrixA set") > 0) then
             read(line,'(L10)') matrixA_exist
             log_matrixA_exist = .true.
-        elseif (index(line,"! matrix chain_length") > 0) then
+        elseif (index(line,"! matrixA C_inf") > 0) then
+            read(line,'(E16.9)') CN_matrixA
+            log_characteristic_ratio_matrixA = .true.
+        elseif (index(line,"! matrixA bond_length") > 0) then
+            read(line,'(E16.9)') bond_length_matrixA
+            log_bond_length_matrixA = .true.
+        elseif (index(line,"! matrixA chain_length") > 0) then
             read(line,*) chainlen_matrixA
             log_chain_length_matrixA = .true.
-        elseif (index(line,"! matrix ds") > 0) then
+        elseif (index(line,"! matrixA ds") > 0) then
             read(line,*) ds_ave_matrixA
             log_ds_ave_matrixA = .true.
+
+        !matrixB chains
         elseif (index(line,"! matrixB set") > 0) then
             read(line,'(L10)') matrixB_exist
             log_matrixB_exist = .true.
+        elseif (index(line,"! matrixB C_inf") > 0) then
+            read(line,'(E16.9)') CN_matrixB
+            log_characteristic_ratio_matrixB = .true.
+        elseif (index(line,"! matrixB bond_length") > 0) then
+            read(line,'(E16.9)') bond_length_matrixB
+            log_bond_length_matrixB = .true.
         elseif (index(line,"! matrixB chain_length") > 0) then
             read(line,*) chainlen_matrixB
             log_chain_length_matrixB = .true.
-        elseif (index(line,"! matrixB ds") >0 ) then
-             read(line,*) ds_ave_matrixB
+        elseif (index(line,"! matrixB ds") > 0) then
+            read(line,*) ds_ave_matrixB
             log_ds_ave_matrixB = .true.
-        
+
+        ! matrixA/B misc
         elseif (index(line,"chain r_ads_lo") > 0) then
             read(line,'(E16.9)') r_ads_lo
             log_r_ads_lo = .true.
         elseif (index(line,"chain r_ads_hi") > 0) then
             read(line,'(E16.9)') r_ads_hi
             log_r_ads_hi = .true.
+
         ! grafted lo chains
         elseif (index(line,"! grafted lo set") > 0) then
             read(line,'(L10)') grafted_lo_exist
@@ -374,6 +399,13 @@ do
         elseif (index(line,"! grafted lo grafting_density") > 0) then
             read(line,'(E16.9)') gdens_lo
             log_gdens_lo = .true.
+        elseif (index(line,"! grafted lo C_inf") > 0) then
+            read(line,'(E16.9)') CN_gra_lo
+            log_characteristic_ratio_gra_lo = .true.
+        elseif (index(line,"! grafted lo bond_length") > 0) then
+            read(line,'(E16.9)') bond_length_gra_lo
+            log_bond_length_gra_lo = .true.
+
         ! grafted hi chains
         elseif (index(line,"! grafted hi set") > 0) then
             read(line,'(L10)') grafted_hi_exist
@@ -387,6 +419,13 @@ do
         elseif (index(line,"! grafted hi grafting_density") > 0) then
             read(line,'(E16.9)') gdens_hi
             log_gdens_hi = .true.
+        elseif (index(line,"! grafted hi C_inf") > 0) then
+            read(line,'(E16.9)') CN_gra_hi
+            log_characteristic_ratio_gra_hi = .true.
+        elseif (index(line,"! grafted hi bond_length") > 0) then
+            read(line,'(E16.9)') bond_length_gra_hi
+            log_bond_length_gra_hi = .true.
+
         ! grafted misc
         elseif (index(line,"! grafted distance_from_solid") > 0) then
             read(line,*) graft_pos
@@ -396,13 +435,13 @@ do
             read(line,*) chainlen_bulk
             log_chain_length_bulk = .true.
         ! boundary condition
-        elseif (index(line,"! boundary_condition lo matrix") > 0) then
+        elseif (index(line,"! boundary_condition lo matrixA") > 0) then
             read(line,'(I10)') bc_lo_matrixA
             log_lo_BC_of_matrixA = .true.
         elseif (index(line ,"! boundary_condition lo matrixB") >0) then
              read(line,'(I10)') bc_lo_matrixB
             log_lo_BC_of_matrixB = .true.
-        elseif (index(line,"! boundary_condition hi matrix") > 0) then
+        elseif (index(line,"! boundary_condition hi matrixA") > 0) then
             read(line,'(I10)') bc_hi_matrixA
             log_hi_BC_of_matrixA = .true.
         elseif (index(line,"! boundary_condition hi matrixB") >0) then
@@ -868,8 +907,8 @@ endif
 
 if (log_matrixA_exist) then
     if (matrixA_exist) then
-        write(iow,'(A85)')adjl('-------------------------------------MATRIX CHAINS-----------------------------------',85)
-        write(*  ,'(A85)')adjl('-------------------------------------MATRIX CHAINS-----------------------------------',85)
+        write(iow,'(A85)')adjl('-------------------------------------MATRIXA CHAINS-----------------------------------',85)
+        write(*  ,'(A85)')adjl('-------------------------------------MATRIXA CHAINS-----------------------------------',85)
     else
         matrixA_exist = .false.
     endif
@@ -896,10 +935,42 @@ else
     STOP
 endif
 
+if (log_characteristic_ratio_matrixA) then
+    write(iow,'(3X,A45,F16.4)')adjl('Chain characteristic ratio C_infinity:',45) ,CN_matrixA
+    write(*  ,'(3X,A45,F16.4)')adjl('Chain characteristic ratio C_infinity:',45) ,CN_matrixA
+else
+    write(iow,'(3X,A45)')adjl('Error: chain characteristic ratio not found..',45)
+    write(*  ,'(3X,A45)')adjl('Error: chain characteristic ratio not found..',45)
+    STOP
+endif
+
+if (log_bond_length_matrixA) then
+    write(iow,'(3X,A45,F16.4,'' Angstrom'')')adjl('Bond length:',45), bond_length_matrixA
+    write(*  ,'(3X,A45,F16.4,'' Angstrom'')')adjl('Bond length:',45), bond_length_matrixA
+else
+    write(iow,'(3X,A45)') 'Error: bond length not found..'
+    write(*  ,'(3X,A45)') 'Error: bond length not found..'
+    STOP
+endif
+
 else
     ds_ave_matrixA = 0.d0
     chainlen_matrixA = 0.d0
+    CN_matrixA = 0.d0
+    bond_length_matrixA = 0.d0
 endif ! end of matrixA chains
+
+if (log_matrixB_exist) then
+    if (matrixB_exist) then
+        write(iow,'(A85)')adjl('-------------------------------------MATRIXB CHAINS-----------------------------------',85)
+        write(*  ,'(A85)')adjl('-------------------------------------MATRIXB CHAINS-----------------------------------',85)
+    else
+        matrixB_exist = .false.
+    endif
+else
+    continue
+endif
+
 
 if (matrixB_exist) then
 if (log_ds_ave_matrixB) then
@@ -924,20 +995,31 @@ else
     write(iow,'(3X,A45)') 'Chain length of matrix chains was not set'
     write(*  ,'(3X,A45)') 'Chain length of matrix chains was not set'
 endif
+
+if (log_characteristic_ratio_matrixB) then
+    write(iow,'(3X,A45,F16.4)')adjl('Chain characteristic ratio C_infinity:',45) ,CN_matrixB
+    write(*  ,'(3X,A45,F16.4)')adjl('Chain characteristic ratio C_infinity:',45) ,CN_matrixB
 else
-  ds_ave_matrixB = 0.d0
-  chainlen_matrixB =0.d0
+    write(iow,'(3X,A45)')adjl('Error: chain characteristic ratio not found..',45)
+    write(*  ,'(3X,A45)')adjl('Error: chain characteristic ratio not found..',45)
+    STOP
 endif
-    
 
+if (log_bond_length_matrixB) then
+    write(iow,'(3X,A45,F16.4,'' Angstrom'')')adjl('Bond length:',45), bond_length_matrixB
+    write(*  ,'(3X,A45,F16.4,'' Angstrom'')')adjl('Bond length:',45), bond_length_matrixB
+else
+    write(iow,'(3X,A45)') 'Error: bond length not found..'
+    write(*  ,'(3X,A45)') 'Error: bond length not found..'
+    STOP
+endif
 
-
-
-
-
-
-
-
+else
+    ds_ave_matrixB = 0.d0
+    chainlen_matrixB = 0.d0
+    CN_matrixB = 0.d0
+    bond_length_matrixB = 0.d0
+endif
 
 if (log_grafted_lo_exist) then
     if (grafted_lo_exist) then
@@ -969,6 +1051,26 @@ else
     STOP
 endif
 
+if (log_characteristic_ratio_gra_lo) then
+    write(iow,'(3X,A45,F16.4)')adjl('Chain characteristic ratio C_infinity:',45) ,CN_gra_lo
+    write(*  ,'(3X,A45,F16.4)')adjl('Chain characteristic ratio C_infinity:',45) ,CN_gra_lo
+else
+    write(iow,'(3X,A45)')adjl('Error: chain characteristic ratio not found..',45)
+    write(*  ,'(3X,A45)')adjl('Error: chain characteristic ratio not found..',45)
+    STOP
+endif
+
+if (log_bond_length_gra_lo) then
+    write(iow,'(3X,A45,F16.4,'' Angstrom'')')adjl('Bond length:',45), bond_length_gra_lo
+    write(*  ,'(3X,A45,F16.4,'' Angstrom'')')adjl('Bond length:',45), bond_length_gra_lo
+else
+    write(iow,'(3X,A45)') 'Error: bond length not found..'
+    write(*  ,'(3X,A45)') 'Error: bond length not found..'
+    STOP
+endif
+
+
+
 if (log_gdens_lo) then
     write(iow,'(3X,A45,E16.9,'' chains/Angstrom^2'')')adjl('Grafting density:',45), gdens_lo
     write(*  ,'(3X,A45,E16.9,'' chains/Angstrom^2'')')adjl('Grafting density:',45), gdens_lo
@@ -985,8 +1087,11 @@ endif
 else
     ds_ave_grafted_lo = 0.d0
     chainlen_grafted_lo = 0.d0
+    CN_gra_lo = 0.d0
+    bond_length_gra_lo = 0.d0
     gdens_lo = 0.d0
 endif ! end of grafted lo chains
+
 
 if (log_grafted_hi_exist) then
     if (grafted_hi_exist) then
@@ -1017,6 +1122,24 @@ else
     write(*  ,'(3X,A45)') 'Chain length of grafted_hi chains was not set'
     STOP
 endif
+if (log_characteristic_ratio_gra_hi) then
+    write(iow,'(3X,A45,F16.4)')adjl('Chain characteristic ratio C_infinity:',45) ,CN_gra_hi
+    write(*  ,'(3X,A45,F16.4)')adjl('Chain characteristic ratio C_infinity:',45) ,CN_gra_hi
+else
+    write(iow,'(3X,A45)')adjl('Error: chain characteristic ratio not found..',45)
+    write(*  ,'(3X,A45)')adjl('Error: chain characteristic ratio not found..',45)
+    STOP
+endif
+
+if (log_bond_length_gra_hi) then
+    write(iow,'(3X,A45,F16.4,'' Angstrom'')')adjl('Bond length:',45), bond_length_gra_hi
+    write(*  ,'(3X,A45,F16.4,'' Angstrom'')')adjl('Bond length:',45), bond_length_gra_hi
+else
+    write(iow,'(3X,A45)') 'Error: bond length not found..'
+    write(*  ,'(3X,A45)') 'Error: bond length not found..'
+    STOP
+endif
+
 
 if (log_gdens_hi) then
     write(iow,'(3X,A45,E16.9,'' chains/Angstrom^2'')')adjl('Grafting density:',45), gdens_hi
@@ -1034,6 +1157,8 @@ endif
 else
     ds_ave_grafted_hi = 0.d0
     chainlen_grafted_hi = 0.d0
+    CN_gra_hi = 0.d0
+    bond_length_gra_hi = 0.d0
     gdens_hi = 0.d0
 endif ! end of grafted hi chains
 

@@ -30,7 +30,11 @@ real(8) :: chainlen_matrixA,chainlen_matrixB, chainlen_matrixA_aux,chainlen_matr
 real(8) :: ds_ave_matrixA,ds_ave_matrixB, ds_ave_grafted_lo, ds_ave_grafted_hi
 real(8) :: lx, dx_ave
 real(8) :: graft_pos, gdens_lo, gdens_hi, delta
-real(8) :: Temp, beta, Pressure, CN, bond_length, frac, Rg2_per_mon
+real(8) :: Temp, beta, Pressure, frac
+real(8) :: CN, bond_length, Rg2_per_mon
+real(8) :: CN_matrixA, CN_matrixB, CN_gra_lo, CN_gra_hi
+real(8) :: bond_length_matrixA, bond_length_matrixB, bond_length_gra_lo, bond_length_gra_hi
+real(8) :: Rg2_per_mon_matrixA, Rg2_per_mon_matrixB, Rg2_per_mon_gra_lo, Rg2_per_mon_gra_hi
 real(8) :: rho_mol_bulk, rho_seg_bulk, rho_mass_bulk
 real(8) :: mon_mass, sphere_radius
 real(8) :: Apol, Asolid, sig_pol, sig_solid

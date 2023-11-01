@@ -54,12 +54,6 @@ write(*  ,'(2X,A15,9(2X,A15))') "Iteration", "energy (mN/m)", "error (k_B T)", "
 
 do iter = 0, max_iter
 
-    !matrix chains
-    do ii = 0, nx
-        qmatrixA(ii,1)       = 1.d0
-        qmatrixA_final(ii,0) = 1.d0
-    enddo
-  
     !set the dirichlet boundary conditions for matrix chains
     n_dir_nodes = 0
     !dirichlet lower bound
@@ -84,12 +78,21 @@ do iter = 0, max_iter
     endif
 
     if (geometry.eq.F_sphere) then
+        do ii = 0, n_dir_nodes-1
+            dir_nodes_rdiag(ii) = dir_nodes_rdiag(ii)*rr(dir_nodes_id(ii))
+        enddo
+    endif
+
+    !matrix chains
+    do ii = 0, nx
+        qmatrixA(ii,1)       = 1.d0
+        qmatrixA_final(ii,0) = 1.d0
+    enddo
+
+    if (geometry.eq.F_sphere) then
         do ii = 0, nx
             qmatrixA(ii,1)       = qmatrixA(ii,1) * rr(ii)
             qmatrixA_final(ii,0) = qmatrixA_final(ii,0) * rr(ii)
-        enddo
-        do ii = 0, n_dir_nodes-1
-            dir_nodes_rdiag(ii) = dir_nodes_rdiag(ii)*rr(dir_nodes_id(ii))
         enddo
     endif
  

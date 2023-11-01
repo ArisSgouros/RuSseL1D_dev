@@ -54,6 +54,7 @@ write(*  ,'(2X,A15,9(2X,A15))') "Iteration", "energy (mN/m)", "error (k_B T)", "
 
 do iter = 0, max_iter
 
+    if (matrixA_exist) then
     !set the dirichlet boundary conditions for matrix chains
     n_dir_nodes = 0
     !dirichlet lower bound
@@ -108,8 +109,9 @@ do iter = 0, max_iter
         enddo
     endif
 
-    if (matrixA_exist) call contour_convolution(chainlen_matrixA, nx, ns_matrixA, coeff_ns_matrixA, &
-&                                              qmatrixA_final, qmatrixA_final, phi_matrixA)
+        call contour_convolution(chainlen_matrixA, nx, ns_matrixA, coeff_ns_matrixA, &
+&                                qmatrixA_final, qmatrixA_final, phi_matrixA)
+    endif
 
     !edwards diffusion for grafted chains in the lower boundary
     if (grafted_lo_exist) then

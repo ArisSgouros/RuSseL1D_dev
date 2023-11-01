@@ -31,8 +31,8 @@
 ---------------------------------BOUNDARY CONDITIONS---------------------------------
    grafted boundary condition for lo edge:             Dirichlet q=0
    grafted boundary condition for hi edge:             Dirichlet q=0
-   matrix boundary condition for lo edge:              Dirichlet q=0
-   matrix boundary condition for hi edge:              Dirichlet q=0
+   matrixA boundary condition for lo edge:             Dirichlet q=0
+   matrixA boundary condition for hi edge:             Dirichlet q=0
    Critical lo position of adsorbed segs             5.800000000 Angstrom
 ------------------------------SETUP THE EQUATION OF STATE----------------------------
    The Sanchez-Lacombe EoS was chosen with coeff
@@ -53,8 +53,8 @@
    Sanchez-Lacombe isothermal compressibility:        0.1307E-08 Pa-1
    molar density in bulk                              54637.6051 mol/m3
 ---------------------------------BEGIN THE SIMULATION--------------------------------
-        Iteration    energy (mN/m)    error (k_B T)         gdens_lo         gdens_hi            nch_m          nch_glo          nch_ghi         fraction
-                0    0.9807718E+02    0.1071723E+02    0.5005984E-02    0.0000000E+00    0.0000000E+00    0.5005984E-02    0.0000000E+00    0.1000000E-02
+        Iteration    energy (mN/m)    error (k_B T)         gdens_lo         gdens_hi            nch_m          nch_mxb          nch_glo          nch_ghi         fraction
+                0    0.9807718E+02    0.1071723E+02    0.5005984E-02    0.0000000E+00    0.0000000E+00    0.0000000E+00    0.5005984E-02    0.0000000E+00    0.1000000E-02
 
 -------------------------------------FINAL OUTPUT------------------------------------
    Free energy:        0.9807718E+02 mN/m

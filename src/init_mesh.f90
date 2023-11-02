@@ -7,7 +7,6 @@ subroutine init_mesh()
 use flags
 use eos
 use parser_vars, only: spatial_integr_scheme, contour_integr_scheme, spatial_discret_scheme, lx, nx,       &
-
                      & contour_discret_scheme, ns_mxa,ns_mxb, ns_ghi, ns_glo,     &
                      & chainlen_mxa,chainlen_mxb, chainlen_ghi, chainlen_glo, exist_mxa,exist_mxb,            &
                      & exist_glo, exist_ghi

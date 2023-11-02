@@ -4,29 +4,27 @@
 
 subroutine export_computes(qinit_lo, qinit_hi)
 !----------------------------------------------------------------------------------------------------------!
-use parser_vars, only: geometry, ns_glo, ns_ghi, gnode_lo, gnode_hi, out_phi,   &
+use parser_vars, only: geometry, &
+                & ns_mxa, ns_mxb, ns_glo, ns_ghi, &
+                & gnode_lo, gnode_hi, out_phi,   &
                 & Rg2_per_mon_mxa, Rg2_per_mon_mxb, Rg2_per_mon_glo, Rg2_per_mon_ghi, &
                 & out_field, out_q, out_phi_seg, out_ads_free, out_chainshape, out_brush_thickness,        &
                 & out_equimolar,                                                                           &
-                & exist_glo, exist_ghi, exist_mxa, ns_mxa, rho_seg_bulk,&
-                & edwards_solver, rho_seg_bulk, chainlen_mxa, exist_ghi, exist_glo,       &
-                & chainlen_mxb, &
-                & exist_mxa, ns_glo, ns_ghi, chainlen_glo, chainlen_ghi,    &
-                & exist_mxb, &
-                & ns_mxb, &
-                & bc_lo_mxa, bc_hi_mxa, bc_lo_grafted, bc_hi_grafted, nx, export_phi_seg_id,         &
-                & bc_lo_mxb, bc_hi_mxb, &
-                & r_ads_lo, r_ads_hi, linear_solver
+                & exist_mxa, exist_mxb, exist_glo, exist_ghi, &
+                & rho_seg_bulk,&
+                & chainlen_mxa, chainlen_mxb, chainlen_glo, chainlen_ghi,    &
+                & bc_lo_mxa, bc_lo_mxb, bc_lo_grafted, &
+                & bc_hi_mxa, bc_hi_mxb, bc_hi_grafted, &
+                & nx, export_phi_seg_id,         &
+                & r_ads_lo, r_ads_hi, linear_solver, edwards_solver
 use flags,  only: F_lo, F_hi
-use arrays, only: rx, coeff_nx, layer_area, phi_mxa, phi_glo, phi_ghi, phi_tot, qfinal_mxa,    &
-                & phi_mxb, qfinal_mxb,    &
-                & qfinal_glo, qfinal_ghi, wa_ifc, wa_ifc_new, rx, dx, ds_mxa, ds_glo, rr,    &
-                & ds_mxb, &
-                & ds_ghi, coeff_ns_mxa, rs_glo, rs_ghi, rs_mxa,                &
-                & rs_mxb, &
-                & coeff_ns_mxb, &
-                & qfinal_glo_aux, qfinal_ghi_aux,                                                       &
-                & coeff_ns_glo, coeff_ns_ghi
+use arrays, only: rx, coeff_nx, layer_area, &
+                & phi_mxa, phi_mxb, phi_glo, phi_ghi, phi_tot, &
+                & qfinal_mxa, qfinal_mxb, qfinal_glo, qfinal_ghi, qfinal_glo_aux, qfinal_ghi_aux, &
+                & wa_ifc, wa_ifc_new, rx, dx, ds_mxa, ds_glo, rr,    &
+                & ds_mxa, ds_mxb, ds_glo, ds_ghi, &
+                & coeff_ns_mxa, coeff_ns_mxb, coeff_ns_glo, coeff_ns_ghi, &
+                & rs_mxa, rs_mxb, rs_glo, rs_ghi
 !----------------------------------------------------------------------------------------------------------!
 implicit none
 !----------------------------------------------------------------------------------------------------------!

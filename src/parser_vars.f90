@@ -14,11 +14,13 @@ logical :: wall_auto
 logical :: wall_hamaker, wall_square_well, wall_ramp, wall_vacuum, wall_hybrid
 logical :: wall_custom, wall_table, wall_hamaker_well
 
-integer :: bc_hi_mxa,bc_hi_mxb, bc_lo_mxa,bc_lo_mxb, bc_hi_grafted, bc_lo_grafted
+integer :: bc_lo_mxa, bc_lo_mxb, bc_lo_grafted
+integer :: bc_hi_mxa, bc_hi_mxb, bc_hi_grafted
 integer :: edwards_solver, linear_solver
 integer :: contour_discret_scheme, spatial_discret_scheme
 integer :: contour_integr_scheme, spatial_integr_scheme
-integer :: nx, ns_mxa,ns_mxb, ns_glo, ns_ghi
+integer :: nx
+integer :: ns_mxa,ns_mxb, ns_glo, ns_ghi
 integer :: gnode_lo, gnode_hi, geometry, max_iter
 integer :: thermo_every, field_every, compute_every, check_stability_every
 integer :: export_phi_seg_id

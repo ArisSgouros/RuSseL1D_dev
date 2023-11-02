@@ -5,18 +5,21 @@
 subroutine compute_energies(free_energy)
 !----------------------------------------------------------------------------------------------------------!
 use eos,         only: eos_ff, eos_df_drho
-use arrays,      only: ufield, layer_area, coeff_nx, qfinal_mxa, wa_ifc_new, wa, wa_bulk, phi_mxa,   & 
-                     &                               qfinal_mxb,                          phi_mxb, &
-                     & phi_ghi, phi_glo, phi_tot, dphi_dr, d2phi_dr2, qfinal_glo, qfinal_ghi,    &
-                     & surface_area, volume, rx, qfinal_glo_aux, qfinal_ghi_aux
+use arrays,      only: ufield, layer_area, coeff_nx, &
+                     & qfinal_mxa, qfinal_mxb, qfinal_glo, qfinal_ghi, qfinal_glo_aux, qfinal_ghi_aux, &
+                     & wa_ifc_new, wa, wa_bulk,  & 
+                     & phi_mxa, phi_mxb, phi_glo, phi_ghi, phi_tot, &
+                     & dphi_dr, d2phi_dr2, &
+                     & surface_area, volume, rx
 use constants,   only: pi
 use flags,       only: F_both
-use parser_vars, only: wall_hamaker, rho_seg_bulk, lx, ns_glo, ns_ghi, ns_mxa, wall_side, &
-                     &                                                               ns_mxb, &
-                     & exist_glo, exist_ghi, exist_mxa, k_gr, lx, nx, chainlen_mxa,    &
-                     &                                     exist_mxb,               chainlen_mxb,    &
-                     & chainlen_glo, chainlen_ghi, chainlen_bulk, gnode_lo, gnode_hi,        &
-                     & gdens_lo, gdens_hi, beta, sig_solid, wall_pos, asolid, &
+use parser_vars, only: wall_hamaker, rho_seg_bulk, lx, &
+                     & ns_mxa, ns_mxb, ns_glo, ns_ghi, &
+                     & exist_mxa, exist_mxb, exist_glo, exist_ghi, &
+                     & k_gr, lx, nx, &
+                     & chainlen_mxa, chainlen_mxb, chainlen_glo, chainlen_ghi, chainlen_bulk, &
+                     & gnode_lo, gnode_hi, &
+                     & gdens_lo, gdens_hi, beta, sig_solid, wall_pos, wall_side, asolid, &
                      & Rg2_per_mon_glo, Rg2_per_mon_ghi
 !----------------------------------------------------------------------------------------------------------!
 implicit none
@@ -25,15 +28,15 @@ integer :: kk
 
 real(8), intent(out)     :: free_energy
 real(8), dimension(0:nx) :: prof_eos_f, prof_eos_rdfdr, prof_sgt_f, prof_sgt_rdfdr, prof_field, prof_solid
-real(8), dimension(0:nx) :: prof_rho_wifc_glo, prof_rho_wifc_ghi, prof_rho_wifc_mxa, prof_solid_glo, prof_solid_ghi, prof_solid_mxa, &
-                     &                                          prof_rho_wifc_mxb,                                 prof_solid_mxb
+real(8), dimension(0:nx) :: prof_rho_wifc_mxa, prof_rho_wifc_mxb, prof_rho_wifc_glo, prof_rho_wifc_ghi, &
+                     &      prof_solid_mxa, prof_solid_mxb, prof_solid_glo, prof_solid_ghi
 real(8), dimension(0:nx) :: phi_end, rho_end, A_stretch
-real(8)                  :: get_nchains, get_part_func, nchglo, nchghi, part_func_mxa
-real(8)                  ::                                                 part_func_mxb
-real(8)                  :: E_eos_f, E_eos_rdfdr, E_rhoVkTQ_mxa, E_nkTlnQm, E_sgt_f, E_sgt_rdfdr, E_field, E_solid, &
-                     &                            E_rhoVkTQ_mxb
-real(8)                  :: E_rho_wifc_glo, E_rho_wifc_ghi, E_rho_wifc_mxa, E_solid_glo, E_solid_ghi, E_solid_mxa, E_solid_solid
-real(8)                  ::                               E_rho_wifc_mxb,                           E_solid_mxb
+real(8)                  :: get_nchains, get_part_func, nchglo, nchghi
+real(8)                  :: part_func_mxa, part_func_mxb
+real(8)                  :: E_eos_f, E_eos_rdfdr, E_nkTlnQm, E_sgt_f, E_sgt_rdfdr, E_field, E_solid, &
+                     &      E_rhoVkTQ_mxa, E_rhoVkTQ_mxb
+real(8)                  :: E_rho_wifc_mxa, E_rho_wifc_mxb, E_rho_wifc_glo, E_rho_wifc_ghi, &
+                     &      E_solid_mxa, E_solid_mxb, E_solid_glo, E_solid_ghi, E_solid_solid
 real(8)                  :: E_stretch_glo, E_stretch_add_glo, E_stretch_ghi, E_stretch_add_ghi, dz
 !----------------------------------------------------------------------------------------------------------!
 E_eos_f           = 0.d0

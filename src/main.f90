@@ -9,26 +9,27 @@ use constants,    only: iow
 use eos,          only: eos_df_drho
 use write_helper, only: adjl
 use flags,        only: F_bc_dirichlet_eq_0, F_bc_dirichlet_eq_1, F_sphere
-use parser_vars,  only: bc_hi_mxa, bc_lo_mxa, bc_hi_grafted, bc_lo_grafted, beta, k_gr, delta,      &
-                      & bc_hi_mxb, bc_lo_mxb, &
-                      & chainlen_mxa, chainlen_ghi, edwards_solver, linear_solver, geometry,    &
-                      & chainlen_mxb, &
-                      & chainlen_glo, check_stability_every, compute_every, field_every, frac, nx, &
-                      & ns_mxa, ns_glo, ns_ghi, exist_mxa, exist_mxb,            &
-                      & ns_mxb, &
-                      & exist_ghi, exist_glo, gnode_lo, gnode_hi, rho_seg_bulk,&
+use parser_vars,  only: beta, k_gr, delta,      &
+                      & bc_lo_mxa, bc_lo_mxb, bc_lo_grafted, bc_hi_mxa, bc_hi_mxb, bc_hi_grafted, &
+                      & chainlen_mxa, chainlen_mxb, chainlen_glo, chainlen_ghi,  &
+                      & ns_mxa, ns_mxb, ns_glo, ns_ghi, &
+                      & exist_mxa, exist_mxb, exist_glo, exist_ghi,            &
                       & Rg2_per_mon_mxa, Rg2_per_mon_mxb, Rg2_per_mon_glo, Rg2_per_mon_ghi, &
+                      & edwards_solver, linear_solver, geometry,    &
+                      & check_stability_every, compute_every, field_every, frac, nx, &
+                      & gnode_lo, gnode_hi, rho_seg_bulk,&
                       & gdens_lo, gdens_hi, max_iter, max_wa_error, square_gradient, thermo_every
-use arrays,       only: qmxa, qfinal_mxa, qglo, qfinal_glo, qghi, qfinal_ghi, dir_nodes_id, &
-                      & qmxb, qfinal_mxb, &
-                      & qglo_aux, qfinal_glo_aux, qghi_aux, qfinal_ghi_aux, &
-                      & dir_nodes_rdiag, phi_tot, dphi_dr, d2phi_dr2, coeff_nx, coeff_ns_mxa,        &
-                      & coeff_ns_mxb,        &
-                      & coeff_ns_glo, coeff_ns_ghi, Ufield, dx, ds_mxa, &
-                      & ds_mxb, &
-                      & ds_ghi, ds_glo, wa, wa_bulk, wa_ifc, wa_ifc_new, wa_ifc_backup,     &
-                      & surface_area, rr, irr, layer_area, phi_mxa, phi_ghi, phi_glo, n_dir_nodes, &
-                      & phi_mxb
+use arrays,       only: qmxa, qmxb, qglo, qghi, qglo_aux, qghi_aux, &
+                      & qfinal_mxa, qfinal_mxb, qfinal_glo, qfinal_ghi, qfinal_glo_aux, qfinal_ghi_aux, &
+                      & dir_nodes_id, dir_nodes_rdiag, n_dir_nodes, &
+                      & phi_mxa, phi_mxb, phi_glo, phi_ghi, phi_tot, &
+                      & dphi_dr, d2phi_dr2, &
+                      & dx, coeff_nx, &
+                      & coeff_ns_mxa, coeff_ns_mxb, coeff_ns_glo, coeff_ns_ghi, &
+                      & ds_mxa, ds_mxb, ds_glo, ds_ghi, &
+                      & Ufield, &
+                      & wa, wa_bulk, wa_ifc, wa_ifc_new, wa_ifc_backup,     &
+                      & surface_area, rr, irr, layer_area
 !----------------------------------------------------------------------------------------------------------!
 implicit none
 !----------------------------------------------------------------------------------------------------------!

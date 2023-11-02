@@ -4,13 +4,13 @@
 
 subroutine solver_tridag(n, a, b, c, r, u)
 !----------------------------------------------------------------------------------------------------------!
-implicit none
+  implicit none
 !----------------------------------------------------------------------------------------------------------!
-integer, intent(in) :: n
-integer             :: k
+  integer, intent(in) :: n
+  integer             :: k
 
-real(8), intent(inout), dimension(n) :: a, b, c
-real(8), intent(out), dimension(n)   :: r, u
+  real(8), intent(inout), dimension(n) :: a, b, c
+  real(8), intent(out), dimension(n)   :: r, u
 !----------------------------------------------------------------------------------------------------------!
 !Thomas Algorithm
 !See Page 301 Numerical methods for engineers
@@ -27,22 +27,22 @@ real(8), intent(out), dimension(n)   :: r, u
 !As convectional LU decomposition the algorithm consists of three steps
 
 !decomposition
-do k = 2, n
-    a(k) = a(k)/b(k-1)
-    b(k) = b(k)-a(k)*c(k-1)
-enddo
+  do k = 2, n
+    a(k) = a(k)/b(k - 1)
+    b(k) = b(k) - a(k)*c(k - 1)
+  end do
 
 !forward substitution
-do k = 2, n
-    r(k) = r(k)-a(k)*r(k-1)
-enddo
+  do k = 2, n
+    r(k) = r(k) - a(k)*r(k - 1)
+  end do
 
 !back substitution
-u(n) = r(n)/b(n)
-do k = n-1, 1, -1
-    u(k) = (r(k)-c(k)*u(k+1) )/b(k)
-enddo
+  u(n) = r(n)/b(n)
+  do k = n - 1, 1, -1
+    u(k) = (r(k) - c(k)*u(k + 1))/b(k)
+  end do
 
-return
+  return
 !----------------------------------------------------------------------------------------------------------!
 end subroutine solver_tridag

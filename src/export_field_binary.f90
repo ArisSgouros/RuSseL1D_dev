@@ -4,19 +4,19 @@
 
 subroutine export_field_binary(wa, nx)
 !----------------------------------------------------------------------------------------------------------!
-implicit none
+  implicit none
 !----------------------------------------------------------------------------------------------------------!
-integer, intent(in) :: nx
+  integer, intent(in) :: nx
 
-real(8), intent(in), dimension(0:nx) :: wa
+  real(8), intent(in), dimension(0:nx) :: wa
 !----------------------------------------------------------------------------------------------------------!
-character(len=50) :: field_filename_out = ''
+  character(len=50) :: field_filename_out = ''
 
-write(field_filename_out,'("o.field.bin")')
-open(unit=36, file = field_filename_out, form = "unformatted")
-write(36) wa
-close(36)
+  write (field_filename_out, '("o.field.bin")')
+  open (unit=36, file=field_filename_out, form="unformatted")
+  write (36) wa
+  close (36)
 
-return
+  return
 !----------------------------------------------------------------------------------------------------------!
 end subroutine export_field_binary

@@ -4,22 +4,22 @@
 
 function get_nchains(coeff_x, nx, layer_area, phi, rho_seg_bulk, chainlen)
 !----------------------------------------------------------------------------------------------------------!
-implicit none
+  implicit none
 !----------------------------------------------------------------------------------------------------------!
-integer, intent(in) :: nx
-integer             :: kk
+  integer, intent(in) :: nx
+  integer             :: kk
 
-real(8), intent(in)                  :: rho_seg_bulk, chainlen
-real(8), intent(in), dimension(0:nx) :: coeff_x, layer_area, phi
-real(8)                              :: summ, get_nchains
+  real(8), intent(in)                  :: rho_seg_bulk, chainlen
+  real(8), intent(in), dimension(0:nx) :: coeff_x, layer_area, phi
+  real(8)                              :: summ, get_nchains
 !----------------------------------------------------------------------------------------------------------!
-summ = 0.d0
-do kk = 0, nx
-    summ = summ  + coeff_x(kk)* phi(kk) * layer_area(kk)
-enddo
+  summ = 0.d0
+  do kk = 0, nx
+    summ = summ + coeff_x(kk)*phi(kk)*layer_area(kk)
+  end do
 
-get_nchains = summ * 1.0d-30 * rho_seg_bulk / chainlen
+  get_nchains = summ*1.0d-30*rho_seg_bulk/chainlen
 
-return
+  return
 !----------------------------------------------------------------------------------------------------------!
 end function get_nchains

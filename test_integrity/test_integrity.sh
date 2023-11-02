@@ -18,11 +18,11 @@ exec_path=$run_path"RSL1D"
 
 #exit
 # Beware! Set it to true only if you know what you know what you are doing!
-#replace_log=false
-replace_log=true
+replace_log=false
+#replace_log=true
 
 # Enable this and you will have the option to vimdiff each set of failed logs
-#inspect_log=true
+inspect_log=true
 #inspect_log=false
 
 echo

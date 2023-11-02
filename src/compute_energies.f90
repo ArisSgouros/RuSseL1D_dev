@@ -5,19 +5,19 @@
 subroutine compute_energies(free_energy)
 !----------------------------------------------------------------------------------------------------------!
 use eos,         only: eos_ff, eos_df_drho
-use arrays,      only: ufield, layer_area, coeff_nx, qmatrixA_final, wa_ifc_new, wa, wa_bulk, phi_matrixA,   & 
-                     &                               qmatrixB_final,                          phi_matrixB, &
-                     & phi_gr_hi, phi_gr_lo, phi_total, dphi_dr, d2phi_dr2, qgr_final_lo, qgr_final_hi,    &
-                     & surface_area, volume, rx, qgr_final_lo_aux, qgr_final_hi_aux
+use arrays,      only: ufield, layer_area, coeff_nx, qfinal_mxa, wa_ifc_new, wa, wa_bulk, phi_mxa,   & 
+                     &                               qfinal_mxb,                          phi_mxb, &
+                     & phi_ghi, phi_glo, phi_tot, dphi_dr, d2phi_dr2, qfinal_glo, qfinal_ghi,    &
+                     & surface_area, volume, rx, qfinal_glo_aux, qfinal_ghi_aux
 use constants,   only: pi
 use flags,       only: F_both
-use parser_vars, only: wall_hamaker, rho_seg_bulk, lx, ns_grafted_lo, ns_grafted_hi, ns_matrixA, wall_side, &
-                     &                                                               ns_matrixB, &
-                     & grafted_lo_exist, grafted_hi_exist, matrixA_exist, k_gr, lx, nx, chainlen_matrixA,    &
-                     &                                     matrixB_exist,               chainlen_matrixB,    &
-                     & chainlen_grafted_lo, chainlen_grafted_hi, chainlen_bulk, gnode_lo, gnode_hi,        &
+use parser_vars, only: wall_hamaker, rho_seg_bulk, lx, ns_glo, ns_ghi, ns_mxa, wall_side, &
+                     &                                                               ns_mxb, &
+                     & exist_glo, exist_ghi, exist_mxa, k_gr, lx, nx, chainlen_mxa,    &
+                     &                                     exist_mxb,               chainlen_mxb,    &
+                     & chainlen_glo, chainlen_ghi, chainlen_bulk, gnode_lo, gnode_hi,        &
                      & gdens_lo, gdens_hi, beta, sig_solid, wall_pos, asolid, &
-                     & Rg2_per_mon_gra_lo, Rg2_per_mon_gra_hi
+                     & Rg2_per_mon_glo, Rg2_per_mon_ghi
 !----------------------------------------------------------------------------------------------------------!
 implicit none
 !----------------------------------------------------------------------------------------------------------!
@@ -25,34 +25,34 @@ integer :: kk
 
 real(8), intent(out)     :: free_energy
 real(8), dimension(0:nx) :: prof_eos_f, prof_eos_rdfdr, prof_sgt_f, prof_sgt_rdfdr, prof_field, prof_solid
-real(8), dimension(0:nx) :: prof_rhoglo_wifc, prof_rhoghi_wifc, prof_rho_matrixA_wifc, prof_solid_glo, prof_solid_ghi, prof_solid_matrixA, &
-                     &                                          prof_rho_matrixB_wifc,                                 prof_solid_matrixB
+real(8), dimension(0:nx) :: prof_rho_wifc_glo, prof_rho_wifc_ghi, prof_rho_wifc_mxa, prof_solid_glo, prof_solid_ghi, prof_solid_mxa, &
+                     &                                          prof_rho_wifc_mxb,                                 prof_solid_mxb
 real(8), dimension(0:nx) :: phi_end, rho_end, A_stretch
-real(8)                  :: get_nchains, get_part_func, nchgr_lo, nchgr_hi, part_func_matrixA
-real(8)                  ::                                                 part_func_matrixB
-real(8)                  :: E_eos_f, E_eos_rdfdr, E_rhoVkTQ_matrixA, E_nkTlnQm, E_sgt_f, E_sgt_rdfdr, E_field, E_solid, &
-                     &                            E_rhoVkTQ_matrixB
-real(8)                  :: E_rhoglo_wifc, E_rhoghi_wifc, E_rho_matrixA_wifc, E_solid_glo, E_solid_ghi, E_solid_matrixA, E_solid_solid
-real(8)                  ::                               E_rho_matrixB_wifc,                           E_solid_matrixB
+real(8)                  :: get_nchains, get_part_func, nchglo, nchghi, part_func_mxa
+real(8)                  ::                                                 part_func_mxb
+real(8)                  :: E_eos_f, E_eos_rdfdr, E_rhoVkTQ_mxa, E_nkTlnQm, E_sgt_f, E_sgt_rdfdr, E_field, E_solid, &
+                     &                            E_rhoVkTQ_mxb
+real(8)                  :: E_rho_wifc_glo, E_rho_wifc_ghi, E_rho_wifc_mxa, E_solid_glo, E_solid_ghi, E_solid_mxa, E_solid_solid
+real(8)                  ::                               E_rho_wifc_mxb,                           E_solid_mxb
 real(8)                  :: E_stretch_glo, E_stretch_add_glo, E_stretch_ghi, E_stretch_add_ghi, dz
 !----------------------------------------------------------------------------------------------------------!
 E_eos_f           = 0.d0
 E_eos_rdfdr       = 0.d0
-E_rhoVkTQ_matrixA         = 0.d0
-E_rhoVkTQ_matrixB         = 0.d0
+E_rhoVkTQ_mxa         = 0.d0
+E_rhoVkTQ_mxb         = 0.d0
 E_nkTlnQm         = 0.d0
 E_sgt_f           = 0.d0
 E_sgt_rdfdr       = 0.d0
 E_field           = 0.d0
 E_solid           = 0.d0
-E_rhoglo_wifc     = 0.d0
-E_rhoghi_wifc     = 0.d0
-E_rho_matrixA_wifc      = 0.d0
-E_rho_matrixB_wifc      = 0.d0
+E_rho_wifc_glo     = 0.d0
+E_rho_wifc_ghi     = 0.d0
+E_rho_wifc_mxa      = 0.d0
+E_rho_wifc_mxb      = 0.d0
 E_solid_glo       = 0.d0
 E_solid_ghi       = 0.d0
-E_solid_matrixA         = 0.d0
-E_solid_matrixB         = 0.d0
+E_solid_mxa         = 0.d0
+E_solid_mxb         = 0.d0
 E_solid_solid     = 0.d0
 E_stretch_glo     = 0.d0
 E_stretch_ghi     = 0.d0
@@ -65,36 +65,36 @@ prof_sgt_f       = 0.d0
 prof_sgt_rdfdr   = 0.d0
 prof_field       = 0.d0
 prof_solid       = 0.d0
-prof_rhoglo_wifc = 0.d0
-prof_rhoghi_wifc = 0.d0
-prof_rho_matrixA_wifc   = 0.d0
-prof_rho_matrixB_wifc   = 0.d0
+prof_rho_wifc_glo = 0.d0
+prof_rho_wifc_ghi = 0.d0
+prof_rho_wifc_mxa   = 0.d0
+prof_rho_wifc_mxb   = 0.d0
 prof_solid_glo   = 0.d0
 prof_solid_ghi   = 0.d0
-prof_solid_matrixA     = 0.d0
-prof_solid_matrixB     = 0.d0
+prof_solid_mxa     = 0.d0
+prof_solid_mxb     = 0.d0
 
 
 do kk = 0, nx
     ! total contributions
-    prof_eos_f(kk)       =  eos_ff(phi_total(kk))
-    prof_eos_rdfdr(kk)   = -phi_total(kk) * eos_df_drho(phi_total(kk))
-    prof_field(kk)       = -phi_total(kk) * wa(kk)
-    prof_solid(kk)       =  phi_total(kk) * Ufield(kk) / beta
+    prof_eos_f(kk)       =  eos_ff(phi_tot(kk))
+    prof_eos_rdfdr(kk)   = -phi_tot(kk) * eos_df_drho(phi_tot(kk))
+    prof_field(kk)       = -phi_tot(kk) * wa(kk)
+    prof_solid(kk)       =  phi_tot(kk) * Ufield(kk) / beta
     prof_sgt_f(kk)       =  0.5d0 * k_gr * (rho_seg_bulk * dphi_dr(kk))**2
-    prof_sgt_rdfdr(kk)   =  k_gr * (rho_seg_bulk**2 * phi_total(kk) * d2phi_dr2(kk))
+    prof_sgt_rdfdr(kk)   =  k_gr * (rho_seg_bulk**2 * phi_tot(kk) * d2phi_dr2(kk))
     ! partial contributions
-    prof_rhoglo_wifc(kk) = -phi_gr_lo(kk)  * wa_ifc_new(kk)
-    prof_rhoghi_wifc(kk) = -phi_gr_hi(kk)  * wa_ifc_new(kk)
-    prof_rho_matrixA_wifc(kk)   = -phi_matrixA(kk) * wa_ifc_new(kk)
-    prof_rho_matrixB_wifc(kk)   = -phi_matrixB(kk) * wa_ifc_new(kk)
-    prof_solid_glo(kk)   =  phi_gr_lo(kk)  * Ufield(kk) / beta
-    prof_solid_ghi(kk)   =  phi_gr_hi(kk)  * Ufield(kk) / beta
-    prof_solid_matrixA(kk)     =  phi_matrixA(kk) * Ufield(kk) / beta
-    prof_solid_matrixB(kk)     =  phi_matrixB(kk) * Ufield(kk) / beta
+    prof_rho_wifc_glo(kk) = -phi_glo(kk)  * wa_ifc_new(kk)
+    prof_rho_wifc_ghi(kk) = -phi_ghi(kk)  * wa_ifc_new(kk)
+    prof_rho_wifc_mxa(kk)   = -phi_mxa(kk) * wa_ifc_new(kk)
+    prof_rho_wifc_mxb(kk)   = -phi_mxb(kk) * wa_ifc_new(kk)
+    prof_solid_glo(kk)   =  phi_glo(kk)  * Ufield(kk) / beta
+    prof_solid_ghi(kk)   =  phi_ghi(kk)  * Ufield(kk) / beta
+    prof_solid_mxa(kk)     =  phi_mxa(kk) * Ufield(kk) / beta
+    prof_solid_mxb(kk)     =  phi_mxb(kk) * Ufield(kk) / beta
 end do
 
-if (matrixA_exist.or.matrixB_exist) then       
+if (exist_mxa.or.exist_mxb) then       
     do kk = 0, nx
         prof_eos_f(kk)     = prof_eos_f(kk)     - eos_ff(1.d0)
         prof_eos_rdfdr(kk) = prof_eos_rdfdr(kk) + 1.d0*eos_df_drho(1.d0)
@@ -111,14 +111,14 @@ do kk = 0, nx
     E_sgt_rdfdr = E_sgt_rdfdr + coeff_nx(kk) * prof_sgt_rdfdr(kk) * layer_area(kk)
     E_solid     = E_solid     + coeff_nx(kk) * prof_solid(kk)     * layer_area(kk)
     ! partial contributions
-    E_rhoglo_wifc = E_rhoglo_wifc + coeff_nx(kk) * prof_rhoglo_wifc(kk) * layer_area(kk)
-    E_rhoghi_wifc = E_rhoghi_wifc + coeff_nx(kk) * prof_rhoghi_wifc(kk) * layer_area(kk)
-    E_rho_matrixA_wifc  = E_rho_matrixA_wifc  + coeff_nx(kk) * prof_rho_matrixA_wifc(kk)   * layer_area(kk)
-    E_rho_matrixB_wifc  = E_rho_matrixB_wifc  + coeff_nx(kk) * prof_rho_matrixB_wifc(kk)   * layer_area(kk)
+    E_rho_wifc_glo = E_rho_wifc_glo + coeff_nx(kk) * prof_rho_wifc_glo(kk) * layer_area(kk)
+    E_rho_wifc_ghi = E_rho_wifc_ghi + coeff_nx(kk) * prof_rho_wifc_ghi(kk) * layer_area(kk)
+    E_rho_wifc_mxa  = E_rho_wifc_mxa  + coeff_nx(kk) * prof_rho_wifc_mxa(kk)   * layer_area(kk)
+    E_rho_wifc_mxb  = E_rho_wifc_mxb  + coeff_nx(kk) * prof_rho_wifc_mxb(kk)   * layer_area(kk)
     E_solid_glo   = E_solid_glo   + coeff_nx(kk) * prof_solid_glo(kk)   * layer_area(kk)
     E_solid_ghi   = E_solid_ghi   + coeff_nx(kk) * prof_solid_ghi(kk)   * layer_area(kk)
-    E_solid_matrixA     = E_solid_matrixA     + coeff_nx(kk) * prof_solid_matrixA(kk)     * layer_area(kk)
-    E_solid_matrixB     = E_solid_matrixB     + coeff_nx(kk) * prof_solid_matrixB(kk)     * layer_area(kk)
+    E_solid_mxa     = E_solid_mxa     + coeff_nx(kk) * prof_solid_mxa(kk)     * layer_area(kk)
+    E_solid_mxb     = E_solid_mxb     + coeff_nx(kk) * prof_solid_mxb(kk)     * layer_area(kk)
 end do
 
 ! total contributions
@@ -129,32 +129,32 @@ E_solid       = E_solid     * 1.d-30 * rho_seg_bulk
 E_sgt_f       = E_sgt_f     * 1.d-30
 E_sgt_rdfdr   = E_sgt_rdfdr * 1.d-30
 ! partial contributions
-E_rhoglo_wifc = E_rhoglo_wifc * 1.d-30 * rho_seg_bulk / beta
-E_rhoghi_wifc = E_rhoghi_wifc * 1.d-30 * rho_seg_bulk / beta
-E_rho_matrixA_wifc  = E_rho_matrixA_wifc  * 1.d-30 * rho_seg_bulk / beta
-E_rho_matrixB_wifc  = E_rho_matrixB_wifc  * 1.d-30 * rho_seg_bulk / beta
+E_rho_wifc_glo = E_rho_wifc_glo * 1.d-30 * rho_seg_bulk / beta
+E_rho_wifc_ghi = E_rho_wifc_ghi * 1.d-30 * rho_seg_bulk / beta
+E_rho_wifc_mxa  = E_rho_wifc_mxa  * 1.d-30 * rho_seg_bulk / beta
+E_rho_wifc_mxb  = E_rho_wifc_mxb  * 1.d-30 * rho_seg_bulk / beta
 E_solid_glo   = E_solid_glo   * 1.d-30 * rho_seg_bulk
 E_solid_ghi   = E_solid_ghi   * 1.d-30 * rho_seg_bulk
-E_solid_matrixA     = E_solid_matrixA     * 1.d-30 * rho_seg_bulk
-E_solid_matrixB     = E_solid_matrixB     * 1.d-30 * rho_seg_bulk
+E_solid_mxa     = E_solid_mxa     * 1.d-30 * rho_seg_bulk
+E_solid_mxb     = E_solid_mxb     * 1.d-30 * rho_seg_bulk
 
-if (matrixA_exist) then
-   part_func_matrixA = get_part_func(nx, ns_matrixA, layer_area, volume, coeff_nx, qmatrixA_final)
-   E_rhoVkTQ_matrixA = volume*1.0d-30*rho_seg_bulk/beta/chainlen_matrixA*(1.d0-part_func_matrixA)
+if (exist_mxa) then
+   part_func_mxa = get_part_func(nx, ns_mxa, layer_area, volume, coeff_nx, qfinal_mxa)
+   E_rhoVkTQ_mxa = volume*1.0d-30*rho_seg_bulk/beta/chainlen_mxa*(1.d0-part_func_mxa)
 endif
-if (matrixB_exist) then
-   part_func_matrixB = get_part_func(nx, ns_matrixB, layer_area, volume, coeff_nx, qmatrixB_final)
-   E_rhoVkTQ_matrixB = volume*1.0d-30*rho_seg_bulk/beta/chainlen_matrixB*(1.d0-part_func_matrixB)
+if (exist_mxb) then
+   part_func_mxb = get_part_func(nx, ns_mxb, layer_area, volume, coeff_nx, qfinal_mxb)
+   E_rhoVkTQ_mxb = volume*1.0d-30*rho_seg_bulk/beta/chainlen_mxb*(1.d0-part_func_mxb)
 endif
 
 E_nkTlnQm = 0.d0
-if (grafted_lo_exist) then
-   nchgr_lo  = get_nchains(coeff_nx, nx, layer_area, phi_gr_lo, rho_seg_bulk, chainlen_grafted_lo)
-   E_nkTlnQm = E_nkTlnQm -nchgr_lo / beta * log(qgr_final_lo_aux(gnode_lo,ns_grafted_lo))
+if (exist_glo) then
+   nchglo  = get_nchains(coeff_nx, nx, layer_area, phi_glo, rho_seg_bulk, chainlen_glo)
+   E_nkTlnQm = E_nkTlnQm -nchglo / beta * log(qfinal_glo_aux(gnode_lo,ns_glo))
 endif
-if (grafted_hi_exist) then
-   nchgr_hi  = get_nchains(coeff_nx, nx, layer_area, phi_gr_hi, rho_seg_bulk, chainlen_grafted_hi)
-   E_nkTlnQm = E_nkTlnQm -nchgr_hi / beta * log(qgr_final_hi_aux(gnode_hi,ns_grafted_hi))
+if (exist_ghi) then
+   nchghi  = get_nchains(coeff_nx, nx, layer_area, phi_ghi, rho_seg_bulk, chainlen_ghi)
+   E_nkTlnQm = E_nkTlnQm -nchghi / beta * log(qfinal_ghi_aux(gnode_hi,ns_ghi))
 endif
 
 if (wall_side.eq.F_both.and.wall_hamaker) then
@@ -165,16 +165,16 @@ endif
 !
 ! estimate the contribution due to chain stretching
 !
-if (grafted_lo_exist) then
+if (exist_glo) then
    !calculate the profile of the chain ends
    do kk = 0, nx
-       phi_end(kk) = 1.d0 / chainlen_grafted_lo * (qgr_final_lo(kk,ns_grafted_lo) * qgr_final_lo_aux(kk,0))
+       phi_end(kk) = 1.d0 / chainlen_glo * (qfinal_glo(kk,ns_glo) * qfinal_glo_aux(kk,0))
    enddo
    rho_end = phi_end * rho_seg_bulk*1.d-30
    ! calculate the stretching free energy for every chain end abstained by dz from the grafting point
    do kk = 0, nx
        dz = rx(kk)-rx(gnode_lo)
-       A_stretch(kk) = 3.0/(2.d0 * beta * (Rg2_per_mon_gra_lo*chainlen_grafted_lo*6.d0)) * dz**2
+       A_stretch(kk) = 3.0/(2.d0 * beta * (Rg2_per_mon_glo*chainlen_glo*6.d0)) * dz**2
    end do
    ! calculate the total stretching free energy from all chain ends
    do kk = 0, nx
@@ -188,16 +188,16 @@ if (grafted_lo_exist) then
    !    rho_end_int = rho_end_int + coeff_nx(kk)* rho_end(kk) * layer_area(kk)
    !end do
 endif
-if (grafted_hi_exist) then
+if (exist_ghi) then
    !calculate the profile of the chain ends
    do kk = 0, nx
-       phi_end(kk) = 1.d0 / chainlen_grafted_hi * (qgr_final_hi(kk,ns_grafted_hi) * qgr_final_hi_aux(kk,0))
+       phi_end(kk) = 1.d0 / chainlen_ghi * (qfinal_ghi(kk,ns_ghi) * qfinal_ghi_aux(kk,0))
    enddo
    rho_end = phi_end * rho_seg_bulk*1.d-30
    ! calculate the stretching free energy for every chain end abstained by dz from the grafting point
    do kk = 0, nx
        dz = rx(kk)-rx(gnode_hi)
-       A_stretch(kk) = 3.0/(2.d0 * beta * (Rg2_per_mon_gra_hi*chainlen_grafted_hi*6.d0)) * dz**2
+       A_stretch(kk) = 3.0/(2.d0 * beta * (Rg2_per_mon_ghi*chainlen_ghi*6.d0)) * dz**2
    end do
    ! calculate the total stretching free energy from all chain ends
    do kk = 0, nx
@@ -218,38 +218,38 @@ E_eos_f     = E_eos_f     / (surface_area * 1.e-20) * 1e+3
 E_eos_rdfdr = E_eos_rdfdr / (surface_area * 1.e-20) * 1e+3
 E_field     = E_field     / (surface_area * 1.e-20) * 1e+3
 E_solid     = E_solid     / (surface_area * 1.e-20) * 1e+3
-E_rhoVkTQ_matrixA   = E_rhoVkTQ_matrixA   / (surface_area * 1.e-20) * 1e+3
-E_rhoVkTQ_matrixB   = E_rhoVkTQ_matrixB   / (surface_area * 1.e-20) * 1e+3
+E_rhoVkTQ_mxa   = E_rhoVkTQ_mxa   / (surface_area * 1.e-20) * 1e+3
+E_rhoVkTQ_mxb   = E_rhoVkTQ_mxb   / (surface_area * 1.e-20) * 1e+3
 E_nkTlnQm   = E_nkTlnQm   / (surface_area * 1.e-20) * 1e+3
 E_sgt_f     = E_sgt_f     / (surface_area * 1.e-20) * 1e+3
 E_sgt_rdfdr = E_sgt_rdfdr / (surface_area * 1.e-20) * 1e+3
 ! partial contributions
-E_rhoglo_wifc     = E_rhoglo_wifc     / (surface_area * 1.e-20) * 1e+3
-E_rhoghi_wifc     = E_rhoghi_wifc     / (surface_area * 1.e-20) * 1e+3
-E_rho_matrixA_wifc      = E_rho_matrixA_wifc      / (surface_area * 1.e-20) * 1e+3
-E_rho_matrixB_wifc      = E_rho_matrixB_wifc      / (surface_area * 1.e-20) * 1e+3
+E_rho_wifc_glo     = E_rho_wifc_glo     / (surface_area * 1.e-20) * 1e+3
+E_rho_wifc_ghi     = E_rho_wifc_ghi     / (surface_area * 1.e-20) * 1e+3
+E_rho_wifc_mxa      = E_rho_wifc_mxa      / (surface_area * 1.e-20) * 1e+3
+E_rho_wifc_mxb      = E_rho_wifc_mxb      / (surface_area * 1.e-20) * 1e+3
 E_solid_glo       = E_solid_glo       / (surface_area * 1.e-20) * 1e+3
 E_solid_ghi       = E_solid_ghi       / (surface_area * 1.e-20) * 1e+3
-E_solid_matrixA         = E_solid_matrixA         / (surface_area * 1.e-20) * 1e+3
-E_solid_matrixB         = E_solid_matrixB         / (surface_area * 1.e-20) * 1e+3
+E_solid_mxa         = E_solid_mxa         / (surface_area * 1.e-20) * 1e+3
+E_solid_mxb         = E_solid_mxb         / (surface_area * 1.e-20) * 1e+3
 E_stretch_glo     = E_stretch_glo     / (surface_area * 1.e-20) * 1e+3
 E_stretch_ghi     = E_stretch_ghi     / (surface_area * 1.e-20) * 1e+3
 E_stretch_add_glo = E_stretch_add_glo / (surface_area * 1.e-20) * 1e+3
 E_stretch_add_ghi = E_stretch_add_ghi / (surface_area * 1.e-20) * 1e+3
 E_solid_solid     = E_solid_solid     / (surface_area * 1.e-20) * 1e+3
 !estimate the free energy in mJ/m^2
-free_energy = E_eos_f + E_sgt_f + E_eos_rdfdr + E_sgt_rdfdr + E_rhoVkTQ_matrixA + E_rhoVkTQ_matrixB + E_nkTlnQm + E_solid_solid
+free_energy = E_eos_f + E_sgt_f + E_eos_rdfdr + E_sgt_rdfdr + E_rhoVkTQ_mxa + E_rhoVkTQ_mxb + E_nkTlnQm + E_solid_solid
 
 open(unit=777, file = "o.energies")
 write(777,'(23(A16))')  "eos_f", "eos_rdfdr", "sgt_f", "sgt_rdfdr", "rhoVkTQmxa", "rhoVkTQmxb", "nkTlnQm_ns",       &
-&                       "field", "solid", "free_energy", "E_rhoglo_wifc", "E_rhoghi_wifc",         &
-&                       "E_rho_mxA_wifc", "E_rho_mxB_wifc", "E_str_glo", "E_str_add_glo", "E_str_ghi", "E_str_add_ghi",&
+&                       "field", "solid", "free_energy", "E_rho_wifc_glo", "E_rho_wifc_ghi",         &
+&                       "E_rho_wifc_mxa", "E_rho_wifc_mxb", "E_str_glo", "E_str_add_glo", "E_str_ghi", "E_str_add_ghi",&
 &                       "solid_glo", "solid_ghi", "solid_mxa", "solid_mxb", "solid_solid"
 
-write(777,'(23(E16.7))') E_eos_f, E_eos_rdfdr, E_sgt_f, E_sgt_rdfdr, E_rhoVkTQ_matrixA, E_rhoVkTQ_matrixB, E_nkTlnQm, E_field,       &
-&                        E_solid, free_energy, E_rhoglo_wifc, E_rhoghi_wifc, E_rho_matrixA_wifc, E_rho_matrixB_wifc, E_stretch_glo, &
+write(777,'(23(E16.7))') E_eos_f, E_eos_rdfdr, E_sgt_f, E_sgt_rdfdr, E_rhoVkTQ_mxa, E_rhoVkTQ_mxb, E_nkTlnQm, E_field,       &
+&                        E_solid, free_energy, E_rho_wifc_glo, E_rho_wifc_ghi, E_rho_wifc_mxa, E_rho_wifc_mxb, E_stretch_glo, &
 &                        E_stretch_add_glo, E_stretch_ghi, E_stretch_add_ghi, E_solid_glo, E_solid_ghi,   &
-&                        E_solid_matrixA, E_solid_matrixB, E_solid_solid
+&                        E_solid_mxa, E_solid_mxb, E_solid_solid
 close(777)
 
 return

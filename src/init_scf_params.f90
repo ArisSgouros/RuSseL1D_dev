@@ -7,15 +7,15 @@ subroutine init_scf_params()
 use eos,          only: rsl_N, T_tilde, P_tilde, rho_tilde_bulk, T_star, P_star, V_star, rho_star,             &
                       & eos_type, eos_rho_tilde_0
 use flags,        only: F_sanchez_lacombe
-use parser_vars,  only: chainlen_matrixA, chainlen_matrixB, chainlen_grafted_lo, chainlen_grafted_hi, &
-                      & ds_ave_matrixA, ds_ave_matrixB,  &
-                      & ds_ave_grafted_lo, ds_ave_grafted_hi, ns_matrixA, ns_matrixB, ns_grafted_lo, ns_grafted_hi,         &
-                      & matrixA_exist, matrixB_exist, grafted_lo_exist, grafted_hi_exist, rho_seg_bulk,       &
+use parser_vars,  only: chainlen_mxa, chainlen_mxb, chainlen_glo, chainlen_ghi, &
+                      & ds_ave_mxa, ds_ave_mxb,  &
+                      & ds_ave_glo, ds_ave_ghi, ns_mxa, ns_mxb, ns_glo, ns_ghi,         &
+                      & exist_mxa, exist_mxb, exist_glo, exist_ghi, rho_seg_bulk,       &
                       & rho_mol_bulk, rho_mass_bulk, pressure, Temp, k_gr, k_gr_tilde, mon_mass,               &
                       & square_gradient, gdens_hi, gdens_lo, chainlen_bulk, &
-                      & bond_length_matrixA, bond_length_matrixB, bond_length_gra_lo, bond_length_gra_hi,       &
-                      & CN_matrixA, CN_matrixB, CN_gra_lo, CN_gra_hi,                                           &
-                      & Rg2_per_mon_matrixA, Rg2_per_mon_matrixB, Rg2_per_mon_gra_lo, Rg2_per_mon_gra_hi
+                      & bond_length_mxa, bond_length_mxb, bond_length_glo, bond_length_ghi,       &
+                      & CN_mxa, CN_mxb, CN_glo, CN_ghi,                                           &
+                      & Rg2_per_mon_mxa, Rg2_per_mon_mxb, Rg2_per_mon_glo, Rg2_per_mon_ghi
 use constants,    only: N_avog, boltz_const_Joule_molK, boltz_const_Joule_K, gr_cm3_to_kg_m3, iow, tol
 use write_helper, only: adjl
 !----------------------------------------------------------------------------------------------------------!
@@ -26,37 +26,37 @@ real(8) :: SL_kappa_T
 write(iow,'(A85)')adjl("-----------------------------INITIALIZE THE SCF PARAMETERS---------------------------",85)
 write(*  ,'(A85)')adjl("-----------------------------INITIALIZE THE SCF PARAMETERS---------------------------",85)
 
-if (matrixA_exist) then
-    Rg2_per_mon_matrixA  = bond_length_matrixA**2 * CN_matrixA / 6.d00
-    ns_matrixA           = 2 * nint(0.5d0 * chainlen_matrixA / ds_ave_matrixA)
-    write(iow,'(3X,A45,F16.4," Angstrom")')adjl("MatrixA radious of gyration:",45), sqrt(Rg2_per_mon_matrixA*chainlen_matrixA)
-    write(*  ,'(3X,A45,F16.4," Angstrom")')adjl("MatrixA radious of gyration:",45), sqrt(Rg2_per_mon_matrixA*chainlen_matrixA)
-    write(iow,'(3X,A45,I16," nodes")')     adjl("MatrixA nodes along chain contour:",45), ns_matrixA
-    write(*  ,'(3X,A45,I16," nodes")')     adjl("MatrixA nodes along chain contour:",45), ns_matrixA
+if (exist_mxa) then
+    Rg2_per_mon_mxa  = bond_length_mxa**2 * CN_mxa / 6.d00
+    ns_mxa           = 2 * nint(0.5d0 * chainlen_mxa / ds_ave_mxa)
+    write(iow,'(3X,A45,F16.4," Angstrom")')adjl("mxa radious of gyration:",45), sqrt(Rg2_per_mon_mxa*chainlen_mxa)
+    write(*  ,'(3X,A45,F16.4," Angstrom")')adjl("mxa radious of gyration:",45), sqrt(Rg2_per_mon_mxa*chainlen_mxa)
+    write(iow,'(3X,A45,I16," nodes")')     adjl("mxa nodes along chain contour:",45), ns_mxa
+    write(*  ,'(3X,A45,I16," nodes")')     adjl("mxa nodes along chain contour:",45), ns_mxa
 endif
-if (matrixB_exist) then
-    Rg2_per_mon_matrixB  = bond_length_matrixB**2 * CN_matrixB / 6.d00
-    ns_matrixB           = 2 * nint(0.5d0 * chainlen_matrixB / ds_ave_matrixB)
-    write(iow,'(3X,A45,F16.4," Angstrom")')adjl("MatrixB radious of gyration:",45), sqrt(Rg2_per_mon_matrixB*chainlen_matrixB)
-    write(*  ,'(3X,A45,F16.4," Angstrom")')adjl("MatrixB radious of gyration:",45), sqrt(Rg2_per_mon_matrixB*chainlen_matrixB)
-    write(iow,'(3X,A45,I16," nodes")')     adjl("MatrixB nodes along chain contour:",45), ns_matrixB
-    write(*  ,'(3X,A45,I16," nodes")')     adjl("MatrixB nodes along chain contour:",45), ns_matrixB
+if (exist_mxb) then
+    Rg2_per_mon_mxb  = bond_length_mxb**2 * CN_mxb / 6.d00
+    ns_mxb           = 2 * nint(0.5d0 * chainlen_mxb / ds_ave_mxb)
+    write(iow,'(3X,A45,F16.4," Angstrom")')adjl("mxb radious of gyration:",45), sqrt(Rg2_per_mon_mxb*chainlen_mxb)
+    write(*  ,'(3X,A45,F16.4," Angstrom")')adjl("mxb radious of gyration:",45), sqrt(Rg2_per_mon_mxb*chainlen_mxb)
+    write(iow,'(3X,A45,I16," nodes")')     adjl("mxb nodes along chain contour:",45), ns_mxb
+    write(*  ,'(3X,A45,I16," nodes")')     adjl("mxb nodes along chain contour:",45), ns_mxb
 endif
-if (grafted_lo_exist) then
-    Rg2_per_mon_gra_lo  = bond_length_gra_lo**2 * CN_gra_lo / 6.d00
-    ns_grafted_lo       = 2 * nint(0.5d0 * chainlen_grafted_lo / ds_ave_grafted_lo)
-    write(iow,'(3X,A45,F16.4," Angstrom")')adjl("grafted lo radious of gyration:",45), sqrt(Rg2_per_mon_gra_lo*chainlen_grafted_lo)
-    write(*  ,'(3X,A45,F16.4," Angstrom")')adjl("grafted lo radious of gyration:",45), sqrt(Rg2_per_mon_gra_lo*chainlen_grafted_lo)
-    write(iow,'(3X,A45,I16," nodes")')     adjl("grafted lo nodes along chain contour:",45), ns_grafted_lo
-    write(*  ,'(3X,A45,I16," nodes")')     adjl("grafted lo nodes along chain contour:",45), ns_grafted_lo
+if (exist_glo) then
+    Rg2_per_mon_glo  = bond_length_glo**2 * CN_glo / 6.d00
+    ns_glo       = 2 * nint(0.5d0 * chainlen_glo / ds_ave_glo)
+    write(iow,'(3X,A45,F16.4," Angstrom")')adjl("glo radious of gyration:",45), sqrt(Rg2_per_mon_glo*chainlen_glo)
+    write(*  ,'(3X,A45,F16.4," Angstrom")')adjl("glo radious of gyration:",45), sqrt(Rg2_per_mon_glo*chainlen_glo)
+    write(iow,'(3X,A45,I16," nodes")')     adjl("glo nodes along chain contour:",45), ns_glo
+    write(*  ,'(3X,A45,I16," nodes")')     adjl("glo nodes along chain contour:",45), ns_glo
 endif
-if (grafted_hi_exist) then
-    Rg2_per_mon_gra_hi  = bond_length_gra_hi**2 * CN_gra_hi / 6.d00
-    ns_grafted_hi       = 2 * nint(0.5d0 * chainlen_grafted_hi / ds_ave_grafted_hi)
-    write(iow,'(3X,A45,F16.4," Angstrom")')adjl("grafted hi radious of gyration:",45), sqrt(Rg2_per_mon_gra_hi*chainlen_grafted_hi)
-    write(*  ,'(3X,A45,F16.4," Angstrom")')adjl("grafted hi radious of gyration:",45), sqrt(Rg2_per_mon_gra_hi*chainlen_grafted_hi)
-    write(iow,'(3X,A45,I16," nodes")')     adjl("grafted hi nodes along chain contour:",45), ns_grafted_hi
-    write(*  ,'(3X,A45,I16," nodes")')     adjl("grafted hi nodes along chain contour:",45), ns_grafted_hi
+if (exist_ghi) then
+    Rg2_per_mon_ghi  = bond_length_ghi**2 * CN_ghi / 6.d00
+    ns_ghi       = 2 * nint(0.5d0 * chainlen_ghi / ds_ave_ghi)
+    write(iow,'(3X,A45,F16.4," Angstrom")')adjl("ghi radious of gyration:",45), sqrt(Rg2_per_mon_ghi*chainlen_ghi)
+    write(*  ,'(3X,A45,F16.4," Angstrom")')adjl("ghi radious of gyration:",45), sqrt(Rg2_per_mon_ghi*chainlen_ghi)
+    write(iow,'(3X,A45,I16," nodes")')     adjl("ghi nodes along chain contour:",45), ns_ghi
+    write(*  ,'(3X,A45,I16," nodes")')     adjl("ghi nodes along chain contour:",45), ns_ghi
 endif
 
 if (eos_type.eq.F_sanchez_lacombe) then

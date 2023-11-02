@@ -9,26 +9,26 @@ use constants,    only: iow
 use eos,          only: eos_df_drho
 use write_helper, only: adjl
 use flags,        only: F_bc_dirichlet_eq_0, F_bc_dirichlet_eq_1, F_sphere
-use parser_vars,  only: bc_hi_matrixA, bc_lo_matrixA, bc_hi_grafted, bc_lo_grafted, beta, k_gr, delta,      &
-                      & bc_hi_matrixB, bc_lo_matrixB, &
-                      & chainlen_matrixA, chainlen_grafted_hi, edwards_solver, linear_solver, geometry,    &
-                      & chainlen_matrixB, &
-                      & chainlen_grafted_lo, check_stability_every, compute_every, field_every, frac, nx, &
-                      & ns_matrixA, ns_grafted_lo, ns_grafted_hi, matrixA_exist, matrixB_exist,            &
-                      & ns_matrixB, &
-                      & grafted_hi_exist, grafted_lo_exist, gnode_lo, gnode_hi, rho_seg_bulk,&
-                      & Rg2_per_mon_matrixA, Rg2_per_mon_matrixB, Rg2_per_mon_gra_lo, Rg2_per_mon_gra_hi, &
+use parser_vars,  only: bc_hi_mxa, bc_lo_mxa, bc_hi_grafted, bc_lo_grafted, beta, k_gr, delta,      &
+                      & bc_hi_mxb, bc_lo_mxb, &
+                      & chainlen_mxa, chainlen_ghi, edwards_solver, linear_solver, geometry,    &
+                      & chainlen_mxb, &
+                      & chainlen_glo, check_stability_every, compute_every, field_every, frac, nx, &
+                      & ns_mxa, ns_glo, ns_ghi, exist_mxa, exist_mxb,            &
+                      & ns_mxb, &
+                      & exist_ghi, exist_glo, gnode_lo, gnode_hi, rho_seg_bulk,&
+                      & Rg2_per_mon_mxa, Rg2_per_mon_mxb, Rg2_per_mon_glo, Rg2_per_mon_ghi, &
                       & gdens_lo, gdens_hi, max_iter, max_wa_error, square_gradient, thermo_every
-use arrays,       only: qmatrixA, qmatrixA_final, qgr_lo, qgr_final_lo, qgr_hi, qgr_final_hi, dir_nodes_id, &
-                      & qmatrixB, qmatrixB_final, &
-                      & qgr_lo_aux, qgr_final_lo_aux, qgr_hi_aux, qgr_final_hi_aux, &
-                      & dir_nodes_rdiag, phi_total, dphi_dr, d2phi_dr2, coeff_nx, coeff_ns_matrixA,        &
-                      & coeff_ns_matrixB,        &
-                      & coeff_ns_grafted_lo, coeff_ns_grafted_hi, Ufield, dx, ds_matrixA, &
-                      & ds_matrixB, &
-                      & ds_grafted_hi, ds_grafted_lo, wa, wa_bulk, wa_ifc, wa_ifc_new, wa_ifc_backup,     &
-                      & surface_area, rr, irr, layer_area, phi_matrixA, phi_gr_hi, phi_gr_lo, n_dir_nodes, &
-                      & phi_matrixB
+use arrays,       only: qmxa, qfinal_mxa, qglo, qfinal_glo, qghi, qfinal_ghi, dir_nodes_id, &
+                      & qmxb, qfinal_mxb, &
+                      & qglo_aux, qfinal_glo_aux, qghi_aux, qfinal_ghi_aux, &
+                      & dir_nodes_rdiag, phi_tot, dphi_dr, d2phi_dr2, coeff_nx, coeff_ns_mxa,        &
+                      & coeff_ns_mxb,        &
+                      & coeff_ns_glo, coeff_ns_ghi, Ufield, dx, ds_mxa, &
+                      & ds_mxb, &
+                      & ds_ghi, ds_glo, wa, wa_bulk, wa_ifc, wa_ifc_new, wa_ifc_backup,     &
+                      & surface_area, rr, irr, layer_area, phi_mxa, phi_ghi, phi_glo, n_dir_nodes, &
+                      & phi_mxb
 !----------------------------------------------------------------------------------------------------------!
 implicit none
 !----------------------------------------------------------------------------------------------------------!
@@ -40,7 +40,7 @@ real(8) :: get_nchains
 real(8) :: wa_error_new = 1.d10, wa_error_old = 1.d10
 real(8) :: qinit_lo = 0.d0, qinit_hi = 0.d0
 real(8) :: free_energy = 0.d0
-real(8) :: nchgr_lo = 0.d0, nchgr_hi = 0.d0, nch_matrixA = 0.d0, nch_matrixB = 0.d0
+real(8) :: nchglo = 0.d0, nchghi = 0.d0, nch_mxa = 0.d0, nch_mxb = 0.d0
 !----------------------------------------------------------------------------------------------------------!
 open(unit=iow, file = "o.log")
 
@@ -62,25 +62,25 @@ write(*  ,'(2X,A15,10(2X,A15))') "Iteration", "energy (mN/m)", "error (k_B T)", 
 
 do iter = 0, max_iter
 
-    if (matrixA_exist) then
+    if (exist_mxa) then
         !set the dirichlet boundary conditions for matrix chains
         n_dir_nodes = 0
         !dirichlet lower bound
-        if (bc_lo_matrixA.eq.F_bc_dirichlet_eq_0) then
+        if (bc_lo_mxa.eq.F_bc_dirichlet_eq_0) then
             dir_nodes_id(n_dir_nodes) = 0
             dir_nodes_rdiag(n_dir_nodes) = 0.d0
             n_dir_nodes = n_dir_nodes + 1   
-        else if (bc_lo_matrixA.eq.F_bc_dirichlet_eq_1) then
+        else if (bc_lo_mxa.eq.F_bc_dirichlet_eq_1) then
             dir_nodes_id(n_dir_nodes) = 0
             dir_nodes_rdiag(n_dir_nodes) = 1.0d0
             n_dir_nodes = n_dir_nodes + 1   
         endif
         !dirichlet upper bound
-        if (bc_hi_matrixA.eq.F_bc_dirichlet_eq_0) then
+        if (bc_hi_mxa.eq.F_bc_dirichlet_eq_0) then
             dir_nodes_id(n_dir_nodes) = nx
             dir_nodes_rdiag(n_dir_nodes) = 0.d0
             n_dir_nodes = n_dir_nodes + 1   
-        else if (bc_hi_matrixA.eq.F_bc_dirichlet_eq_1) then
+        else if (bc_hi_mxa.eq.F_bc_dirichlet_eq_1) then
             dir_nodes_id(n_dir_nodes) = nx
             dir_nodes_rdiag(n_dir_nodes) = 1.0d0
             n_dir_nodes = n_dir_nodes + 1   
@@ -94,52 +94,52 @@ do iter = 0, max_iter
 
         !matrix chains
         do ii = 0, nx
-            qmatrixA(ii,1)       = 1.d0
-            qmatrixA_final(ii,0) = 1.d0
+            qmxa(ii,1)       = 1.d0
+            qfinal_mxa(ii,0) = 1.d0
         enddo
 
         if (geometry.eq.F_sphere) then
             do ii = 0, nx
-                qmatrixA(ii,1)       = qmatrixA(ii,1) * rr(ii)
-                qmatrixA_final(ii,0) = qmatrixA_final(ii,0) * rr(ii)
+                qmxa(ii,1)       = qmxa(ii,1) * rr(ii)
+                qfinal_mxa(ii,0) = qfinal_mxa(ii,0) * rr(ii)
             enddo
         endif
  
-        call solver_edwards(bc_lo_matrixA, bc_hi_matrixA, n_dir_nodes, dir_nodes_id, dir_nodes_rdiag, &
-&                           Rg2_per_mon_matrixA, nx, ns_matrixA, dx, ds_matrixA, edwards_solver,      &
-&                           linear_solver, wa_ifc, qmatrixA, qmatrixA_final)
+        call solver_edwards(bc_lo_mxa, bc_hi_mxa, n_dir_nodes, dir_nodes_id, dir_nodes_rdiag, &
+&                           Rg2_per_mon_mxa, nx, ns_mxa, dx, ds_mxa, edwards_solver,      &
+&                           linear_solver, wa_ifc, qmxa, qfinal_mxa)
 
         if (geometry.eq.F_sphere) then
-            do tt = 0, ns_matrixA
+            do tt = 0, ns_mxa
                 do ii = 0, nx
-                    qmatrixA_final(ii,tt) = qmatrixA_final(ii,tt)*irr(ii)
+                    qfinal_mxa(ii,tt) = qfinal_mxa(ii,tt)*irr(ii)
                 enddo
             enddo
         endif
 
-        call contour_convolution(chainlen_matrixA, nx, ns_matrixA, coeff_ns_matrixA, &
-&                                qmatrixA_final, qmatrixA_final, phi_matrixA)
+        call contour_convolution(chainlen_mxa, nx, ns_mxa, coeff_ns_mxa, &
+&                                qfinal_mxa, qfinal_mxa, phi_mxa)
     endif
 
-    if (matrixB_exist) then
+    if (exist_mxb) then
         !set the dirichlet boundary conditions for matrix chains
         n_dir_nodes = 0
         !dirichlet lower bound
-        if (bc_lo_matrixB.eq.F_bc_dirichlet_eq_0) then
+        if (bc_lo_mxb.eq.F_bc_dirichlet_eq_0) then
             dir_nodes_id(n_dir_nodes) = 0
             dir_nodes_rdiag(n_dir_nodes) = 0.d0
             n_dir_nodes = n_dir_nodes + 1   
-        else if (bc_lo_matrixB.eq.F_bc_dirichlet_eq_1) then
+        else if (bc_lo_mxb.eq.F_bc_dirichlet_eq_1) then
             dir_nodes_id(n_dir_nodes) = 0
             dir_nodes_rdiag(n_dir_nodes) = 1.0d0
             n_dir_nodes = n_dir_nodes + 1   
         endif
         !dirichlet upper bound
-        if (bc_hi_matrixB.eq.F_bc_dirichlet_eq_0) then
+        if (bc_hi_mxb.eq.F_bc_dirichlet_eq_0) then
             dir_nodes_id(n_dir_nodes) = nx
             dir_nodes_rdiag(n_dir_nodes) = 0.d0
             n_dir_nodes = n_dir_nodes + 1   
-        else if (bc_hi_matrixB.eq.F_bc_dirichlet_eq_1) then
+        else if (bc_hi_mxb.eq.F_bc_dirichlet_eq_1) then
             dir_nodes_id(n_dir_nodes) = nx
             dir_nodes_rdiag(n_dir_nodes) = 1.0d0
             n_dir_nodes = n_dir_nodes + 1   
@@ -153,36 +153,36 @@ do iter = 0, max_iter
 
         !matrix chains
         do ii = 0, nx
-            qmatrixB(ii,1)       = 1.d0
-            qmatrixB_final(ii,0) = 1.d0
+            qmxb(ii,1)       = 1.d0
+            qfinal_mxb(ii,0) = 1.d0
         enddo
 
         if (geometry.eq.F_sphere) then
             do ii = 0, nx
-                qmatrixB(ii,1)       = qmatrixB(ii,1) * rr(ii)
-                qmatrixB_final(ii,0) = qmatrixB_final(ii,0) * rr(ii)
+                qmxb(ii,1)       = qmxb(ii,1) * rr(ii)
+                qfinal_mxb(ii,0) = qfinal_mxb(ii,0) * rr(ii)
             enddo
         endif
  
-        call solver_edwards(bc_lo_matrixB, bc_hi_matrixB, n_dir_nodes, dir_nodes_id, dir_nodes_rdiag, &
-&                           Rg2_per_mon_matrixB, nx, ns_matrixB, dx, ds_matrixB, edwards_solver,      &
-&                           linear_solver, wa_ifc, qmatrixB, qmatrixB_final)
+        call solver_edwards(bc_lo_mxb, bc_hi_mxb, n_dir_nodes, dir_nodes_id, dir_nodes_rdiag, &
+&                           Rg2_per_mon_mxb, nx, ns_mxb, dx, ds_mxb, edwards_solver,      &
+&                           linear_solver, wa_ifc, qmxb, qfinal_mxb)
 
         if (geometry.eq.F_sphere) then
-            do tt = 0, ns_matrixB
+            do tt = 0, ns_mxb
                 do ii = 0, nx
-                    qmatrixB_final(ii,tt) = qmatrixB_final(ii,tt)*irr(ii)
+                    qfinal_mxb(ii,tt) = qfinal_mxb(ii,tt)*irr(ii)
                 enddo
             enddo
         endif
 
-        call contour_convolution(chainlen_matrixB, nx, ns_matrixB, coeff_ns_matrixB, &
-&                                qmatrixB_final, qmatrixB_final, phi_matrixB)
+        call contour_convolution(chainlen_mxb, nx, ns_mxb, coeff_ns_mxb, &
+&                                qfinal_mxb, qfinal_mxb, phi_mxb)
     endif
 
 
     !edwards diffusion for grafted chains in the lower boundary
-    if (grafted_lo_exist) then
+    if (exist_glo) then
 
         !set the dirichlet boundary conditions
         n_dir_nodes = 0
@@ -213,70 +213,70 @@ do iter = 0, max_iter
             enddo
         endif
 
-        !gra_lo_aux
+        !glo_aux
         do ii = 0, nx
-            qgr_lo_aux(ii,1)       = 1.d0
-            qgr_final_lo_aux(ii,0) = 1.d0
+            qglo_aux(ii,1)       = 1.d0
+            qfinal_glo_aux(ii,0) = 1.d0
         enddo
 
         if (geometry.eq.F_sphere) then
             do ii = 0, nx
-                qgr_lo_aux(ii,1)       = qgr_lo_aux(ii,1) * rr(ii)
-                qgr_final_lo_aux(ii,0) = qgr_final_lo_aux(ii,0) * rr(ii)
+                qglo_aux(ii,1)       = qglo_aux(ii,1) * rr(ii)
+                qfinal_glo_aux(ii,0) = qfinal_glo_aux(ii,0) * rr(ii)
             enddo
         endif
 
         call solver_edwards(bc_lo_grafted, bc_hi_grafted, n_dir_nodes, dir_nodes_id, dir_nodes_rdiag, &
-&                           Rg2_per_mon_gra_lo, nx, ns_grafted_lo, dx, ds_grafted_lo, edwards_solver,        &
-&                           linear_solver, wa_ifc, qgr_lo_aux, qgr_final_lo_aux)
+&                           Rg2_per_mon_glo, nx, ns_glo, dx, ds_glo, edwards_solver,        &
+&                           linear_solver, wa_ifc, qglo_aux, qfinal_glo_aux)
 
         if (geometry.eq.F_sphere) then
-            do tt = 0, ns_grafted_lo
+            do tt = 0, ns_glo
                 do ii = 0, nx
-                    qgr_final_lo_aux(ii,tt) = qgr_final_lo_aux(ii,tt) * irr(ii)
+                    qfinal_glo_aux(ii,tt) = qfinal_glo_aux(ii,tt) * irr(ii)
                 enddo
             enddo
         endif
 
         ! grafted chains
         do ii = 0, nx
-            qgr_lo(ii,1)       = 0.d0
-            qgr_final_lo(ii,0) = 0.d0
+            qglo(ii,1)       = 0.d0
+            qfinal_glo(ii,0) = 0.d0
         enddo
 
         delta = (1.0/( dx(gnode_lo) * layer_area(gnode_lo))) * 1e+30 !1/m3
-        qinit_lo = chainlen_grafted_lo * delta * (gdens_lo * surface_area) &
-&                     / (rho_seg_bulk * qgr_final_lo_aux(gnode_lo,ns_grafted_lo))
+        qinit_lo = chainlen_glo * delta * (gdens_lo * surface_area) &
+&                     / (rho_seg_bulk * qfinal_glo_aux(gnode_lo,ns_glo))
 
-        qgr_lo(gnode_lo,1)       = qinit_lo
-        qgr_final_lo(gnode_lo,0) = qinit_lo
+        qglo(gnode_lo,1)       = qinit_lo
+        qfinal_glo(gnode_lo,0) = qinit_lo
 
         if (geometry.eq.F_sphere) then
             do ii = 0, nx
-                qgr_lo(ii,1)       = qgr_lo(ii,1) * rr(ii)
-                qgr_final_lo(ii,0) = qgr_final_lo(ii,0) * rr(ii)
+                qglo(ii,1)       = qglo(ii,1) * rr(ii)
+                qfinal_glo(ii,0) = qfinal_glo(ii,0) * rr(ii)
             enddo
         endif
 
 
         call solver_edwards(bc_lo_grafted, bc_hi_grafted, n_dir_nodes, dir_nodes_id, dir_nodes_rdiag, &
-&                           Rg2_per_mon_gra_lo, nx, ns_grafted_lo, dx, ds_grafted_lo, edwards_solver,        &
-&                           linear_solver, wa_ifc, qgr_lo, qgr_final_lo)
+&                           Rg2_per_mon_glo, nx, ns_glo, dx, ds_glo, edwards_solver,        &
+&                           linear_solver, wa_ifc, qglo, qfinal_glo)
 
         if (geometry.eq.F_sphere) then
-            do tt = 0, ns_grafted_lo
+            do tt = 0, ns_glo
                 do ii = 0, nx
-                    qgr_final_lo(ii,tt) = qgr_final_lo(ii,tt) * irr(ii)
+                    qfinal_glo(ii,tt) = qfinal_glo(ii,tt) * irr(ii)
                 enddo
             enddo
         endif
 
-        call contour_convolution(chainlen_grafted_lo, nx, ns_grafted_lo, coeff_ns_grafted_lo,  &
-&                                qgr_final_lo_aux, qgr_final_lo, phi_gr_lo)
+        call contour_convolution(chainlen_glo, nx, ns_glo, coeff_ns_glo,  &
+&                                qfinal_glo_aux, qfinal_glo, phi_glo)
     endif
 
     !edwards diffusion for grafted chains in the lower boundary
-    if (grafted_hi_exist) then
+    if (exist_ghi) then
 
         !set the dirichlet boundary conditions
         n_dir_nodes = 0
@@ -307,91 +307,91 @@ do iter = 0, max_iter
             enddo
         endif
 
-        !gra_hi_aux
+        !ghi_aux
         do ii = 0, nx
-            qgr_hi_aux(ii,1)       = 1.d0
-            qgr_final_hi_aux(ii,0) = 1.d0
+            qghi_aux(ii,1)       = 1.d0
+            qfinal_ghi_aux(ii,0) = 1.d0
         enddo
 
         if (geometry.eq.F_sphere) then
             do ii = 0, nx
-                qgr_hi_aux(ii,1)       = qgr_hi_aux(ii,1) * rr(ii)
-                qgr_final_hi_aux(ii,0) = qgr_final_hi_aux(ii,0) * rr(ii)
+                qghi_aux(ii,1)       = qghi_aux(ii,1) * rr(ii)
+                qfinal_ghi_aux(ii,0) = qfinal_ghi_aux(ii,0) * rr(ii)
             enddo
         endif
 
         call solver_edwards(bc_lo_grafted, bc_hi_grafted, n_dir_nodes, dir_nodes_id, dir_nodes_rdiag, &
-&                           Rg2_per_mon_gra_hi, nx, ns_grafted_hi, dx, ds_grafted_hi, edwards_solver,        &
-&                           linear_solver, wa_ifc, qgr_hi_aux, qgr_final_hi_aux)
+&                           Rg2_per_mon_ghi, nx, ns_ghi, dx, ds_ghi, edwards_solver,        &
+&                           linear_solver, wa_ifc, qghi_aux, qfinal_ghi_aux)
 
         if (geometry.eq.F_sphere) then
-            do tt = 0, ns_grafted_hi
+            do tt = 0, ns_ghi
                 do ii = 0, nx
-                    qgr_final_hi_aux(ii,tt) = qgr_final_hi_aux(ii,tt) * irr(ii)
+                    qfinal_ghi_aux(ii,tt) = qfinal_ghi_aux(ii,tt) * irr(ii)
                 enddo
             enddo
         endif
 
         ! grafted chains
         do ii = 0, nx
-            qgr_hi(ii,1)       = 0.d0
-            qgr_final_hi(ii,0) = 0.d0
+            qghi(ii,1)       = 0.d0
+            qfinal_ghi(ii,0) = 0.d0
         enddo
 
         delta = (1.0/( dx(gnode_hi) * layer_area(gnode_hi))) * 1e+30 !1/m3
-        qinit_hi = chainlen_grafted_hi * delta * (gdens_hi * surface_area) &
-&                     / (rho_seg_bulk * qgr_final_hi_aux(gnode_hi,ns_grafted_hi))
+        qinit_hi = chainlen_ghi * delta * (gdens_hi * surface_area) &
+&                     / (rho_seg_bulk * qfinal_ghi_aux(gnode_hi,ns_ghi))
 
-        qgr_hi(gnode_hi,1)       = qinit_hi
-        qgr_final_hi(gnode_hi,0) = qinit_hi
+        qghi(gnode_hi,1)       = qinit_hi
+        qfinal_ghi(gnode_hi,0) = qinit_hi
 
         if (geometry.eq.F_sphere) then
             do ii = 0, nx
-                qgr_hi(ii,1)       = qgr_hi(ii,1) * rr(ii)
-                qgr_final_hi(ii,0) = qgr_final_hi(ii,0) * rr(ii)
+                qghi(ii,1)       = qghi(ii,1) * rr(ii)
+                qfinal_ghi(ii,0) = qfinal_ghi(ii,0) * rr(ii)
             enddo
         endif
 
         call solver_edwards(bc_lo_grafted, bc_hi_grafted, n_dir_nodes, dir_nodes_id, dir_nodes_rdiag, &
-&                           Rg2_per_mon_gra_hi, nx, ns_grafted_hi, dx, ds_grafted_hi, edwards_solver,        &
-&                           linear_solver, wa_ifc, qgr_hi, qgr_final_hi)
+&                           Rg2_per_mon_ghi, nx, ns_ghi, dx, ds_ghi, edwards_solver,        &
+&                           linear_solver, wa_ifc, qghi, qfinal_ghi)
 
         if (geometry.eq.F_sphere) then
-            do tt = 0, ns_grafted_hi
+            do tt = 0, ns_ghi
                 do ii = 0, nx
-                    qgr_final_hi(ii,tt) = qgr_final_hi(ii,tt) * irr(ii)
+                    qfinal_ghi(ii,tt) = qfinal_ghi(ii,tt) * irr(ii)
                 enddo
             enddo
         endif
 
-        call contour_convolution(chainlen_grafted_hi, nx, ns_grafted_hi, coeff_ns_grafted_hi,  &
-&                                qgr_final_hi_aux, qgr_final_hi, phi_gr_hi)
+        call contour_convolution(chainlen_ghi, nx, ns_ghi, coeff_ns_ghi,  &
+&                                qfinal_ghi_aux, qfinal_ghi, phi_ghi)
     endif
 
 
-    phi_total = 0.d0
+    phi_tot = 0.d0
     do jj = 0, nx
-        if (matrixA_exist)    phi_total(jj) = phi_total(jj) + phi_matrixA(jj)
-        if (matrixB_exist)    phi_total(jj) = phi_total(jj) + phi_matrixB(jj)
-        if (grafted_lo_exist) phi_total(jj) = phi_total(jj) + phi_gr_lo(jj)
-        if (grafted_hi_exist) phi_total(jj) = phi_total(jj) + phi_gr_hi(jj)
+        if (exist_mxa)    phi_tot(jj) = phi_tot(jj) + phi_mxa(jj)
+        if (exist_mxb)    phi_tot(jj) = phi_tot(jj) + phi_mxb(jj)
+        if (exist_glo) phi_tot(jj) = phi_tot(jj) + phi_glo(jj)
+        if (exist_ghi) phi_tot(jj) = phi_tot(jj) + phi_ghi(jj)
     enddo
 
     if (square_gradient) then
         do jj = 1, nx-1
-            d2phi_dr2(jj) = (phi_total(jj-1) -2.d0*phi_total(jj) + phi_total(jj+1)) / (dx(jj)*1.e-10)**2
-            dphi_dr(jj)   = (phi_total(jj+1) - phi_total(jj)) / (dx(jj)*1.e-10)
+            d2phi_dr2(jj) = (phi_tot(jj-1) -2.d0*phi_tot(jj) + phi_tot(jj+1)) / (dx(jj)*1.e-10)**2
+            dphi_dr(jj)   = (phi_tot(jj+1) - phi_tot(jj)) / (dx(jj)*1.e-10)
         enddo
-        d2phi_dr2(0)  = (phi_total(0)    -2.d0*phi_total(0)  + phi_total(1))  / (dx(1) *1.e-10)**2
-        d2phi_dr2(nx) = (phi_total(nx-1) -2.d0*phi_total(nx) + phi_total(nx)) / (dx(nx)*1.e-10)**2
+        d2phi_dr2(0)  = (phi_tot(0)    -2.d0*phi_tot(0)  + phi_tot(1))  / (dx(1) *1.e-10)**2
+        d2phi_dr2(nx) = (phi_tot(nx-1) -2.d0*phi_tot(nx) + phi_tot(nx)) / (dx(nx)*1.e-10)**2
         
-        dphi_dr(0)  = (phi_total(1) - phi_total(0)) / (dx(1)*1.e-10)
+        dphi_dr(0)  = (phi_tot(1) - phi_tot(0)) / (dx(1)*1.e-10)
         dphi_dr(nx) = 0.d0
     endif
 
     !calculate new field and maximum absolute wa_error
     do jj = 0, nx
-        wa(jj) = + (eos_df_drho(phi_total(jj)) ) * beta &
+        wa(jj) = + (eos_df_drho(phi_tot(jj)) ) * beta &
 &                - k_gr * (rho_seg_bulk * d2phi_dr2(jj)) * beta &
 &                + Ufield(jj)
     enddo
@@ -428,9 +428,9 @@ do iter = 0, max_iter
             restart = .true.
         endif
 
-        if (matrixA_exist.or.matrixB_exist) then
+        if (exist_mxa.or.exist_mxb) then
             do jj = 1, nx-1
-                if (phi_total(jj).lt.1.e-10) then
+                if (phi_tot(jj).lt.1.e-10) then
                     restart = .true.
                     write(iow,'(3X,"*Convergence to unphysical solution!")')
                     write(6  ,'(3X,"*Convergence to unphysical solution!")')
@@ -466,14 +466,14 @@ do iter = 0, max_iter
         if (mod(iter,compute_every).eq.0.or.convergence) call export_computes(qinit_lo, qinit_hi)
     endif
     if (mod(iter,thermo_every) .eq.0.or.convergence) then
-        if (matrixA_exist)   nch_matrixA = get_nchains(coeff_nx, nx, layer_area, phi_matrixA, &
-&                                                      rho_seg_bulk, chainlen_matrixA)
-        if (matrixB_exist)   nch_matrixB = get_nchains(coeff_nx, nx, layer_area, phi_matrixB, &
-&                                                      rho_seg_bulk, chainlen_matrixB)
-        if (grafted_lo_exist) nchgr_lo   = get_nchains(coeff_nx, nx, layer_area, phi_gr_lo,  &
-&                                                      rho_seg_bulk, chainlen_grafted_lo)
-        if (grafted_hi_exist) nchgr_hi   = get_nchains(coeff_nx, nx, layer_area, phi_gr_hi,  &
-&                                                      rho_seg_bulk, chainlen_grafted_hi)
+        if (exist_mxa)   nch_mxa = get_nchains(coeff_nx, nx, layer_area, phi_mxa, &
+&                                                      rho_seg_bulk, chainlen_mxa)
+        if (exist_mxb)   nch_mxb = get_nchains(coeff_nx, nx, layer_area, phi_mxb, &
+&                                                      rho_seg_bulk, chainlen_mxb)
+        if (exist_glo) nchglo   = get_nchains(coeff_nx, nx, layer_area, phi_glo,  &
+&                                                      rho_seg_bulk, chainlen_glo)
+        if (exist_ghi) nchghi   = get_nchains(coeff_nx, nx, layer_area, phi_ghi,  &
+&                                                      rho_seg_bulk, chainlen_ghi)
 
         call compute_energies(free_energy)
 
@@ -481,10 +481,10 @@ do iter = 0, max_iter
         close(iow)
         open(unit=iow, file = "o.log", position = 'append')
 
-        write(iow,'(2X,I15,10(2X,E15.7))') iter, free_energy, wa_error_new, nchgr_lo / surface_area, &
-&                                         nchgr_hi / surface_area, nch_matrixA, nch_matrixB, nchgr_lo, nchgr_hi, frac
-        write(*  ,'(2X,I15,10(2X,E15.7))') iter, free_energy, wa_error_new, nchgr_lo / surface_area, &
-&                                         nchgr_hi / surface_area, nch_matrixA, nch_matrixB, nchgr_lo, nchgr_hi, frac
+        write(iow,'(2X,I15,10(2X,E15.7))') iter, free_energy, wa_error_new, nchglo / surface_area, &
+&                                         nchghi / surface_area, nch_mxa, nch_mxb, nchglo, nchghi, frac
+        write(*  ,'(2X,I15,10(2X,E15.7))') iter, free_energy, wa_error_new, nchglo / surface_area, &
+&                                         nchghi / surface_area, nch_mxa, nch_mxb, nchglo, nchghi, frac
     endif
     if (convergence) exit
 enddo
@@ -501,49 +501,49 @@ write(iow,'(A85)')adjl('-------------------------------------FINAL OUTPUT-------
 write(*  ,'(A85)')adjl('-------------------------------------FINAL OUTPUT------------------------------------',85)
 write(iow,'(3X,A17,E16.7," mN/m")') adjl("Free energy:",17),free_energy
 write(*  ,'(3X,A17,E16.7," mN/m")') adjl("Free energy:",17),free_energy
-if (matrixA_exist) then
-    write(iow,'(A85)')adjl('------------------------------------MATRIXA CHAINS-----------------------------------',85)
-    write(*  ,'(A85)')adjl('------------------------------------MATRIXA CHAINS-----------------------------------',85)
-    write(iow,'(3X,A17,E16.7," chains")') adjl("matrix chains:",17),nch_matrixA
-    write(*  ,'(3X,A17,E16.7," chains")') adjl("matrix chains:",17),nch_matrixA
+if (exist_mxa) then
+    write(iow,'(A85)')adjl('------------------------------------mxa CHAINS-----------------------------------',85)
+    write(*  ,'(A85)')adjl('------------------------------------mxa CHAINS-----------------------------------',85)
+    write(iow,'(3X,A17,E16.7," chains")') adjl("matrix chains:",17),nch_mxa
+    write(*  ,'(3X,A17,E16.7," chains")') adjl("matrix chains:",17),nch_mxa
 endif
-if (matrixB_exist) then
-    write(iow,'(A85)')adjl('------------------------------------MATRIXB CHAINS-----------------------------------',85)
-    write(*  ,'(A85)')adjl('------------------------------------MATRIXB CHAINS-----------------------------------',85)
-    write(iow,'(3X,A17,E16.7," chains")') adjl("matrix chains:",17),nch_matrixB
-    write(*  ,'(3X,A17,E16.7," chains")') adjl("matrix chains:",17),nch_matrixB
+if (exist_mxb) then
+    write(iow,'(A85)')adjl('------------------------------------mxb CHAINS-----------------------------------',85)
+    write(*  ,'(A85)')adjl('------------------------------------mxb CHAINS-----------------------------------',85)
+    write(iow,'(3X,A17,E16.7," chains")') adjl("matrix chains:",17),nch_mxb
+    write(*  ,'(3X,A17,E16.7," chains")') adjl("matrix chains:",17),nch_mxb
 endif
-if (grafted_lo_exist) then
-    write(iow,'(A85)')adjl('---------------------------------GRAFTED LO CHAINS-----------------------------------',85)
-    write(*  ,'(A85)')adjl('---------------------------------GRAFTED LO CHAINS-----------------------------------',85)
-    write(iow,'(3X,A17,E16.7," chains")')          adjl("grafted lo chains:",17),nchgr_lo
-    write(*  ,'(3X,A17,E16.7," chains")')          adjl("grafted lo chains:",17),nchgr_lo
+if (exist_glo) then
+    write(iow,'(A85)')adjl('---------------------------------glo CHAINS-----------------------------------',85)
+    write(*  ,'(A85)')adjl('---------------------------------glo CHAINS-----------------------------------',85)
+    write(iow,'(3X,A17,E16.7," chains")')          adjl("glo chains:",17),nchglo
+    write(*  ,'(3X,A17,E16.7," chains")')          adjl("glo chains:",17),nchglo
 
 
 
-    write(iow,'(3X,A17,E16.7)')                    adjl("q_f(r_gi,0):",17),qgr_final_lo_aux(gnode_lo,ns_grafted_lo)
-    write(*  ,'(3X,A17,E16.7)')                    adjl("q_f(r_gi,0):",17),qgr_final_lo_aux(gnode_lo,ns_grafted_lo)
-    write(iow,'(3X,A17,E16.7)')                    adjl("q_g(r_gi,N_g):",17),qgr_final_lo(gnode_lo,0)
-    write(*  ,'(3X,A17,E16.7)')                    adjl("q_g(r_gi,N_g):",17),qgr_final_lo(gnode_lo,0)
-    write(iow,'(3X,A17,E16.7," chains/angstrom")') adjl("grafting density:",17),nchgr_lo / surface_area
-    write(*  ,'(3X,A17,E16.7," chains/angstrom")') adjl("grafting density:",17),nchgr_lo / surface_area
-    write(iow,'(3X,A17,E16.7)'                 )   adjl("error:",17),(nchgr_lo / surface_area - gdens_lo) / gdens_lo * 100.0
-    write(*  ,'(3X,A17,E16.7)'                 )   adjl("error:",17),(nchgr_lo / surface_area - gdens_lo) / gdens_lo * 100.0
+    write(iow,'(3X,A17,E16.7)')                    adjl("q_f(r_gi,0):",17),qfinal_glo_aux(gnode_lo,ns_glo)
+    write(*  ,'(3X,A17,E16.7)')                    adjl("q_f(r_gi,0):",17),qfinal_glo_aux(gnode_lo,ns_glo)
+    write(iow,'(3X,A17,E16.7)')                    adjl("q_g(r_gi,N_g):",17),qfinal_glo(gnode_lo,0)
+    write(*  ,'(3X,A17,E16.7)')                    adjl("q_g(r_gi,N_g):",17),qfinal_glo(gnode_lo,0)
+    write(iow,'(3X,A17,E16.7," chains/angstrom")') adjl("grafting density:",17),nchglo / surface_area
+    write(*  ,'(3X,A17,E16.7," chains/angstrom")') adjl("grafting density:",17),nchglo / surface_area
+    write(iow,'(3X,A17,E16.7)'                 )   adjl("error:",17),(nchglo / surface_area - gdens_lo) / gdens_lo * 100.0
+    write(*  ,'(3X,A17,E16.7)'                 )   adjl("error:",17),(nchglo / surface_area - gdens_lo) / gdens_lo * 100.0
 endif
-if (grafted_hi_exist) then
-    write(iow,'(A85)')adjl("---------------------------------GRAFTED HI CHAINS-----------------------------------",85)
-    write(*  ,'(A85)')adjl("---------------------------------GRAFTED HI CHAINS-----------------------------------",85)
-    write(iow,'(3X,A17,E16.7," chains")')          adjl("grafted hi chains:",17),nchgr_hi
-    write(*  ,'(3X,A17,E16.7," chains")')          adjl("grafted hi chains:",17),nchgr_hi
+if (exist_ghi) then
+    write(iow,'(A85)')adjl("---------------------------------ghi CHAINS-----------------------------------",85)
+    write(*  ,'(A85)')adjl("---------------------------------ghi CHAINS-----------------------------------",85)
+    write(iow,'(3X,A17,E16.7," chains")')          adjl("ghi chains:",17),nchghi
+    write(*  ,'(3X,A17,E16.7," chains")')          adjl("ghi chains:",17),nchghi
 
-    write(iow,'(3X,A17,E16.7)')                    adjl("q_f(r_gi,0):",17),qgr_final_hi_aux(gnode_hi,ns_grafted_hi)
-    write(*  ,'(3X,A17,E16.7)')                    adjl("q_f(r_gi,0):",17),qgr_final_hi_aux(gnode_hi,ns_grafted_hi)
-    write(iow,'(3X,A17,E16.7)')                    adjl("q_g(r_gi,N_g):",17),qgr_final_hi(gnode_hi,0)
-    write(*  ,'(3X,A17,E16.7)')                    adjl("q_g(r_gi,N_g):",17),qgr_final_hi(gnode_hi,0)
-    write(iow,'(3X,A17,E16.7," chains/angstrom")') adjl("grafting density:",17),nchgr_hi / surface_area
-    write(*  ,'(3X,A17,E16.7," chains/angstrom")') adjl("grafting density:",17),nchgr_hi / surface_area
-    write(iow,'(3X,A17,E16.7)'                 )   adjl("error:",17),(nchgr_hi / surface_area - gdens_hi) / gdens_hi * 100.0
-    write(*  ,'(3X,A17,E16.7)'                 )   adjl("error:",17),(nchgr_hi / surface_area - gdens_hi) / gdens_hi * 100.0
+    write(iow,'(3X,A17,E16.7)')                    adjl("q_f(r_gi,0):",17),qfinal_ghi_aux(gnode_hi,ns_ghi)
+    write(*  ,'(3X,A17,E16.7)')                    adjl("q_f(r_gi,0):",17),qfinal_ghi_aux(gnode_hi,ns_ghi)
+    write(iow,'(3X,A17,E16.7)')                    adjl("q_g(r_gi,N_g):",17),qfinal_ghi(gnode_hi,0)
+    write(*  ,'(3X,A17,E16.7)')                    adjl("q_g(r_gi,N_g):",17),qfinal_ghi(gnode_hi,0)
+    write(iow,'(3X,A17,E16.7," chains/angstrom")') adjl("grafting density:",17),nchghi / surface_area
+    write(*  ,'(3X,A17,E16.7," chains/angstrom")') adjl("grafting density:",17),nchghi / surface_area
+    write(iow,'(3X,A17,E16.7)'                 )   adjl("error:",17),(nchghi / surface_area - gdens_hi) / gdens_hi * 100.0
+    write(*  ,'(3X,A17,E16.7)'                 )   adjl("error:",17),(nchghi / surface_area - gdens_hi) / gdens_hi * 100.0
 endif
 !----------------------------------------------------------------------------------------------------------!
 end program fd_1d

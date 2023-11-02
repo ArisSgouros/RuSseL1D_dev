@@ -4,30 +4,30 @@
 
 subroutine init_arrays()
 !----------------------------------------------------------------------------------------------------------!
-use parser_vars, only: ns_matrixA,ns_matrixB, ns_grafted_lo, ns_grafted_hi, nx
+use parser_vars, only: ns_mxa,ns_mxb, ns_glo, ns_ghi, nx
 use arrays
 !----------------------------------------------------------------------------------------------------------!
 implicit none
 !----------------------------------------------------------------------------------------------------------!
 
-allocate(ds_matrixA(0:ns_matrixA),ds_grafted_lo(0:ns_grafted_lo),ds_grafted_hi(0:ns_grafted_hi))
-allocate(ds_matrixB(0:ns_matrixB))
-allocate(rs_matrixA(0:ns_matrixA),rs_grafted_lo(0:ns_grafted_lo),rs_grafted_hi(0:ns_grafted_hi))
-allocate(rs_matrixB(0:ns_matrixB))
+allocate(ds_mxa(0:ns_mxa),ds_glo(0:ns_glo),ds_ghi(0:ns_ghi))
+allocate(ds_mxb(0:ns_mxb))
+allocate(rs_mxa(0:ns_mxa),rs_glo(0:ns_glo),rs_ghi(0:ns_ghi))
+allocate(rs_mxb(0:ns_mxb))
 allocate(wa(0:nx),wa_ifc(0:nx),wa_ifc_new(0:nx),wa_ifc_backup(0:nx), Ufield(0:nx),df_drho(0:nx))
 allocate(rr(0:nx),irr(0:nx),layer_area(0:nx))
-allocate(phi_total(0:nx),phi_matrixA(0:nx),phi_matrixB(0:nx), phi_gr_lo(0:nx),phi_gr_hi(0:nx))
-allocate(qmatrixA(0:nx,2))
-allocate(qmatrixB(0:nx,2))
-allocate(qmatrixA_final(0:nx,0:ns_matrixA))
-allocate(qmatrixB_final(0:nx,0:ns_matrixB))
-allocate(qgr_lo(0:nx,2),qgr_lo_aux(0:nx,2),qgr_hi(0:nx,2), qgr_hi_aux(0:nx,2))
-allocate(qgr_final_lo(0:nx,0:ns_grafted_lo), qgr_final_lo_aux(0:nx,0:ns_grafted_lo))
-allocate(qgr_final_hi(0:nx,0:ns_grafted_hi), qgr_final_hi_aux(0:nx,0:ns_grafted_hi))
+allocate(phi_tot(0:nx),phi_mxa(0:nx),phi_mxb(0:nx), phi_glo(0:nx),phi_ghi(0:nx))
+allocate(qmxa(0:nx,2))
+allocate(qmxb(0:nx,2))
+allocate(qfinal_mxa(0:nx,0:ns_mxa))
+allocate(qfinal_mxb(0:nx,0:ns_mxb))
+allocate(qglo(0:nx,2),qglo_aux(0:nx,2),qghi(0:nx,2), qghi_aux(0:nx,2))
+allocate(qfinal_glo(0:nx,0:ns_glo), qfinal_glo_aux(0:nx,0:ns_glo))
+allocate(qfinal_ghi(0:nx,0:ns_ghi), qfinal_ghi_aux(0:nx,0:ns_ghi))
 allocate(coeff_nx(0:nx))
-allocate(coeff_ns_matrixA(0:ns_matrixA),coeff_ns_grafted_lo(0:ns_grafted_lo), &
-&                                                                          coeff_ns_grafted_hi(0:ns_grafted_hi))
-allocate(coeff_ns_matrixB(0:ns_matrixB))
+allocate(coeff_ns_mxa(0:ns_mxa),coeff_ns_glo(0:ns_glo), &
+&                                                                          coeff_ns_ghi(0:ns_ghi))
+allocate(coeff_ns_mxb(0:ns_mxb))
 allocate(dir_nodes_id(0:nx), dir_nodes_rdiag(0:nx))
 allocate(dphi_dr(0:nx), d2phi_dr2(0:nx))
 allocate(dx(0:nx),rx(0:nx))
@@ -43,39 +43,39 @@ dir_nodes_rdiag     = 0.d0
 rr                  = 0.d0
 layer_area          = 0.d0
 Ufield              = 0.d0
-phi_total           = 0.d0
+phi_tot           = 0.d0
 
-phi_matrixA        = 0.d0
-phi_matrixB        = 0.d0
-phi_gr_lo           = 0.d0
-phi_gr_hi           = 0.d0
-qmatrixA             = 0.d0
-qmatrixB           =0.d0
-qgr_lo              = 0.d0
-qgr_lo_aux          = 0.d0
-qgr_hi              = 0.d0
-qgr_hi_aux          = 0.d0
-qmatrixA_final       = 0.d0
-qmatrixB_final =0.d0
-qgr_final_lo        = 0.d0
-qgr_final_lo_aux    = 0.d0
-qgr_final_hi        = 0.d0
-qgr_final_hi_aux    = 0.d0
+phi_mxa        = 0.d0
+phi_mxb        = 0.d0
+phi_glo           = 0.d0
+phi_ghi           = 0.d0
+qmxa             = 0.d0
+qmxb           =0.d0
+qglo              = 0.d0
+qglo_aux          = 0.d0
+qghi              = 0.d0
+qghi_aux          = 0.d0
+qfinal_mxa       = 0.d0
+qfinal_mxb =0.d0
+qfinal_glo        = 0.d0
+qfinal_glo_aux    = 0.d0
+qfinal_ghi        = 0.d0
+qfinal_ghi_aux    = 0.d0
 dx                  = 0.d0
-ds_matrixA           = 0.d0
-ds_matrixB         = 0.d0
-ds_grafted_lo       = 0.d0
-ds_grafted_hi       = 0.d0
+ds_mxa           = 0.d0
+ds_mxb         = 0.d0
+ds_glo       = 0.d0
+ds_ghi       = 0.d0
 rx                  = 0.d0
-rs_matrixA           = 0.d0
-rs_matrixB         = 0.d0
-rs_grafted_lo       = 0.d0
-rs_grafted_hi       = 0.d0
+rs_mxa           = 0.d0
+rs_mxb         = 0.d0
+rs_glo       = 0.d0
+rs_ghi       = 0.d0
 coeff_nx            = 0.d0
-coeff_ns_matrixA     = 0.d0
-coeff_ns_matrixB    = 0.d0
-coeff_ns_grafted_lo = 0.d0
-coeff_ns_grafted_hi = 0.d0
+coeff_ns_mxa     = 0.d0
+coeff_ns_mxb    = 0.d0
+coeff_ns_glo = 0.d0
+coeff_ns_ghi = 0.d0
 df_drho             = 0.d0
 dphi_dr             = 0.d0
 d2phi_dr2           = 0.d0

@@ -38,14 +38,14 @@ logical :: log_dx                          = .false.
 logical :: log_temperature                 = .false.
 logical :: log_pressure                    = .false.
 
-logical :: log_characteristic_ratio_matrixA = .false.
-logical :: log_characteristic_ratio_matrixB = .false.
-logical :: log_characteristic_ratio_gra_lo = .false.
-logical :: log_characteristic_ratio_gra_hi = .false.
-logical :: log_bond_length_matrixA         = .false.
-logical :: log_bond_length_matrixB         = .false.
-logical :: log_bond_length_gra_lo          = .false.
-logical :: log_bond_length_gra_hi          = .false.
+logical :: log_characteristic_ratio_mxa = .false.
+logical :: log_characteristic_ratio_mxb = .false.
+logical :: log_characteristic_ratio_glo = .false.
+logical :: log_characteristic_ratio_ghi = .false.
+logical :: log_bond_length_mxa         = .false.
+logical :: log_bond_length_mxb         = .false.
+logical :: log_bond_length_glo          = .false.
+logical :: log_bond_length_ghi          = .false.
 logical :: log_monomer_mass                = .false.
 logical :: log_mass_density                = .false.
 
@@ -85,33 +85,33 @@ logical :: log_wall_pos                    = .false.
 logical :: log_wall_side                   = .false.
 logical :: log_wall_pos_auto               = .false.
 
-logical :: log_matrixA_exist                = .false.
-logical :: log_matrixB_exist               = .false.
-logical :: log_chain_length_matrixA         = .false.
-logical :: log_chain_length_matrixB        = .false.
-logical :: log_ds_ave_matrixA               = .false.
-logical :: log_ds_ave_matrixB              = .false.
+logical :: log_exist_mxa                = .false.
+logical :: log_exist_mxb               = .false.
+logical :: log_chain_length_mxa         = .false.
+logical :: log_chain_length_mxb        = .false.
+logical :: log_ds_ave_mxa               = .false.
+logical :: log_ds_ave_mxb              = .false.
 logical :: log_r_ads_lo                    = .false.
 logical :: log_r_ads_hi                    = .false.
 
-logical :: log_grafted_lo_exist            = .false.
-logical :: log_chain_length_grafted_lo     = .false.
-logical :: log_ds_ave_grafted_lo           = .false.
+logical :: log_exist_glo            = .false.
+logical :: log_chain_length_glo     = .false.
+logical :: log_ds_ave_glo           = .false.
 logical :: log_gdens_lo                    = .false.
 
-logical :: log_grafted_hi_exist            = .false.
-logical :: log_chain_length_grafted_hi     = .false.
-logical :: log_ds_ave_grafted_hi           = .false.
+logical :: log_exist_ghi            = .false.
+logical :: log_chain_length_ghi     = .false.
+logical :: log_ds_ave_ghi           = .false.
 logical :: log_gdens_hi                    = .false.
 
 logical :: log_position_of_grafted         = .false.
 
 logical :: log_chain_length_bulk           = .false.
 
-logical :: log_hi_BC_of_matrixA             = .false.
-logical :: log_hi_BC_of_matrixB            = .false.
-logical :: log_lo_BC_of_matrixA             = .false.
-logical :: log_lo_BC_of_matrixB            = .false.
+logical :: log_hi_BC_of_mxa             = .false.
+logical :: log_hi_BC_of_mxb            = .false.
+logical :: log_lo_BC_of_mxa             = .false.
+logical :: log_lo_BC_of_mxb            = .false.
 logical :: log_hi_BC_of_grafted            = .false.
 logical :: log_lo_BC_of_grafted            = .false.
 
@@ -336,41 +336,41 @@ do
             read(line,'(I10)') wall_side
             log_wall_side = .true.
 
-        !matrixA chains
-        elseif (index(line,"! matrixA set") > 0) then
-            read(line,'(L10)') matrixA_exist
-            log_matrixA_exist = .true.
-        elseif (index(line,"! matrixA C_inf") > 0) then
-            read(line,'(E16.9)') CN_matrixA
-            log_characteristic_ratio_matrixA = .true.
-        elseif (index(line,"! matrixA bond_length") > 0) then
-            read(line,'(E16.9)') bond_length_matrixA
-            log_bond_length_matrixA = .true.
-        elseif (index(line,"! matrixA chain_length") > 0) then
-            read(line,*) chainlen_matrixA
-            log_chain_length_matrixA = .true.
-        elseif (index(line,"! matrixA ds") > 0) then
-            read(line,*) ds_ave_matrixA
-            log_ds_ave_matrixA = .true.
+        !mxa chains
+        elseif (index(line,"! mxa set") > 0) then
+            read(line,'(L10)') exist_mxa
+            log_exist_mxa = .true.
+        elseif (index(line,"! mxa C_inf") > 0) then
+            read(line,'(E16.9)') CN_mxa
+            log_characteristic_ratio_mxa = .true.
+        elseif (index(line,"! mxa bond_length") > 0) then
+            read(line,'(E16.9)') bond_length_mxa
+            log_bond_length_mxa = .true.
+        elseif (index(line,"! mxa chain_length") > 0) then
+            read(line,*) chainlen_mxa
+            log_chain_length_mxa = .true.
+        elseif (index(line,"! mxa ds") > 0) then
+            read(line,*) ds_ave_mxa
+            log_ds_ave_mxa = .true.
 
-        !matrixB chains
-        elseif (index(line,"! matrixB set") > 0) then
-            read(line,'(L10)') matrixB_exist
-            log_matrixB_exist = .true.
-        elseif (index(line,"! matrixB C_inf") > 0) then
-            read(line,'(E16.9)') CN_matrixB
-            log_characteristic_ratio_matrixB = .true.
-        elseif (index(line,"! matrixB bond_length") > 0) then
-            read(line,'(E16.9)') bond_length_matrixB
-            log_bond_length_matrixB = .true.
-        elseif (index(line,"! matrixB chain_length") > 0) then
-            read(line,*) chainlen_matrixB
-            log_chain_length_matrixB = .true.
-        elseif (index(line,"! matrixB ds") > 0) then
-            read(line,*) ds_ave_matrixB
-            log_ds_ave_matrixB = .true.
+        !mxb chains
+        elseif (index(line,"! mxb set") > 0) then
+            read(line,'(L10)') exist_mxb
+            log_exist_mxb = .true.
+        elseif (index(line,"! mxb C_inf") > 0) then
+            read(line,'(E16.9)') CN_mxb
+            log_characteristic_ratio_mxb = .true.
+        elseif (index(line,"! mxb bond_length") > 0) then
+            read(line,'(E16.9)') bond_length_mxb
+            log_bond_length_mxb = .true.
+        elseif (index(line,"! mxb chain_length") > 0) then
+            read(line,*) chainlen_mxb
+            log_chain_length_mxb = .true.
+        elseif (index(line,"! mxb ds") > 0) then
+            read(line,*) ds_ave_mxb
+            log_ds_ave_mxb = .true.
 
-        ! matrixA/B misc
+        ! mxa/B misc
         elseif (index(line,"chain r_ads_lo") > 0) then
             read(line,'(E16.9)') r_ads_lo
             log_r_ads_lo = .true.
@@ -378,45 +378,45 @@ do
             read(line,'(E16.9)') r_ads_hi
             log_r_ads_hi = .true.
 
-        ! grafted lo chains
-        elseif (index(line,"! grafted lo set") > 0) then
-            read(line,'(L10)') grafted_lo_exist
-            log_grafted_lo_exist = .true.
-        elseif (index(line,"! grafted lo chain_length") > 0) then
-            read(line,*) chainlen_grafted_lo
-            log_chain_length_grafted_lo = .true.
-        elseif (index(line,"! grafted lo ds") > 0) then
-            read(line,*) ds_ave_grafted_lo
-            log_ds_ave_grafted_lo = .true.
-        elseif (index(line,"! grafted lo grafting_density") > 0) then
+        ! glo chains
+        elseif (index(line,"! glo set") > 0) then
+            read(line,'(L10)') exist_glo
+            log_exist_glo = .true.
+        elseif (index(line,"! glo chain_length") > 0) then
+            read(line,*) chainlen_glo
+            log_chain_length_glo = .true.
+        elseif (index(line,"! glo ds") > 0) then
+            read(line,*) ds_ave_glo
+            log_ds_ave_glo = .true.
+        elseif (index(line,"! glo grafting_density") > 0) then
             read(line,'(E16.9)') gdens_lo
             log_gdens_lo = .true.
-        elseif (index(line,"! grafted lo C_inf") > 0) then
-            read(line,'(E16.9)') CN_gra_lo
-            log_characteristic_ratio_gra_lo = .true.
-        elseif (index(line,"! grafted lo bond_length") > 0) then
-            read(line,'(E16.9)') bond_length_gra_lo
-            log_bond_length_gra_lo = .true.
+        elseif (index(line,"! glo C_inf") > 0) then
+            read(line,'(E16.9)') CN_glo
+            log_characteristic_ratio_glo = .true.
+        elseif (index(line,"! glo bond_length") > 0) then
+            read(line,'(E16.9)') bond_length_glo
+            log_bond_length_glo = .true.
 
-        ! grafted hi chains
-        elseif (index(line,"! grafted hi set") > 0) then
-            read(line,'(L10)') grafted_hi_exist
-            log_grafted_hi_exist = .true.
-        elseif (index(line,"! grafted hi chain_length") > 0) then
-            read(line,*) chainlen_grafted_hi
-            log_chain_length_grafted_hi = .true.
-        elseif (index(line,"! grafted hi ds") > 0) then
-            read(line,*) ds_ave_grafted_hi
-            log_ds_ave_grafted_hi = .true.
-        elseif (index(line,"! grafted hi grafting_density") > 0) then
+        ! ghi chains
+        elseif (index(line,"! ghi set") > 0) then
+            read(line,'(L10)') exist_ghi
+            log_exist_ghi = .true.
+        elseif (index(line,"! ghi chain_length") > 0) then
+            read(line,*) chainlen_ghi
+            log_chain_length_ghi = .true.
+        elseif (index(line,"! ghi ds") > 0) then
+            read(line,*) ds_ave_ghi
+            log_ds_ave_ghi = .true.
+        elseif (index(line,"! ghi grafting_density") > 0) then
             read(line,'(E16.9)') gdens_hi
             log_gdens_hi = .true.
-        elseif (index(line,"! grafted hi C_inf") > 0) then
-            read(line,'(E16.9)') CN_gra_hi
-            log_characteristic_ratio_gra_hi = .true.
-        elseif (index(line,"! grafted hi bond_length") > 0) then
-            read(line,'(E16.9)') bond_length_gra_hi
-            log_bond_length_gra_hi = .true.
+        elseif (index(line,"! ghi C_inf") > 0) then
+            read(line,'(E16.9)') CN_ghi
+            log_characteristic_ratio_ghi = .true.
+        elseif (index(line,"! ghi bond_length") > 0) then
+            read(line,'(E16.9)') bond_length_ghi
+            log_bond_length_ghi = .true.
 
         ! grafted misc
         elseif (index(line,"! grafted distance_from_solid") > 0) then
@@ -428,18 +428,18 @@ do
             log_chain_length_bulk = .true.
 
         ! boundary condition
-        elseif (index(line,"! boundary_condition lo matrixA") > 0) then
-            read(line,'(I10)') bc_lo_matrixA
-            log_lo_BC_of_matrixA = .true.
-        elseif (index(line ,"! boundary_condition lo matrixB") >0) then
-             read(line,'(I10)') bc_lo_matrixB
-            log_lo_BC_of_matrixB = .true.
-        elseif (index(line,"! boundary_condition hi matrixA") > 0) then
-            read(line,'(I10)') bc_hi_matrixA
-            log_hi_BC_of_matrixA = .true.
-        elseif (index(line,"! boundary_condition hi matrixB") >0) then
-            read(line,'(I10)') bc_hi_matrixB
-            log_hi_BC_of_matrixB= .true.
+        elseif (index(line,"! boundary_condition lo mxa") > 0) then
+            read(line,'(I10)') bc_lo_mxa
+            log_lo_BC_of_mxa = .true.
+        elseif (index(line ,"! boundary_condition lo mxb") >0) then
+             read(line,'(I10)') bc_lo_mxb
+            log_lo_BC_of_mxb = .true.
+        elseif (index(line,"! boundary_condition hi mxa") > 0) then
+            read(line,'(I10)') bc_hi_mxa
+            log_hi_BC_of_mxa = .true.
+        elseif (index(line,"! boundary_condition hi mxb") >0) then
+            read(line,'(I10)') bc_hi_mxb
+            log_hi_BC_of_mxb= .true.
         elseif (index(line,"! boundary_condition lo grafted") > 0) then
             read(line,'(I10)') bc_lo_grafted
             log_lo_BC_of_grafted = .true.
@@ -879,48 +879,48 @@ else
     write(*  ,'(3X,A45,A16)')adjl("*Spatial integr rule not found. Auto:",45),adjustl('Simpson rule')
 endif
 
-if (log_matrixA_exist) then  ! refactor
-    if (matrixA_exist) then
-        write(iow,'(A85)')adjl('-------------------------------------MATRIXA CHAINS-----------------------------------',85)
-        write(*  ,'(A85)')adjl('-------------------------------------MATRIXA CHAINS-----------------------------------',85)
+if (log_exist_mxa) then  ! refactor
+    if (exist_mxa) then
+        write(iow,'(A85)')adjl('-------------------------------------mxa CHAINS-----------------------------------',85)
+        write(*  ,'(A85)')adjl('-------------------------------------mxa CHAINS-----------------------------------',85)
     else
-        matrixA_exist = .false.
+        exist_mxa = .false.
     endif
 else
     continue
 endif
 
-if (matrixA_exist) then ! Start of matrixA chains
-if (log_ds_ave_matrixA) then
-    write(iow,'(3X,A45,E16.9,'' monomers'')')adjl('Chain contour discretization:',45), ds_ave_matrixA
-    write(*  ,'(3X,A45,E16.9,'' monomers'')')adjl('Chain contour discretization:',45), ds_ave_matrixA
+if (exist_mxa) then ! Start of mxa chains
+if (log_ds_ave_mxa) then
+    write(iow,'(3X,A45,E16.9,'' monomers'')')adjl('Chain contour discretization:',45), ds_ave_mxa
+    write(*  ,'(3X,A45,E16.9,'' monomers'')')adjl('Chain contour discretization:',45), ds_ave_mxa
 else
     write(iow,'(3X,A45)')'*Chain contour discretization was not set'
     write(iow,'(3X,A45)')'*Chain contour discretization was not set'
     STOP
 endif
 
-if (log_chain_length_matrixA) then
-    write(iow,'(3X,A45,F16.9,'' monomers'')')adjl('Chain length:',45), chainlen_matrixA
-    write(*  ,'(3X,A45,F16.9,'' monomers'')')adjl('Chain length:',45), chainlen_matrixA
+if (log_chain_length_mxa) then
+    write(iow,'(3X,A45,F16.9,'' monomers'')')adjl('Chain length:',45), chainlen_mxa
+    write(*  ,'(3X,A45,F16.9,'' monomers'')')adjl('Chain length:',45), chainlen_mxa
 else
     write(iow,'(3X,A45)') 'Chain length of matrix chains was not set'
     write(*  ,'(3X,A45)') 'Chain length of matrix chains was not set'
     STOP
 endif
 
-if (log_characteristic_ratio_matrixA) then
-    write(iow,'(3X,A45,F16.4)')adjl('Chain characteristic ratio C_infinity:',45) ,CN_matrixA
-    write(*  ,'(3X,A45,F16.4)')adjl('Chain characteristic ratio C_infinity:',45) ,CN_matrixA
+if (log_characteristic_ratio_mxa) then
+    write(iow,'(3X,A45,F16.4)')adjl('Chain characteristic ratio C_infinity:',45) ,CN_mxa
+    write(*  ,'(3X,A45,F16.4)')adjl('Chain characteristic ratio C_infinity:',45) ,CN_mxa
 else
     write(iow,'(3X,A45)')adjl('Error: chain characteristic ratio not found..',45)
     write(*  ,'(3X,A45)')adjl('Error: chain characteristic ratio not found..',45)
     STOP
 endif
 
-if (log_bond_length_matrixA) then
-    write(iow,'(3X,A45,F16.4,'' Angstrom'')')adjl('Bond length:',45), bond_length_matrixA
-    write(*  ,'(3X,A45,F16.4,'' Angstrom'')')adjl('Bond length:',45), bond_length_matrixA
+if (log_bond_length_mxa) then
+    write(iow,'(3X,A45,F16.4,'' Angstrom'')')adjl('Bond length:',45), bond_length_mxa
+    write(*  ,'(3X,A45,F16.4,'' Angstrom'')')adjl('Bond length:',45), bond_length_mxa
 else
     write(iow,'(3X,A45)') 'Error: bond length not found..'
     write(*  ,'(3X,A45)') 'Error: bond length not found..'
@@ -928,31 +928,31 @@ else
 endif
 
 else
-    ds_ave_matrixA = 0.d0
-    chainlen_matrixA = 0.d0
-    CN_matrixA = 0.d0
-    bond_length_matrixA = 0.d0
-endif ! end of matrixA chains
+    ds_ave_mxa = 0.d0
+    chainlen_mxa = 0.d0
+    CN_mxa = 0.d0
+    bond_length_mxa = 0.d0
+endif ! end of mxa chains
 
-if (log_matrixB_exist) then
-    if (matrixB_exist) then
-        write(iow,'(A85)')adjl('-------------------------------------MATRIXB CHAINS-----------------------------------',85)
-        write(*  ,'(A85)')adjl('-------------------------------------MATRIXB CHAINS-----------------------------------',85)
+if (log_exist_mxb) then
+    if (exist_mxb) then
+        write(iow,'(A85)')adjl('-------------------------------------mxb CHAINS-----------------------------------',85)
+        write(*  ,'(A85)')adjl('-------------------------------------mxb CHAINS-----------------------------------',85)
     else
-        matrixB_exist = .false.
+        exist_mxb = .false.
     endif
 else
     continue
 endif
 
 
-if (matrixB_exist) then
-if (log_ds_ave_matrixB) then
+if (exist_mxb) then
+if (log_ds_ave_mxb) then
    
 
-    write(iow,'(3X,A45,E16.9,'' monomers'')')adjl('Chain contour discretization:',45), ds_ave_matrixB
+    write(iow,'(3X,A45,E16.9,'' monomers'')')adjl('Chain contour discretization:',45), ds_ave_mxb
      
-    write(*  ,'(3X,A45,E16.9,'' monomers'')')adjl('Chain contour discretization:',45), ds_ave_matrixB
+    write(*  ,'(3X,A45,E16.9,'' monomers'')')adjl('Chain contour discretization:',45), ds_ave_mxb
 else
     write(iow,'(3X,A45)')'*Chain contour discretization was not set'
     write(iow,'(3X,A45)')'*Chain contour discretization was not set'
@@ -960,28 +960,28 @@ else
    
     STOP
 endif
-if (log_chain_length_matrixB) then
+if (log_chain_length_mxb) then
    
-    write(iow,'(3X,A45,F16.9,'' monomers'')')adjl('Chain length:',45), chainlen_matrixB
-    write(*  ,'(3X,A45,F16.9,'' monomers'')')adjl('Chain length:',45), chainlen_matrixB
+    write(iow,'(3X,A45,F16.9,'' monomers'')')adjl('Chain length:',45), chainlen_mxb
+    write(*  ,'(3X,A45,F16.9,'' monomers'')')adjl('Chain length:',45), chainlen_mxb
      
 else
     write(iow,'(3X,A45)') 'Chain length of matrix chains was not set'
     write(*  ,'(3X,A45)') 'Chain length of matrix chains was not set'
 endif
 
-if (log_characteristic_ratio_matrixB) then
-    write(iow,'(3X,A45,F16.4)')adjl('Chain characteristic ratio C_infinity:',45) ,CN_matrixB
-    write(*  ,'(3X,A45,F16.4)')adjl('Chain characteristic ratio C_infinity:',45) ,CN_matrixB
+if (log_characteristic_ratio_mxb) then
+    write(iow,'(3X,A45,F16.4)')adjl('Chain characteristic ratio C_infinity:',45) ,CN_mxb
+    write(*  ,'(3X,A45,F16.4)')adjl('Chain characteristic ratio C_infinity:',45) ,CN_mxb
 else
     write(iow,'(3X,A45)')adjl('Error: chain characteristic ratio not found..',45)
     write(*  ,'(3X,A45)')adjl('Error: chain characteristic ratio not found..',45)
     STOP
 endif
 
-if (log_bond_length_matrixB) then
-    write(iow,'(3X,A45,F16.4,'' Angstrom'')')adjl('Bond length:',45), bond_length_matrixB
-    write(*  ,'(3X,A45,F16.4,'' Angstrom'')')adjl('Bond length:',45), bond_length_matrixB
+if (log_bond_length_mxb) then
+    write(iow,'(3X,A45,F16.4,'' Angstrom'')')adjl('Bond length:',45), bond_length_mxb
+    write(*  ,'(3X,A45,F16.4,'' Angstrom'')')adjl('Bond length:',45), bond_length_mxb
 else
     write(iow,'(3X,A45)') 'Error: bond length not found..'
     write(*  ,'(3X,A45)') 'Error: bond length not found..'
@@ -989,54 +989,54 @@ else
 endif
 
 else
-    ds_ave_matrixB = 0.d0
-    chainlen_matrixB = 0.d0
-    CN_matrixB = 0.d0
-    bond_length_matrixB = 0.d0
+    ds_ave_mxb = 0.d0
+    chainlen_mxb = 0.d0
+    CN_mxb = 0.d0
+    bond_length_mxb = 0.d0
 endif
 
-if (log_grafted_lo_exist) then
-    if (grafted_lo_exist) then
-        write(iow,'(A85)')adjl('----------------------------------GRAFTED LO CHAINS----------------------------------',85)
-        write(*  ,'(A85)')adjl('----------------------------------GRAFTED LO CHAINS----------------------------------',85)
+if (log_exist_glo) then
+    if (exist_glo) then
+        write(iow,'(A85)')adjl('----------------------------------glo CHAINS----------------------------------',85)
+        write(*  ,'(A85)')adjl('----------------------------------glo CHAINS----------------------------------',85)
     else
-        grafted_lo_exist = .false.
+        exist_glo = .false.
     endif
 else
-    grafted_lo_exist = .false.
+    exist_glo = .false.
 endif
 
-if (grafted_lo_exist) then ! start of grafted lo chains
-if (log_ds_ave_grafted_lo) then
-    write(iow,'(3X,A45,E16.9,'' monomers'')')adjl('Chain contour discretization:',45), ds_ave_grafted_lo
-    write(*  ,'(3X,A45,E16.9,'' monomers'')')adjl('Chain contour discretization:',45), ds_ave_grafted_lo
+if (exist_glo) then ! start of glo chains
+if (log_ds_ave_glo) then
+    write(iow,'(3X,A45,E16.9,'' monomers'')')adjl('Chain contour discretization:',45), ds_ave_glo
+    write(*  ,'(3X,A45,E16.9,'' monomers'')')adjl('Chain contour discretization:',45), ds_ave_glo
 else
     write(iow,'(3X,A45)')'*Chain contour discretization was not set'
     write(iow,'(3X,A45)')'*Chain contour discretization was not set'
     STOP
 endif
 
-if (log_chain_length_grafted_lo) then
-    write(iow,'(3X,A45,F16.9,'' monomers'')')adjl('Chain length:',45), chainlen_grafted_lo
-    write(*  ,'(3X,A45,F16.9,'' monomers'')')adjl('Chain length:',45), chainlen_grafted_lo
+if (log_chain_length_glo) then
+    write(iow,'(3X,A45,F16.9,'' monomers'')')adjl('Chain length:',45), chainlen_glo
+    write(*  ,'(3X,A45,F16.9,'' monomers'')')adjl('Chain length:',45), chainlen_glo
 else
-    write(iow,'(3X,A45)') 'Chain length of grafted_lo chains was not set'
-    write(*  ,'(3X,A45)') 'Chain length of grafted_lo chains was not set'
+    write(iow,'(3X,A45)') 'Chain length of glo chains was not set'
+    write(*  ,'(3X,A45)') 'Chain length of glo chains was not set'
     STOP
 endif
 
-if (log_characteristic_ratio_gra_lo) then
-    write(iow,'(3X,A45,F16.4)')adjl('Chain characteristic ratio C_infinity:',45) ,CN_gra_lo
-    write(*  ,'(3X,A45,F16.4)')adjl('Chain characteristic ratio C_infinity:',45) ,CN_gra_lo
+if (log_characteristic_ratio_glo) then
+    write(iow,'(3X,A45,F16.4)')adjl('Chain characteristic ratio C_infinity:',45) ,CN_glo
+    write(*  ,'(3X,A45,F16.4)')adjl('Chain characteristic ratio C_infinity:',45) ,CN_glo
 else
     write(iow,'(3X,A45)')adjl('Error: chain characteristic ratio not found..',45)
     write(*  ,'(3X,A45)')adjl('Error: chain characteristic ratio not found..',45)
     STOP
 endif
 
-if (log_bond_length_gra_lo) then
-    write(iow,'(3X,A45,F16.4,'' Angstrom'')')adjl('Bond length:',45), bond_length_gra_lo
-    write(*  ,'(3X,A45,F16.4,'' Angstrom'')')adjl('Bond length:',45), bond_length_gra_lo
+if (log_bond_length_glo) then
+    write(iow,'(3X,A45,F16.4,'' Angstrom'')')adjl('Bond length:',45), bond_length_glo
+    write(*  ,'(3X,A45,F16.4,'' Angstrom'')')adjl('Bond length:',45), bond_length_glo
 else
     write(iow,'(3X,A45)') 'Error: bond length not found..'
     write(*  ,'(3X,A45)') 'Error: bond length not found..'
@@ -1059,55 +1059,55 @@ else
     write(*  ,'(3X,A45)') adjl('Grafting density not found.. It was set to zero.',45)
 endif
 else
-    ds_ave_grafted_lo = 0.d0
-    chainlen_grafted_lo = 0.d0
-    CN_gra_lo = 0.d0
-    bond_length_gra_lo = 0.d0
+    ds_ave_glo = 0.d0
+    chainlen_glo = 0.d0
+    CN_glo = 0.d0
+    bond_length_glo = 0.d0
     gdens_lo = 0.d0
-endif ! end of grafted lo chains
+endif ! end of glo chains
 
 
-if (log_grafted_hi_exist) then
-    if (grafted_hi_exist) then
-        write(iow,'(A85)')adjl('----------------------------------GRAFTED HI CHAINS----------------------------------',85)
-        write(*  ,'(A85)')adjl('----------------------------------GRAFTED HI CHAINS----------------------------------',85)
+if (log_exist_ghi) then
+    if (exist_ghi) then
+        write(iow,'(A85)')adjl('----------------------------------ghi CHAINS----------------------------------',85)
+        write(*  ,'(A85)')adjl('----------------------------------ghi CHAINS----------------------------------',85)
     else
-        grafted_hi_exist = .false.
+        exist_ghi = .false.
     endif
 else
-    grafted_hi_exist = .false.
+    exist_ghi = .false.
 endif
 
-if (grafted_hi_exist) then ! start of grafted hi chains
-if (log_ds_ave_grafted_hi) then
-    write(iow,'(3X,A45,E16.9,'' monomers'')')adjl('Chain contour discretization:',45), ds_ave_grafted_hi
-    write(*  ,'(3X,A45,E16.9,'' monomers'')')adjl('Chain contour discretization:',45), ds_ave_grafted_hi
+if (exist_ghi) then ! start of ghi chains
+if (log_ds_ave_ghi) then
+    write(iow,'(3X,A45,E16.9,'' monomers'')')adjl('Chain contour discretization:',45), ds_ave_ghi
+    write(*  ,'(3X,A45,E16.9,'' monomers'')')adjl('Chain contour discretization:',45), ds_ave_ghi
 else
     write(iow,'(3X,A45)')'*Chain contour discretization was not set'
     write(iow,'(3X,A45)')'*Chain contour discretization was not set'
     STOP
 endif
 
-if (log_chain_length_grafted_hi) then
-    write(iow,'(3X,A45,F16.9,'' monomers'')')adjl('Chain length:',45), chainlen_grafted_hi
-    write(*  ,'(3X,A45,F16.9,'' monomers'')')adjl('Chain length:',45), chainlen_grafted_hi
+if (log_chain_length_ghi) then
+    write(iow,'(3X,A45,F16.9,'' monomers'')')adjl('Chain length:',45), chainlen_ghi
+    write(*  ,'(3X,A45,F16.9,'' monomers'')')adjl('Chain length:',45), chainlen_ghi
 else
-    write(iow,'(3X,A45)') 'Chain length of grafted_hi chains was not set'
-    write(*  ,'(3X,A45)') 'Chain length of grafted_hi chains was not set'
+    write(iow,'(3X,A45)') 'Chain length of ghi chains was not set'
+    write(*  ,'(3X,A45)') 'Chain length of ghi chains was not set'
     STOP
 endif
-if (log_characteristic_ratio_gra_hi) then
-    write(iow,'(3X,A45,F16.4)')adjl('Chain characteristic ratio C_infinity:',45) ,CN_gra_hi
-    write(*  ,'(3X,A45,F16.4)')adjl('Chain characteristic ratio C_infinity:',45) ,CN_gra_hi
+if (log_characteristic_ratio_ghi) then
+    write(iow,'(3X,A45,F16.4)')adjl('Chain characteristic ratio C_infinity:',45) ,CN_ghi
+    write(*  ,'(3X,A45,F16.4)')adjl('Chain characteristic ratio C_infinity:',45) ,CN_ghi
 else
     write(iow,'(3X,A45)')adjl('Error: chain characteristic ratio not found..',45)
     write(*  ,'(3X,A45)')adjl('Error: chain characteristic ratio not found..',45)
     STOP
 endif
 
-if (log_bond_length_gra_hi) then
-    write(iow,'(3X,A45,F16.4,'' Angstrom'')')adjl('Bond length:',45), bond_length_gra_hi
-    write(*  ,'(3X,A45,F16.4,'' Angstrom'')')adjl('Bond length:',45), bond_length_gra_hi
+if (log_bond_length_ghi) then
+    write(iow,'(3X,A45,F16.4,'' Angstrom'')')adjl('Bond length:',45), bond_length_ghi
+    write(*  ,'(3X,A45,F16.4,'' Angstrom'')')adjl('Bond length:',45), bond_length_ghi
 else
     write(iow,'(3X,A45)') 'Error: bond length not found..'
     write(*  ,'(3X,A45)') 'Error: bond length not found..'
@@ -1129,14 +1129,14 @@ else
     write(*  ,'(3X,A45)') adjl('Grafting density not found.. It was set to zero.',45)
 endif
 else
-    ds_ave_grafted_hi = 0.d0
-    chainlen_grafted_hi = 0.d0
-    CN_gra_hi = 0.d0
-    bond_length_gra_hi = 0.d0
+    ds_ave_ghi = 0.d0
+    chainlen_ghi = 0.d0
+    CN_ghi = 0.d0
+    bond_length_ghi = 0.d0
     gdens_hi = 0.d0
-endif ! end of grafted hi chains
+endif ! end of ghi chains
 
-if (grafted_lo_exist.or.grafted_hi_exist) then
+if (exist_glo.or.exist_ghi) then
 if (log_position_of_grafted) then
     if (abs(graft_pos)<tol)then
         gnode_lo = 1
@@ -1175,10 +1175,10 @@ if (log_chain_length_bulk) then
     write(iow,'(3X,A45,F16.9,'' monomers'')')adjl('Chain length (set):',45), chainlen_bulk
     write(*  ,'(3X,A45,F16.9,'' monomers'')')adjl('Chain length (set):',45), chainlen_bulk
 else
-    if (matrixA_exist) then
-        chainlen_bulk = chainlen_matrixA
+    if (exist_mxa) then
+        chainlen_bulk = chainlen_mxa
     else
-        chainlen_bulk = (gdens_lo * chainlen_grafted_lo + gdens_hi * chainlen_grafted_hi) &
+        chainlen_bulk = (gdens_lo * chainlen_glo + gdens_hi * chainlen_ghi) &
                       / (gdens_lo + gdens_hi)
     endif
 
@@ -1208,7 +1208,7 @@ if (log_lo_BC_of_grafted) then
         STOP
     endif 
 else
-    if (grafted_lo_exist.or.grafted_hi_exist) then
+    if (exist_glo.or.exist_ghi) then
         write(iow,'(3X,A150)')adjl('Error: grafted boundary condition for lo edge not found..',150)
         write(*  ,'(3X,A150)')adjl('Error: grafted boundary condition for lo edge not found..',150)
         STOP
@@ -1236,7 +1236,7 @@ if (log_hi_BC_of_grafted) then
         STOP
     end if 
 else
-    if (grafted_lo_exist.or.grafted_hi_exist) then
+    if (exist_glo.or.exist_ghi) then
         write(iow,'(3X,A150)')adjl('Error: grafted boundary condition for hi edge not found..',150)
         write(*  ,'(3X,A150)')adjl('Error: grafted boundary condition for hi edge not found..',150)
         STOP
@@ -1246,116 +1246,116 @@ else
 endif
 
 
-if (log_lo_BC_of_matrixA) then
-    if (bc_lo_matrixA == F_bc_neuman)then
-        write(iow,'(3X,A45,A16,'' (dq/dr=0)'')')adjl('matrixA boundary condition for lo edge:',45),adjustl('Neumann')
-        write(*  ,'(3X,A45,A16,'' (dq/dr=0)'')')adjl('matrixA boundary condition for lo edge:',45),adjustl('Neumann')
-    else if(bc_lo_matrixA == F_bc_dirichlet_eq_0) then
-        write(iow,'(3X,A45,A16,'' q=0'')')adjl('matrixA boundary condition for lo edge:',45),adjustl('Dirichlet')
-        write(*  ,'(3X,A45,A16,'' q=0'')')adjl('matrixA boundary condition for lo edge:',45),adjustl('Dirichlet')
-    else if(bc_lo_matrixA == F_bc_dirichlet_eq_1) then
-        write(iow,'(3X,A45,A16,'' q=1'')')adjl('matrixA boundary condition for lo edge:',45),adjustl('Dirichlet')
-        write(*  ,'(3X,A45,A16,'' q=1'')')adjl('matrixA boundary condition for lo edge:',45),adjustl('Dirichlet')
-    else if(bc_lo_matrixA == F_bc_periodic) then
-        write(iow,'(3X,A45,A16,'' q0=qN'')')adjl('matrixA boundary condition for lo edge:',45),adjustl('Periodic')
-        write(*  ,'(3X,A45,A16,'' q0=qN'')')adjl('matrixA boundary condition for lo edge:',45),adjustl('Periodic')
+if (log_lo_BC_of_mxa) then
+    if (bc_lo_mxa == F_bc_neuman)then
+        write(iow,'(3X,A45,A16,'' (dq/dr=0)'')')adjl('mxa boundary condition for lo edge:',45),adjustl('Neumann')
+        write(*  ,'(3X,A45,A16,'' (dq/dr=0)'')')adjl('mxa boundary condition for lo edge:',45),adjustl('Neumann')
+    else if(bc_lo_mxa == F_bc_dirichlet_eq_0) then
+        write(iow,'(3X,A45,A16,'' q=0'')')adjl('mxa boundary condition for lo edge:',45),adjustl('Dirichlet')
+        write(*  ,'(3X,A45,A16,'' q=0'')')adjl('mxa boundary condition for lo edge:',45),adjustl('Dirichlet')
+    else if(bc_lo_mxa == F_bc_dirichlet_eq_1) then
+        write(iow,'(3X,A45,A16,'' q=1'')')adjl('mxa boundary condition for lo edge:',45),adjustl('Dirichlet')
+        write(*  ,'(3X,A45,A16,'' q=1'')')adjl('mxa boundary condition for lo edge:',45),adjustl('Dirichlet')
+    else if(bc_lo_mxa == F_bc_periodic) then
+        write(iow,'(3X,A45,A16,'' q0=qN'')')adjl('mxa boundary condition for lo edge:',45),adjustl('Periodic')
+        write(*  ,'(3X,A45,A16,'' q0=qN'')')adjl('mxa boundary condition for lo edge:',45),adjustl('Periodic')
     else
-        write(iow,'(3X,A150)')adjl('Error: wrong matrixA boundary condition for lo edge.. (choose between -1, 0, 1, 2',150)
-        write(*  ,'(3X,A150)')adjl('Error: wrong matrixA boundary condition for lo edge.. (choose between -1, 0, 1, 2',150)
+        write(iow,'(3X,A150)')adjl('Error: wrong mxa boundary condition for lo edge.. (choose between -1, 0, 1, 2',150)
+        write(*  ,'(3X,A150)')adjl('Error: wrong mxa boundary condition for lo edge.. (choose between -1, 0, 1, 2',150)
         STOP
     endif 
 else
-    if (matrixA_exist) then
-        write(iow,'(3X,A150)')adjl('Error: matrixA boundary condition for lo edge not found..',150)
-        write(*  ,'(3X,A150)')adjl('Error: matrixA boundary condition for lo edge not found..',150)
+    if (exist_mxa) then
+        write(iow,'(3X,A150)')adjl('Error: mxa boundary condition for lo edge not found..',150)
+        write(*  ,'(3X,A150)')adjl('Error: mxa boundary condition for lo edge not found..',150)
         STOP
     else
-        bc_lo_matrixA = bc_lo_grafted
+        bc_lo_mxa = bc_lo_grafted
     endif
 endif
 
-if (log_hi_BC_of_matrixA) then
-    if (bc_hi_matrixA == F_bc_neuman)then
-        write(iow,'(3X,A45,A16,'' (dq/dr=0)'')')adjl('matrixA boundary condition for hi edge:',45),adjustl('Neumann')
-        write(*  ,'(3X,A45,A16,'' (dq/dr=0)'')')adjl('matrixA boundary condition for hi edge:',45),adjustl('Neumann')
-    else if(bc_hi_matrixA == F_bc_dirichlet_eq_0) then
-        write(iow,'(3X,A45,A16,'' q=0'')')adjl('matrixA boundary condition for hi edge:',45),adjustl('Dirichlet')
-        write(*  ,'(3X,A45,A16,'' q=0'')')adjl('matrixA boundary condition for hi edge:',45),adjustl('Dirichlet')
-    else if(bc_hi_matrixA == F_bc_dirichlet_eq_1) then
-        write(iow,'(3X,A45,A16,'' q=1'')')adjl('matrixA boundary condition for hi edge:',45),adjustl('Dirichlet')
-        write(*  ,'(3X,A45,A16,'' q=1'')')adjl('matrixA boundary condition for hi edge:',45),adjustl('Dirichlet')
-    else if(bc_hi_matrixA == F_bc_periodic) then
-        write(iow,'(3X,A45,A16,'' q0=qN'')')adjl('matrixA boundary condition for hi edge:',45),adjustl('Periodic')
-        write(*  ,'(3X,A45,A16,'' q0=qN'')')adjl('matrixA boundary condition for hi edge:',45),adjustl('Periodic')
+if (log_hi_BC_of_mxa) then
+    if (bc_hi_mxa == F_bc_neuman)then
+        write(iow,'(3X,A45,A16,'' (dq/dr=0)'')')adjl('mxa boundary condition for hi edge:',45),adjustl('Neumann')
+        write(*  ,'(3X,A45,A16,'' (dq/dr=0)'')')adjl('mxa boundary condition for hi edge:',45),adjustl('Neumann')
+    else if(bc_hi_mxa == F_bc_dirichlet_eq_0) then
+        write(iow,'(3X,A45,A16,'' q=0'')')adjl('mxa boundary condition for hi edge:',45),adjustl('Dirichlet')
+        write(*  ,'(3X,A45,A16,'' q=0'')')adjl('mxa boundary condition for hi edge:',45),adjustl('Dirichlet')
+    else if(bc_hi_mxa == F_bc_dirichlet_eq_1) then
+        write(iow,'(3X,A45,A16,'' q=1'')')adjl('mxa boundary condition for hi edge:',45),adjustl('Dirichlet')
+        write(*  ,'(3X,A45,A16,'' q=1'')')adjl('mxa boundary condition for hi edge:',45),adjustl('Dirichlet')
+    else if(bc_hi_mxa == F_bc_periodic) then
+        write(iow,'(3X,A45,A16,'' q0=qN'')')adjl('mxa boundary condition for hi edge:',45),adjustl('Periodic')
+        write(*  ,'(3X,A45,A16,'' q0=qN'')')adjl('mxa boundary condition for hi edge:',45),adjustl('Periodic')
     else
-        write(iow,'(3X,A150)')adjl('Error: wrong matrixA boundary condition for hi edge.. (choose between -1, 0, 1, 2',150)
-        write(*  ,'(3X,A150)')adjl('Error: wrong matrixA boundary condition for hi edge.. (choose between -1, 0, 1, 2',150)
+        write(iow,'(3X,A150)')adjl('Error: wrong mxa boundary condition for hi edge.. (choose between -1, 0, 1, 2',150)
+        write(*  ,'(3X,A150)')adjl('Error: wrong mxa boundary condition for hi edge.. (choose between -1, 0, 1, 2',150)
         STOP
     endif 
 else
-    if (matrixA_exist) then
-        write(iow,'(3X,A150)')adjl('Error: matrixA boundary condition for hi edge not found..',150)
-        write(*  ,'(3X,A150)')adjl('Error: matrixA boundary condition for hi edge not found..',150)
+    if (exist_mxa) then
+        write(iow,'(3X,A150)')adjl('Error: mxa boundary condition for hi edge not found..',150)
+        write(*  ,'(3X,A150)')adjl('Error: mxa boundary condition for hi edge not found..',150)
         STOP
     else
-        bc_hi_matrixA = bc_hi_grafted
+        bc_hi_mxa = bc_hi_grafted
     endif
 endif
 
 
-if (log_lo_BC_of_matrixB) then
-    if (bc_lo_matrixB == F_bc_neuman)then
-        write(iow,'(3X,A45,A16,'' (dq/dr=0)'')')adjl('matrixB boundary condition for lo edge:',45),adjustl('Neumann')
-        write(*  ,'(3X,A45,A16,'' (dq/dr=0)'')')adjl('matrixB boundary condition for lo edge:',45),adjustl('Neumann')
-    else if(bc_lo_matrixB == F_bc_dirichlet_eq_0) then
-        write(iow,'(3X,A45,A16,'' q=0'')')adjl('matrixB boundary condition for lo edge:',45),adjustl('Dirichlet')
-        write(*  ,'(3X,A45,A16,'' q=0'')')adjl('matrixB boundary condition for lo edge:',45),adjustl('Dirichlet')
-    else if(bc_lo_matrixB == F_bc_dirichlet_eq_1) then
-        write(iow,'(3X,A45,A16,'' q=1'')')adjl('matrixB boundary condition for lo edge:',45),adjustl('Dirichlet')
-        write(*  ,'(3X,A45,A16,'' q=1'')')adjl('matrixB boundary condition for lo edge:',45),adjustl('Dirichlet')
-    else if(bc_lo_matrixB == F_bc_periodic) then
-        write(iow,'(3X,A45,A16,'' q0=qN'')')adjl('matrixB boundary condition for lo edge:',45),adjustl('Periodic')
-        write(*  ,'(3X,A45,A16,'' q0=qN'')')adjl('matrixB boundary condition for lo edge:',45),adjustl('Periodic')
+if (log_lo_BC_of_mxb) then
+    if (bc_lo_mxb == F_bc_neuman)then
+        write(iow,'(3X,A45,A16,'' (dq/dr=0)'')')adjl('mxb boundary condition for lo edge:',45),adjustl('Neumann')
+        write(*  ,'(3X,A45,A16,'' (dq/dr=0)'')')adjl('mxb boundary condition for lo edge:',45),adjustl('Neumann')
+    else if(bc_lo_mxb == F_bc_dirichlet_eq_0) then
+        write(iow,'(3X,A45,A16,'' q=0'')')adjl('mxb boundary condition for lo edge:',45),adjustl('Dirichlet')
+        write(*  ,'(3X,A45,A16,'' q=0'')')adjl('mxb boundary condition for lo edge:',45),adjustl('Dirichlet')
+    else if(bc_lo_mxb == F_bc_dirichlet_eq_1) then
+        write(iow,'(3X,A45,A16,'' q=1'')')adjl('mxb boundary condition for lo edge:',45),adjustl('Dirichlet')
+        write(*  ,'(3X,A45,A16,'' q=1'')')adjl('mxb boundary condition for lo edge:',45),adjustl('Dirichlet')
+    else if(bc_lo_mxb == F_bc_periodic) then
+        write(iow,'(3X,A45,A16,'' q0=qN'')')adjl('mxb boundary condition for lo edge:',45),adjustl('Periodic')
+        write(*  ,'(3X,A45,A16,'' q0=qN'')')adjl('mxb boundary condition for lo edge:',45),adjustl('Periodic')
     else
-        write(iow,'(3X,A150)')adjl('Error: wrong matrixB boundary condition for lo edge.. (choose between -1, 0, 1, 2',150)
-        write(*  ,'(3X,A150)')adjl('Error: wrong matrixB boundary condition for lo edge.. (choose between -1, 0, 1, 2',150)
+        write(iow,'(3X,A150)')adjl('Error: wrong mxb boundary condition for lo edge.. (choose between -1, 0, 1, 2',150)
+        write(*  ,'(3X,A150)')adjl('Error: wrong mxb boundary condition for lo edge.. (choose between -1, 0, 1, 2',150)
         STOP
     endif 
 else
-    if (matrixB_exist) then
-        write(iow,'(3X,A150)')adjl('Error: matrixB boundary condition for lo edge not found..',150)
-        write(*  ,'(3X,A150)')adjl('Error: matrixB boundary condition for lo edge not found..',150)
+    if (exist_mxb) then
+        write(iow,'(3X,A150)')adjl('Error: mxb boundary condition for lo edge not found..',150)
+        write(*  ,'(3X,A150)')adjl('Error: mxb boundary condition for lo edge not found..',150)
         STOP
     else
-        bc_lo_matrixB = bc_lo_grafted
+        bc_lo_mxb = bc_lo_grafted
     endif
 endif
 
-if (log_hi_BC_of_matrixB) then
-    if (bc_hi_matrixB == F_bc_neuman)then
-        write(iow,'(3X,A45,A16,'' (dq/dr=0)'')')adjl('matrixB boundary condition for hi edge:',45),adjustl('Neumann')
-        write(*  ,'(3X,A45,A16,'' (dq/dr=0)'')')adjl('matrixB boundary condition for hi edge:',45),adjustl('Neumann')
-    else if(bc_hi_matrixB == F_bc_dirichlet_eq_0) then
-        write(iow,'(3X,A45,A16,'' q=0'')')adjl('matrixB boundary condition for hi edge:',45),adjustl('Dirichlet')
-        write(*  ,'(3X,A45,A16,'' q=0'')')adjl('matrixB boundary condition for hi edge:',45),adjustl('Dirichlet')
-    else if(bc_hi_matrixB == F_bc_dirichlet_eq_1) then
-        write(iow,'(3X,A45,A16,'' q=1'')')adjl('matrixB boundary condition for hi edge:',45),adjustl('Dirichlet')
-        write(*  ,'(3X,A45,A16,'' q=1'')')adjl('matrixB boundary condition for hi edge:',45),adjustl('Dirichlet')
-    else if(bc_hi_matrixB == F_bc_periodic) then
-        write(iow,'(3X,A45,A16,'' q0=qN'')')adjl('matrixB boundary condition for hi edge:',45),adjustl('Periodic')
-        write(*  ,'(3X,A45,A16,'' q0=qN'')')adjl('matrixB boundary condition for hi edge:',45),adjustl('Periodic')
+if (log_hi_BC_of_mxb) then
+    if (bc_hi_mxb == F_bc_neuman)then
+        write(iow,'(3X,A45,A16,'' (dq/dr=0)'')')adjl('mxb boundary condition for hi edge:',45),adjustl('Neumann')
+        write(*  ,'(3X,A45,A16,'' (dq/dr=0)'')')adjl('mxb boundary condition for hi edge:',45),adjustl('Neumann')
+    else if(bc_hi_mxb == F_bc_dirichlet_eq_0) then
+        write(iow,'(3X,A45,A16,'' q=0'')')adjl('mxb boundary condition for hi edge:',45),adjustl('Dirichlet')
+        write(*  ,'(3X,A45,A16,'' q=0'')')adjl('mxb boundary condition for hi edge:',45),adjustl('Dirichlet')
+    else if(bc_hi_mxb == F_bc_dirichlet_eq_1) then
+        write(iow,'(3X,A45,A16,'' q=1'')')adjl('mxb boundary condition for hi edge:',45),adjustl('Dirichlet')
+        write(*  ,'(3X,A45,A16,'' q=1'')')adjl('mxb boundary condition for hi edge:',45),adjustl('Dirichlet')
+    else if(bc_hi_mxb == F_bc_periodic) then
+        write(iow,'(3X,A45,A16,'' q0=qN'')')adjl('mxb boundary condition for hi edge:',45),adjustl('Periodic')
+        write(*  ,'(3X,A45,A16,'' q0=qN'')')adjl('mxb boundary condition for hi edge:',45),adjustl('Periodic')
     else
-        write(iow,'(3X,A150)')adjl('Error: wrong matrixB boundary condition for hi edge.. (choose between -1, 0, 1, 2',150)
-        write(*  ,'(3X,A150)')adjl('Error: wrong matrixB boundary condition for hi edge.. (choose between -1, 0, 1, 2',150)
+        write(iow,'(3X,A150)')adjl('Error: wrong mxb boundary condition for hi edge.. (choose between -1, 0, 1, 2',150)
+        write(*  ,'(3X,A150)')adjl('Error: wrong mxb boundary condition for hi edge.. (choose between -1, 0, 1, 2',150)
         STOP
     endif 
 else
-    if (matrixB_exist) then
-        write(iow,'(3X,A150)')adjl('Error: matrixB boundary condition for hi edge not found..',150)
-        write(*  ,'(3X,A150)')adjl('Error: matrixB boundary condition for hi edge not found..',150)
+    if (exist_mxb) then
+        write(iow,'(3X,A150)')adjl('Error: mxb boundary condition for hi edge not found..',150)
+        write(*  ,'(3X,A150)')adjl('Error: mxb boundary condition for hi edge not found..',150)
         STOP
     else
-        bc_hi_matrixB = bc_hi_grafted
+        bc_hi_mxb = bc_hi_grafted
     endif
 endif
 

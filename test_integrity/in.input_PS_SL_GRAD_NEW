@@ -30,16 +30,16 @@
  0                                                               ! wall side (-1: lo, 0: both, 1: hi)
 
  # matrix chains
- True                          ! matrixA set (1: yes, 0 : no)
- 100.0                         ! matrixA chain_length
- 0.5                           ! matrixA ds
+ True                          ! mxa set (1: yes, 0 : no)
+ 100.0                         ! mxa chain_length
+ 0.5                           ! mxa ds
  9.000000000D+00               ! matrix r_adsorbed, (Angstrom)
 
  0.000000000D+00               ! grafted distance_from_solid, (Angstrom)
 
  # boundary conditions
- 0                             ! boundary_condition lo matrixA, (-1: Neuman, 0: Dirichlet q=0, 1: Dirichlet q=1)
- -1                            ! boundary_condition hi matrixA, (-1: Neuman, 0: Dirichlet q=0, 1: Dirichlet q=1)
+ 0                             ! boundary_condition lo mxa, (-1: Neuman, 0: Dirichlet q=0, 1: Dirichlet q=1)
+ -1                            ! boundary_condition hi mxa, (-1: Neuman, 0: Dirichlet q=0, 1: Dirichlet q=1)
  0                             ! boundary_condition lo grafted, (-1: Neuman, 0: Dirichlet q=0, 1: Dirichlet q=1)
  -1                            ! boundary_condition hi grafted, (-1: Neuman, 0: Dirichlet q=0, 1: Dirichlet q=1)
 

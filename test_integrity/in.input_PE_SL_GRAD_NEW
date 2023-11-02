@@ -30,28 +30,28 @@
  0                                                               ! wall side (-1: lo, 0: both, 1: hi)
 
  # matrix chains
- True                          ! matrixA set (1: yes, 0 : no)
- 100.0                         ! matrixA chain_length
- 0.1                           ! matrixA ds
+ True                          ! mxa set (1: yes, 0 : no)
+ 100.0                         ! mxa chain_length
+ 0.1                           ! mxa ds
  5.800000000D+00               ! matrix r_adsorbed, (Angstrom)
 
- # grafted lo chains
- False                         ! grafted lo set (1: yes, 0: no)
- 100.0                         ! grafted lo chain_length
- 0.1                           ! grafted lo ds
- 0.498015687E-02               ! grafted lo grafting_density, (chains/Angstrom^2)
+ # glo chains
+ False                         ! glo set (1: yes, 0: no)
+ 100.0                         ! glo chain_length
+ 0.1                           ! glo ds
+ 0.498015687E-02               ! glo grafting_density, (chains/Angstrom^2)
 
- # grafted hi chains
- False                         ! grafted hi set (1: yes, 0: no)
- 100.0                         ! grafted hi chain_length
- 0.1                           ! grafted hi ds
- 0.498015687E-02               ! grafted hi grafting_density, (chains/Angstrom^2)
+ # ghi chains
+ False                         ! ghi set (1: yes, 0: no)
+ 100.0                         ! ghi chain_length
+ 0.1                           ! ghi ds
+ 0.498015687E-02               ! ghi grafting_density, (chains/Angstrom^2)
 
  0.000000000D+00               ! grafted distance_from_solid, (Angstrom)
 
  # boundary conditions
- 0                             ! boundary_condition lo matrixA, (-1: Neuman, 0: Dirichlet q=0, 1: Dirichlet q=1)
- -1                            ! boundary_condition hi matrixA, (-1: Neuman, 0: Dirichlet q=0, 1: Dirichlet q=1)
+ 0                             ! boundary_condition lo mxa, (-1: Neuman, 0: Dirichlet q=0, 1: Dirichlet q=1)
+ -1                            ! boundary_condition hi mxa, (-1: Neuman, 0: Dirichlet q=0, 1: Dirichlet q=1)
  0                             ! boundary_condition lo grafted, (-1: Neuman, 0: Dirichlet q=0, 1: Dirichlet q=1)
  0                             ! boundary_condition hi grafted, (-1: Neuman, 0: Dirichlet q=0, 1: Dirichlet q=1)
 

@@ -18,11 +18,11 @@ exec_path=$run_path"RSL1D"
 
 #exit
 # Beware! Set it to true only if you know what you know what you are doing!
-replace_log=false
-#replace_log=true
+#replace_log=false
+replace_log=true
 
 # Enable this and you will have the option to vimdiff each set of failed logs
-inspect_log=true
+#inspect_log=true
 #inspect_log=false
 
 echo
@@ -33,6 +33,7 @@ fi
 mv $run_path"/in.input" $run_path"/TEMP.in.input"
 
 declare -a TEST_LIST=( \
+   $test_path"/13.8_w_matrixB/" \
    $test_path"/0.ps_fg_sph_ham_it1/" \
    $test_path"/1.ps_fg_sph_ham/" \
    $test_path"/2.cafe222_ps_fg_sph_neumann_ham/" \
@@ -46,7 +47,6 @@ declare -a TEST_LIST=( \
    $test_path"/10.test_with_tolis_w_sqgrad" \
    $test_path"/11.test_with_tolis_w_sqgrad_rect" \
    $test_path"/12.ps_f_hybrid" \
-   $test_path"/13.8_w_matrixB/" \
 )
 
 : '

@@ -20,12 +20,12 @@
    Spacing for spatial discret:                          uniform
    Chain contour integration rule:                  Simpson rule
    Spatial integration rule:                        Simpson rule
--------------------------------------MATRIXA CHAINS----------------------------------
+-------------------------------------mxa CHAINS-----------------------------------   
    Chain contour discretization:                 0.192000000E+01 monomers
    Chain length:                                   192.000000000 monomers
    Chain characteristic ratio C_infinity:                 9.8530
    Bond length:                                           1.5400 Angstrom
-----------------------------------GRAFTED LO CHAINS----------------------------------
+----------------------------------glo CHAINS----------------------------------       
    Chain contour discretization:                 0.192000000E+01 monomers
    Chain length:                                   192.000000000 monomers
    Chain characteristic ratio C_infinity:                 9.8530
@@ -37,8 +37,8 @@
 ---------------------------------BOUNDARY CONDITIONS---------------------------------
    grafted boundary condition for lo edge:             Dirichlet q=0
    grafted boundary condition for hi edge:               Neumann (dq/dr=0)
-   matrixA boundary condition for lo edge:             Dirichlet q=0
-   matrixA boundary condition for hi edge:               Neumann (dq/dr=0)
+   mxa boundary condition for lo edge:                 Dirichlet q=0
+   mxa boundary condition for hi edge:                   Neumann (dq/dr=0)
    Critical lo position of adsorbed segs             9.000000000 Angstrom
    Critical hi position of adsorbed segs             0.000000000 Angstrom
 ------------------------------SETUP THE EQUATION OF STATE----------------------------
@@ -55,10 +55,10 @@
    *Hard sphere wall position not found. Auto:            0.0000 Angstrom
    Recalibration of hard-sphere wall. E-target:           5.0000 k_B T
 -----------------------------INITIALIZE THE SCF PARAMETERS---------------------------
-   MatrixA radious of gyration:                          27.3451 Angstrom
-   MatrixA nodes along chain contour:                        100 nodes
-   grafted lo radious of gyration:                       27.3451 Angstrom
-   grafted lo nodes along chain contour:                     100 nodes
+   mxa radious of gyration:                              27.3451 Angstrom
+   mxa nodes along chain contour:                            100 nodes
+   glo radious of gyration:                              27.3451 Angstrom
+   glo nodes along chain contour:                            100 nodes
    molar density in bulk                              18326.9231 mol/m3
    automatic recalibration of wall position..   
    wall_pos was recalibrated to                      3.998156468 Angstrom
@@ -86,10 +86,10 @@
 Convergence of max field error   0.4997045E-04 k_B T
 -------------------------------------FINAL OUTPUT------------------------------------
    Free energy:        0.5592588E+02 mN/m
-------------------------------------MATRIXA CHAINS-----------------------------------
+------------------------------------mxa CHAINS-----------------------------------    
    matrix chains:      0.8421811E+04 chains
----------------------------------GRAFTED LO CHAINS-----------------------------------
-   grafted lo chains   0.4025422E+03 chains
+---------------------------------glo CHAINS-----------------------------------       
+   glo chains:         0.4025422E+03 chains
    q_f(r_gi,0):        0.1066535E+00
    q_g(r_gi,N_g):      0.2779425E+03
    grafting density:   0.5005202E-02 chains/angstrom

@@ -28,34 +28,34 @@
  0                                                               ! wall side (-1: lo, 0: both, 1: hi)
 
  # matrix chains
- True                          ! matrixA set (1: yes, 0 : no)
- 192.0                         ! matrixA chain_length
- 1.92                          ! matrixA ds
- 0.985300000D+01               ! matrixA C_inf
- 1.540000000D+00               ! matrixA bond_length, (Angstrom)
+ True                          ! mxa set (1: yes, 0 : no)
+ 192.0                         ! mxa chain_length
+ 1.92                          ! mxa ds
+ 0.985300000D+01               ! mxa C_inf
+ 1.540000000D+00               ! mxa bond_length, (Angstrom)
  9.000000000D+00               ! chain r_ads_lo, (Angstrom)
 
- # grafted lo chains
- True                          ! grafted lo set (1: yes, 0: no)
- 192.0                         ! grafted lo chain_length
- 1.92                          ! grafted lo ds
- 0.985300000D+01               ! grafted lo C_inf
- 1.540000000D+00               ! grafted lo bond_length, (Angstrom)
- 0.498015687E-02               ! grafted lo grafting_density, (chains/Angstrom^2)
+ # glo chains
+ True                          ! glo set (1: yes, 0: no)
+ 192.0                         ! glo chain_length
+ 1.92                          ! glo ds
+ 0.985300000D+01               ! glo C_inf
+ 1.540000000D+00               ! glo bond_length, (Angstrom)
+ 0.498015687E-02               ! glo grafting_density, (chains/Angstrom^2)
 
- # grafted hi chains
- True                          ! grafted hi set (1: yes, 0: no)
- 192.0                         ! grafted hi chain_length
- 1.92                          ! grafted hi ds
- 0.985300000D+01               ! grafted hi C_inf
- 1.540000000D+00               ! grafted hi bond_length, (Angstrom)
- 0.498015687E-02               ! grafted hi grafting_density, (chains/Angstrom^2)
+ # ghi chains
+ True                          ! ghi set (1: yes, 0: no)
+ 192.0                         ! ghi chain_length
+ 1.92                          ! ghi ds
+ 0.985300000D+01               ! ghi C_inf
+ 1.540000000D+00               ! ghi bond_length, (Angstrom)
+ 0.498015687E-02               ! ghi grafting_density, (chains/Angstrom^2)
 
  0.000000000D+00               ! grafted distance_from_solid, (Angstrom)
 
  # boundary conditions
- 0                             ! boundary_condition lo matrixA, (-1: Neuman, 0: Dirichlet q=0, 1: Dirichlet q=1)
- 0                             ! boundary_condition hi matrixA, (-1: Neuman, 0: Dirichlet q=0, 1: Dirichlet q=1)
+ 0                             ! boundary_condition lo mxa, (-1: Neuman, 0: Dirichlet q=0, 1: Dirichlet q=1)
+ 0                             ! boundary_condition hi mxa, (-1: Neuman, 0: Dirichlet q=0, 1: Dirichlet q=1)
  0                             ! boundary_condition lo grafted, (-1: Neuman, 0: Dirichlet q=0, 1: Dirichlet q=1)
  0                             ! boundary_condition hi grafted, (-1: Neuman, 0: Dirichlet q=0, 1: Dirichlet q=1)
 

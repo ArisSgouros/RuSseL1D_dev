@@ -40,7 +40,7 @@
  192.0                         ! chainlen of grafted chains
  100                           ! ns grafted
  0                             ! grafted upper boundary condition, (-1: Neuman, 0: Dirichlet q=0, 1: Dirichlet q=1)
- 0                             ! grafted lower boundary condition, (-1: Neuman, 0: Dirichlet q=0, 1: Dirichlet q=1)
+ 0                             ! glower boundary condition, (-1: Neuman, 0: Dirichlet q=0, 1: Dirichlet q=1)
  0.000000000D+00               ! position of grafting point, (Angstrom)
  0.498015687E-02               ! grafting density lo, (chains/Angstrom^2)
 

@@ -19,7 +19,7 @@
    Spacing for spatial discret:                          uniform
    Chain contour integration rule:                  Simpson rule
    Spatial integration rule:                        Simpson rule
-----------------------------------GRAFTED LO CHAINS----------------------------------
+----------------------------------glo CHAINS----------------------------------       
    Chain contour discretization:                 0.100000000E+01 monomers
    Chain length:                                   100.000000000 monomers
    Chain characteristic ratio C_infinity:                 8.2656
@@ -31,8 +31,8 @@
 ---------------------------------BOUNDARY CONDITIONS---------------------------------
    grafted boundary condition for lo edge:             Dirichlet q=0
    grafted boundary condition for hi edge:             Dirichlet q=0
-   matrixA boundary condition for lo edge:             Dirichlet q=0
-   matrixA boundary condition for hi edge:             Dirichlet q=0
+   mxa boundary condition for lo edge:                 Dirichlet q=0
+   mxa boundary condition for hi edge:                 Dirichlet q=0
    Critical lo position of adsorbed segs             5.800000000 Angstrom
 ------------------------------SETUP THE EQUATION OF STATE----------------------------
    The Sanchez-Lacombe EoS was chosen with coeff
@@ -45,8 +45,8 @@
    Side of the solid wall:                             lo and hi
    *Hard sphere wall position not found. Auto:            0.0000 Angstrom
 -----------------------------INITIALIZE THE SCF PARAMETERS---------------------------
-   grafted lo radious of gyration:                       18.0752 Angstrom
-   grafted lo nodes along chain contour:                     100 nodes
+   glo radious of gyration:                              18.0752 Angstrom
+   glo nodes along chain contour:                            100 nodes
    Computation of the mass density from SL EoS..
    mass density was recomputed as:                        0.7649 g/cm3
    Sanchez-Lacombe influence parameter:           0.23595272E-67 J m^5
@@ -58,8 +58,8 @@
 
 -------------------------------------FINAL OUTPUT------------------------------------
    Free energy:        0.9807718E+02 mN/m
----------------------------------GRAFTED LO CHAINS-----------------------------------
-   grafted lo chains   0.5005984E-02 chains
+---------------------------------glo CHAINS-----------------------------------       
+   glo chains:         0.5005984E-02 chains
    q_f(r_gi,0):        0.1110321E-01
    q_g(r_gi,N_g):      0.2737214E+04
    grafting density:   0.5005984E-02 chains/angstrom

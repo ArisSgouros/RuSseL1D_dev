@@ -19,18 +19,18 @@
    Spacing for spatial discret:                          uniform
    Chain contour integration rule:                  Simpson rule
    Spatial integration rule:                        Simpson rule
--------------------------------------MATRIXB CHAINS----------------------------------
+-------------------------------------mxb CHAINS-----------------------------------   
    Chain contour discretization:                 0.192000000E+01 monomers
    Chain length:                                   192.000000000 monomers
    Chain characteristic ratio C_infinity:                 9.8530
    Bond length:                                           1.5400 Angstrom
-----------------------------------GRAFTED LO CHAINS----------------------------------
+----------------------------------glo CHAINS----------------------------------       
    Chain contour discretization:                 0.192000000E+01 monomers
    Chain length:                                   192.000000000 monomers
    Chain characteristic ratio C_infinity:                 9.8530
    Bond length:                                           1.5400 Angstrom
    Grafting density:                             0.498015687E-02 chains/Angstrom^2
-----------------------------------GRAFTED HI CHAINS----------------------------------
+----------------------------------ghi CHAINS----------------------------------       
    Chain contour discretization:                 0.192000000E+01 monomers
    Chain length:                                   192.000000000 monomers
    Chain characteristic ratio C_infinity:                 9.8530
@@ -42,10 +42,10 @@
 ---------------------------------BOUNDARY CONDITIONS---------------------------------
    grafted boundary condition for lo edge:             Dirichlet q=0
    grafted boundary condition for hi edge:             Dirichlet q=0
-   matrixA boundary condition for lo edge:             Dirichlet q=0
-   matrixA boundary condition for hi edge:             Dirichlet q=0
-   matrixB boundary condition for lo edge:             Dirichlet q=0
-   matrixB boundary condition for hi edge:             Dirichlet q=0
+   mxa boundary condition for lo edge:                 Dirichlet q=0
+   mxa boundary condition for hi edge:                 Dirichlet q=0
+   mxb boundary condition for lo edge:                 Dirichlet q=0
+   mxb boundary condition for hi edge:                 Dirichlet q=0
    Critical lo position of adsorbed segs             9.000000000 Angstrom
 ------------------------------SETUP THE EQUATION OF STATE----------------------------
    The Helfand EoS was chosen with coeffs:      
@@ -61,12 +61,12 @@
    *Hard sphere wall position not found. Auto:            0.0000 Angstrom
    Recalibration of hard-sphere wall. E-target:           5.0000 k_B T
 -----------------------------INITIALIZE THE SCF PARAMETERS---------------------------
-   MatrixB radious of gyration:                          27.3451 Angstrom
-   MatrixB nodes along chain contour:                        100 nodes
-   grafted lo radious of gyration:                       27.3451 Angstrom
-   grafted lo nodes along chain contour:                     100 nodes
-   grafted hi radious of gyration:                       27.3451 Angstrom
-   grafted hi nodes along chain contour:                     100 nodes
+   mxb radious of gyration:                              27.3451 Angstrom
+   mxb nodes along chain contour:                            100 nodes
+   glo radious of gyration:                              27.3451 Angstrom
+   glo nodes along chain contour:                            100 nodes
+   ghi radious of gyration:                              27.3451 Angstrom
+   ghi nodes along chain contour:                            100 nodes
    molar density in bulk                              18326.9231 mol/m3
    automatic recalibration of wall position..   
    wall_pos was recalibrated to                      4.004809186 Angstrom
@@ -90,16 +90,16 @@
 Convergence of max field error   0.9993257E-03 k_B T
 -------------------------------------FINAL OUTPUT------------------------------------
    Free energy:        0.1070165E+03 mN/m
-------------------------------------MATRIXB CHAINS-----------------------------------
+------------------------------------mxb CHAINS-----------------------------------    
    matrix chains:      0.4281462E-02 chains
----------------------------------GRAFTED LO CHAINS-----------------------------------
-   grafted lo chains   0.5003139E-02 chains
+---------------------------------glo CHAINS-----------------------------------       
+   glo chains:         0.5003139E-02 chains
    q_f(r_gi,0):        0.1939168E-02
    q_g(r_gi,N_g):      0.1787097E+05
    grafting density:   0.5003139E-02 chains/angstrom
    error:              0.4614799E+00
----------------------------------GRAFTED HI CHAINS-----------------------------------
-   grafted hi chains   0.5003139E-02 chains
+---------------------------------ghi CHAINS-----------------------------------       
+   ghi chains:         0.5003139E-02 chains
    q_f(r_gi,0):        0.1939168E-02
    q_g(r_gi,N_g):      0.1787097E+05
    grafting density:   0.5003139E-02 chains/angstrom

@@ -19,7 +19,7 @@
    Spacing for spatial discret:                          uniform
    Chain contour integration rule:                  Simpson rule
    Spatial integration rule:                        Simpson rule
-----------------------------------GRAFTED LO CHAINS----------------------------------
+----------------------------------glo CHAINS----------------------------------       
    Chain contour discretization:                 0.500000000E+00 monomers
    Chain length:                                    50.000000000 monomers
    Chain characteristic ratio C_infinity:                 9.8530
@@ -31,8 +31,8 @@
 ---------------------------------BOUNDARY CONDITIONS---------------------------------
    grafted boundary condition for lo edge:             Dirichlet q=0
    grafted boundary condition for hi edge:             Dirichlet q=0
-   matrixA boundary condition for lo edge:             Dirichlet q=0
-   matrixA boundary condition for hi edge:             Dirichlet q=0
+   mxa boundary condition for lo edge:                 Dirichlet q=0
+   mxa boundary condition for hi edge:                 Dirichlet q=0
 ------------------------------SETUP THE EQUATION OF STATE----------------------------
    The Helfand EoS was chosen with coeffs:      
    *Isothermal compressibility:                       0.1070E-08 Pa^-1
@@ -47,8 +47,8 @@
    *Hard sphere wall position not found. Auto:            0.0000 Angstrom
    Recalibration of hard-sphere wall. E-target:           5.0000 k_B T
 -----------------------------INITIALIZE THE SCF PARAMETERS---------------------------
-   grafted lo radious of gyration:                       13.9545 Angstrom
-   grafted lo nodes along chain contour:                     100 nodes
+   glo radious of gyration:                              13.9545 Angstrom
+   glo nodes along chain contour:                            100 nodes
    molar density in bulk                              18326.9231 mol/m3
    automatic recalibration of wall position..   
    wall_pos was recalibrated to                      4.004809186 Angstrom
@@ -77,8 +77,8 @@
 Convergence of max field error   0.4999710E-04 k_B T
 -------------------------------------FINAL OUTPUT------------------------------------
    Free energy:        0.1029400E+03 mN/m
----------------------------------GRAFTED LO CHAINS-----------------------------------
-   grafted lo chains   0.1074891E-01 chains
+---------------------------------glo CHAINS-----------------------------------       
+   glo chains:         0.1074891E-01 chains
    q_f(r_gi,0):        0.1089028E+00
    q_g(r_gi,N_g):      0.8931101E+03
    grafting density:   0.1074891E-01 chains/angstrom

@@ -21,11 +21,13 @@
    Chain contour integration rule:                  Simpson rule
    Spatial integration rule:                        Simpson rule
 -------------------------------------mxa CHAINS-----------------------------------   
+   chain kind:                                                 1
    Chain contour discretization:                 0.768000000E+01 monomers
    Chain length:                                   384.000000000 monomers
    Chain characteristic ratio C_infinity:                 9.8530
    Bond length:                                           1.5400 Angstrom
 ----------------------------------glo CHAINS----------------------------------       
+   chain kind:                                                 1
    Chain contour discretization:                 0.768000000E+01 monomers
    Chain length:                                   384.000000000 monomers
    Chain characteristic ratio C_infinity:                 9.8530

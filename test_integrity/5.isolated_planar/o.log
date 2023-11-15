@@ -20,6 +20,7 @@
    Chain contour integration rule:                  Simpson rule
    Spatial integration rule:                        Simpson rule
 ----------------------------------glo CHAINS----------------------------------       
+   chain kind:                                                 1
    Chain contour discretization:                 0.500000000E+00 monomers
    Chain length:                                    50.000000000 monomers
    Chain characteristic ratio C_infinity:                 9.8530

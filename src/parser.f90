@@ -93,6 +93,10 @@ subroutine parser()
   logical :: log_ds_ave_mxb = .false.
   logical :: log_r_ads_lo = .false.
   logical :: log_r_ads_hi = .false.
+  logical :: log_kind_mxa = .false.
+  logical :: log_kind_mxb = .false.
+  logical :: log_kind_glo = .false.
+  logical :: log_kind_ghi = .false.
 
   logical :: log_exist_glo = .false.
   logical :: log_chain_length_glo = .false.
@@ -352,6 +356,9 @@ subroutine parser()
       elseif (index(line, "! mxa ds") > 0) then
         read (line, *) ds_ave_mxa
         log_ds_ave_mxa = .true.
+      elseif (index(line, "! mxa kind")> 0) then
+        read (line, '(I10)') mxa_kind
+        log_kind_mxa = .true.
 
         !mxb chains
       elseif (index(line, "! mxb set") > 0) then
@@ -369,6 +376,9 @@ subroutine parser()
       elseif (index(line, "! mxb ds") > 0) then
         read (line, *) ds_ave_mxb
         log_ds_ave_mxb = .true.
+      elseif (index(line, "! mxb kind")> 0) then
+        read (line,'(I10)') mxb_kind
+        log_kind_mxb = .true.
 
         ! mxa/B misc
       elseif (index(line, "chain r_ads_lo") > 0) then
@@ -397,6 +407,9 @@ subroutine parser()
       elseif (index(line, "! glo bond_length") > 0) then
         read (line, '(E16.9)') bond_length_glo
         log_bond_length_glo = .true.
+      elseif (index(line,"! glo kind") > 0 ) then
+        read (line,'(I10)') glo_kind
+        log_kind_glo =.true.
 
         ! ghi chains
       elseif (index(line, "! ghi set") > 0) then
@@ -417,6 +430,9 @@ subroutine parser()
       elseif (index(line, "! ghi bond_length") > 0) then
         read (line, '(E16.9)') bond_length_ghi
         log_bond_length_ghi = .true.
+      elseif (index(line, "! ghi kind") > 0 ) then
+        read (line, '(I10)') ghi_kind
+        log_kind_ghi =.true.
 
         ! grafted misc
       elseif (index(line, "! grafted distance_from_solid") > 0) then

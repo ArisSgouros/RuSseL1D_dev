@@ -16,7 +16,7 @@ subroutine init_arrays()
   allocate (rs_mxb(0:ns_mxb))
   allocate (wa(0:nx), wa_ifc(0:nx), wa_ifc_new(0:nx), wa_ifc_backup(0:nx), Ufield(0:nx), df_drho(0:nx))
   allocate (rr(0:nx), irr(0:nx), layer_area(0:nx))
-  allocate (phi_tot(0:nx), phi_mxa(0:nx), phi_mxb(0:nx), phi_glo(0:nx), phi_ghi(0:nx))
+  allocate (phi_tot(0:nx), phi_mxa(0:nx), phi_mxb(0:nx), phi_glo(0:nx), phi_ghi(0:nx), phi_kd1(0:nx), phi_kd2(0:nx))
   allocate (qmxa(0:nx, 2))
   allocate (qmxb(0:nx, 2))
   allocate (qfinal_mxa(0:nx, 0:ns_mxa))
@@ -49,6 +49,8 @@ subroutine init_arrays()
   phi_mxb = 0.d0
   phi_glo = 0.d0
   phi_ghi = 0.d0
+  phi_kd1 = 0.d0
+  phi_kd2 = 0.d0
   qmxa = 0.d0
   qmxb = 0.d0
   qglo = 0.d0

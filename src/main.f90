@@ -10,6 +10,7 @@ program fd_1d
   use write_helper, only: adjl
   use flags, only: F_bc_dirichlet_eq_0, F_bc_dirichlet_eq_1, F_sphere
   use parser_vars, only: beta, k_gr, delta,      &
+                        & mxa_kind, mxb_kind, ghi_kind, glo_kind, &
                         & bc_lo_mxa, bc_lo_mxb, bc_lo_grafted, bc_hi_mxa, bc_hi_mxb, bc_hi_grafted, &
                         & chainlen_mxa, chainlen_mxb, chainlen_glo, chainlen_ghi,  &
                         & ns_mxa, ns_mxb, ns_glo, ns_ghi, &
@@ -22,7 +23,7 @@ program fd_1d
   use arrays, only: qmxa, qmxb, qglo, qghi, qglo_aux, qghi_aux, &
                         & qfinal_mxa, qfinal_mxb, qfinal_glo, qfinal_ghi, qfinal_glo_aux, qfinal_ghi_aux, &
                         & dir_nodes_id, dir_nodes_rdiag, n_dir_nodes, &
-                        & phi_mxa, phi_mxb, phi_glo, phi_ghi, phi_tot, &
+                        & phi_mxa, phi_mxb, phi_glo, phi_ghi, phi_kd1, phi_kd2, phi_tot, &
                         & dphi_dr, d2phi_dr2, &
                         & dx, coeff_nx, &
                         & coeff_ns_mxa, coeff_ns_mxb, coeff_ns_glo, coeff_ns_ghi, &
@@ -373,6 +374,19 @@ program fd_1d
       if (exist_mxb) phi_tot(jj) = phi_tot(jj) + phi_mxb(jj)
       if (exist_glo) phi_tot(jj) = phi_tot(jj) + phi_glo(jj)
       if (exist_ghi) phi_tot(jj) = phi_tot(jj) + phi_ghi(jj)
+    end do
+
+    phi_kd1 = 0.d0
+    phi_kd2 = 0.d0
+    do jj = 0, nx
+      if (mxa_kind==1) phi_kd1(jj) = phi_kd1(jj) + phi_mxa(jj)
+      if (mxb_kind==1) phi_kd1(jj) = phi_kd1(jj) + phi_mxb(jj)
+      if (glo_kind==1) phi_kd1(jj) = phi_kd1(jj) + phi_glo(jj)
+      if (ghi_kind==1) phi_kd1(jj) = phi_kd1(jj) + phi_ghi(jj)
+      if (mxa_kind==2) phi_kd2(jj) = phi_kd2(jj) + phi_mxa(jj)
+      if (mxb_kind==2) phi_kd2(jj) = phi_kd2(jj) + phi_mxb(jj)
+      if (glo_kind==2) phi_kd2(jj) = phi_kd2(jj) + phi_glo(jj)
+      if (ghi_kind==2) phi_kd2(jj) = phi_kd2(jj) + phi_ghi(jj)
     end do
 
     if (square_gradient) then

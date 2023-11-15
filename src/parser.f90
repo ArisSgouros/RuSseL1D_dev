@@ -380,7 +380,7 @@ subroutine parser()
         read (line,'(I10)') mxb_kind
         log_kind_mxb = .true.
 
-        ! mxa/B misc
+        ! mxb chains
       elseif (index(line, "chain r_ads_lo") > 0) then
         read (line, '(E16.9)') r_ads_lo
         log_r_ads_lo = .true.
@@ -904,12 +904,23 @@ subroutine parser()
   end if
 
   if (exist_mxa) then ! Start of mxa chains
+  if (log_kind_mxa) then ! chain kind
+    if (mxa_kind.ne.1.and.mxa_kind.ne.2) then
+      write (iow, '(3X,A45)') '*Chain kind must be either 1 or 2'
+      write (*  , '(3X,A45)') '*Chain kind must be either 1 or 2'
+      STOP
+    end if
+  else
+    mxa_kind = 1 ! default value
+  end if
+  write (iow, '(3X,A45,I16)') adjl('chain kind:', 45), mxa_kind
+  write (*, '(3X,A45,I16)') adjl('chain kind:', 45), mxa_kind
   if (log_ds_ave_mxa) then
     write (iow, '(3X,A45,E16.9,'' monomers'')') adjl('Chain contour discretization:', 45), ds_ave_mxa
     write (*, '(3X,A45,E16.9,'' monomers'')') adjl('Chain contour discretization:', 45), ds_ave_mxa
   else
     write (iow, '(3X,A45)') '*Chain contour discretization was not set'
-    write (iow, '(3X,A45)') '*Chain contour discretization was not set'
+    write (iow, '(3X,A45)') '*Chain contour discretization was not set' ! fixit: iow -> *, plus other instances
     STOP
   end if
 
@@ -959,6 +970,17 @@ subroutine parser()
   end if
 
   if (exist_mxb) then
+  if (log_kind_mxb) then ! chain kind
+    if (mxb_kind.ne.1.and.mxb_kind.ne.2) then
+      write (iow, '(3X,A45)') '*Chain kind must be either 1 or 2'
+      write (*  , '(3X,A45)') '*Chain kind must be either 1 or 2'
+      STOP
+    end if
+  else
+    mxb_kind = 1 ! default value
+  end if
+  write (iow, '(3X,A45,I16)') adjl('chain kind:', 45), mxb_kind
+  write (*, '(3X,A45,I16)') adjl('chain kind:', 45), mxb_kind
   if (log_ds_ave_mxb) then
 
     write (iow, '(3X,A45,E16.9,'' monomers'')') adjl('Chain contour discretization:', 45), ds_ave_mxb
@@ -1017,6 +1039,17 @@ subroutine parser()
   end if
 
   if (exist_glo) then ! start of glo chains
+  if (log_kind_glo) then ! chain kind
+    if (glo_kind.ne.1.and.glo_kind.ne.2) then
+      write (iow, '(3X,A45)') '*Chain kind must be either 1 or 2'
+      write (*  , '(3X,A45)') '*Chain kind must be either 1 or 2'
+      STOP
+    end if
+  else
+    glo_kind = 1 ! default value
+  end if
+  write (iow, '(3X,A45,I16)') adjl('chain kind:', 45), glo_kind
+  write (*, '(3X,A45,I16)') adjl('chain kind:', 45), glo_kind
   if (log_ds_ave_glo) then
     write (iow, '(3X,A45,E16.9,'' monomers'')') adjl('Chain contour discretization:', 45), ds_ave_glo
     write (*, '(3X,A45,E16.9,'' monomers'')') adjl('Chain contour discretization:', 45), ds_ave_glo
@@ -1086,6 +1119,17 @@ subroutine parser()
   end if
 
   if (exist_ghi) then ! start of ghi chains
+  if (log_kind_ghi) then ! chain kind
+    if (ghi_kind.ne.1.and.ghi_kind.ne.2) then
+      write (iow, '(3X,A45)') '*Chain kind must be either 1 or 2'
+      write (*  , '(3X,A45)') '*Chain kind must be either 1 or 2'
+      STOP
+    end if
+  else
+    ghi_kind = 1 ! default value
+  end if
+  write (iow, '(3X,A45,I16)') adjl('chain kind:', 45), ghi_kind
+  write (*, '(3X,A45,I16)') adjl('chain kind:', 45), ghi_kind
   if (log_ds_ave_ghi) then
     write (iow, '(3X,A45,E16.9,'' monomers'')') adjl('Chain contour discretization:', 45), ds_ave_ghi
     write (*, '(3X,A45,E16.9,'' monomers'')') adjl('Chain contour discretization:', 45), ds_ave_ghi

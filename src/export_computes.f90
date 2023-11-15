@@ -19,7 +19,7 @@ subroutine export_computes(qinit_lo, qinit_hi)
                   & r_ads_lo, r_ads_hi, linear_solver, edwards_solver
   use flags, only: F_lo, F_hi
   use arrays, only: rx, coeff_nx, layer_area, &
-                  & phi_mxa, phi_mxb, phi_glo, phi_ghi, phi_tot, &
+                  & phi_mxa, phi_mxb, phi_glo, phi_ghi, phi_kd1, phi_kd2, phi_tot, &
                   & qfinal_mxa, qfinal_mxb, qfinal_glo, qfinal_ghi, qfinal_glo_aux, qfinal_ghi_aux, &
                   & wa_ifc, wa_ifc_new, rx, dx, ds_mxa, ds_glo, rr,    &
                   & ds_mxa, ds_mxb, ds_glo, ds_ghi, &
@@ -30,7 +30,7 @@ subroutine export_computes(qinit_lo, qinit_hi)
 !----------------------------------------------------------------------------------------------------------!
   real(8), intent(in) :: qinit_lo, qinit_hi
 !----------------------------------------------------------------------------------------------------------!
-  if (out_phi) call export_phi(rx, phi_mxa, phi_mxb, phi_glo, phi_ghi, phi_tot)
+  if (out_phi) call export_phi(rx, phi_mxa, phi_mxb, phi_glo, phi_ghi, phi_kd1, phi_kd2, phi_tot)
   if (out_field) call export_field(rx, wa_ifc, wa_ifc_new)
 
   if (exist_mxa) then

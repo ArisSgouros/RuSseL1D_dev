@@ -2,7 +2,7 @@
 !
 !See the LICENSE file in the root directory for license information.
 
-subroutine export_phi(rx, phi_mxa, phi_mxb, phi_glo, phi_ghi, phi_tot)
+subroutine export_phi(rx, phi_mxa, phi_mxb, phi_glo, phi_ghi, phi_kd1, phi_kd2, phi_tot)
 !----------------------------------------------------------------------------------------------------------!
   use parser_vars, only: nx
 !----------------------------------------------------------------------------------------------------------!
@@ -11,14 +11,14 @@ subroutine export_phi(rx, phi_mxa, phi_mxb, phi_glo, phi_ghi, phi_tot)
   integer :: ii
 
   real(8), intent(in), dimension(0:nx) :: rx
-  real(8), intent(in), dimension(0:nx) :: phi_mxa, phi_mxb, phi_glo, phi_ghi, phi_tot
+  real(8), intent(in), dimension(0:nx) :: phi_mxa, phi_mxb, phi_glo, phi_ghi, phi_kd1, phi_kd2, phi_tot
 !----------------------------------------------------------------------------------------------------------!
 !export density profiles and fields
 
   open (unit=120, file="o.phi")
-  write (120, '(6(A14,2X))') 'r', "phi_mxa", "phi_mxb", "phi_glo", "phi_ghi", "phi_tot"
+  write (120, '(8(A14,2X))') 'r', "phi_mxa", "phi_mxb", "phi_glo", "phi_ghi", "phi_kd1", "phi_kd2", "phi_tot"
   do ii = 0, nx
-    write (120, '(6(E14.7E3,2X))') rx(ii), phi_mxa(ii), phi_mxb(ii), phi_glo(ii), phi_ghi(ii), phi_tot(ii)
+    write (120, '(8(E14.7E3,2X))') rx(ii), phi_mxa(ii), phi_mxb(ii), phi_glo(ii), phi_ghi(ii), phi_kd1(ii), phi_kd2(ii), phi_tot(ii)
   end do
   close (120)
 

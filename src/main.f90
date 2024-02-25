@@ -19,7 +19,8 @@ program fd_1d
                         & edwards_solver, linear_solver, geometry,    &
                         & check_stability_every, compute_every, field_every, frac, nx, &
                         & gnode_lo, gnode_hi, rho_seg_bulk,&
-                        & gdens_lo, gdens_hi, max_iter, max_wa_error, square_gradient, thermo_every
+                        & gdens_lo, gdens_hi, max_iter, max_wa_error, square_gradient, thermo_every, &
+                        & chi12
   use arrays, only: qmxa, qmxb, qglo, qghi, qglo_aux, qghi_aux, &
                         & qfinal_mxa, qfinal_mxb, qfinal_glo, qfinal_ghi, qfinal_glo_aux, qfinal_ghi_aux, &
                         & dir_nodes_id, dir_nodes_rdiag, n_dir_nodes, &
@@ -41,6 +42,7 @@ program fd_1d
 
   integer :: iter, jj, ii, tt
 
+  ! APS: TEMP
   real(8) :: get_nchains
   real(8) :: wa_error_new = 1.d10, wa_error_old = 1.d10
   real(8) :: qinit_lo = 0.d0, qinit_hi = 0.d0
@@ -428,6 +430,14 @@ program fd_1d
 &                - k_gr*(rho_seg_bulk*d2phi_dr2(jj))*beta &
 &                + Ufield(jj)
     end do
+
+    ! APS: TEMP
+    if (chi12 .gt. 1e-7) then
+      do jj = 0, nx
+        wa_mxa(jj) = wa_mxa(jj) + chi12 * phi_kd2(jj)
+        wa_mxb(jj) = wa_mxb(jj) + chi12 * phi_kd1(jj)
+      end do
+    end if
 
     wa_bulk = eos_df_drho(1.d0)*beta
     wa_ifc_new = wa - wa_bulk

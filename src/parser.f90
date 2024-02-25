@@ -37,6 +37,7 @@ subroutine parser()
   logical :: log_dx = .false.
   logical :: log_temperature = .false.
   logical :: log_pressure = .false.
+  logical :: log_chi12 = .false.
 
   logical :: log_characteristic_ratio_mxa = .false.
   logical :: log_characteristic_ratio_mxb = .false.
@@ -479,6 +480,9 @@ subroutine parser()
       elseif (index(line, "! EOS real_influence_parameter") > 0) then
         read (line, '(E16.9)') k_gr
         log_real_influence_param = .true.
+      elseif (index(line, "! chi12") > 0) then
+        read (line, '(E16.9)') chi12
+        log_chi12 = .true.
       end if
     end if
   end do
@@ -1486,6 +1490,13 @@ subroutine parser()
     write (*, '(3X,A45)') adjl('Error: EOS coeffs not set', 45)
     STOP
   end if
+
+  if (log_chi12) then
+    write (iow, '(3X,A45,F16.4)') adjl('Flory chi parameter :', 45), chi12
+    write (*, '(3X,A45,F16.4)') adjl('Flory chi parameter :', 45), chi12
+  else
+    chi12 = 0.d0
+  endif
 
   if (log_influence_param) then
     write (iow, '(3X,A45,F16.4)') adjl('Reduced influence parameter:', 45), k_gr_tilde

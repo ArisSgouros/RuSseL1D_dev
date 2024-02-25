@@ -11,6 +11,9 @@ module arrays
   real(8), allocatable, dimension(:)   :: wall_custom_vars
   real(8), allocatable, dimension(:)   :: rr, irr, layer_area
   real(8), allocatable, dimension(:)   :: wa, wa_ifc, wa_ifc_new, wa_ifc_backup, Ufield, df_drho
+  real(8), allocatable, dimension(:)   :: wa_mxa, wa_mxb, wa_glo, wa_ghi
+  real(8), allocatable, dimension(:)   :: wa_ifc_mxa, wa_ifc_mxb, wa_ifc_glo, wa_ifc_ghi
+  real(8), allocatable, dimension(:)   :: wa_ifc_new_mxa, wa_ifc_new_mxb, wa_ifc_new_glo, wa_ifc_new_ghi
   real(8), allocatable, dimension(:)   :: dx, rx, coeff_nx
   real(8), allocatable, dimension(:)   :: ds_mxa, ds_mxb, ds_glo, ds_ghi
 

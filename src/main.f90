@@ -30,6 +30,9 @@ program fd_1d
                         & ds_mxa, ds_mxb, ds_glo, ds_ghi, &
                         & Ufield, &
                         & wa, wa_bulk, wa_ifc, wa_ifc_new, wa_ifc_backup,     &
+                        & wa_mxa, wa_mxb, wa_glo, wa_ghi, &
+                        & wa_ifc_mxa, wa_ifc_mxb, wa_ifc_glo, wa_ifc_ghi, &
+                        & wa_ifc_new_mxa, wa_ifc_new_mxb, wa_ifc_new_glo, wa_ifc_new_ghi, &
                         & surface_area, rr, irr, layer_area
 !----------------------------------------------------------------------------------------------------------!
   implicit none
@@ -53,6 +56,12 @@ program fd_1d
   call init_geom
   call init_solid
   call init_field
+
+  ! APS: TEMP
+  wa_ifc_mxa = wa_ifc
+  wa_ifc_mxb = wa_ifc
+  wa_ifc_glo = wa_ifc
+  wa_ifc_ghi = wa_ifc
 
   write (iow, '(A85)') adjl("---------------------------------BEGIN THE SIMULATION--------------------------------", 85)
   write (*, '(A85)') adjl("---------------------------------BEGIN THE SIMULATION--------------------------------", 85)
@@ -109,7 +118,7 @@ program fd_1d
 
       call solver_edwards(bc_lo_mxa, bc_hi_mxa, n_dir_nodes, dir_nodes_id, dir_nodes_rdiag, &
 &                           Rg2_per_mon_mxa, nx, ns_mxa, dx, ds_mxa, edwards_solver,      &
-&                           linear_solver, wa_ifc, qmxa, qfinal_mxa)
+&                           linear_solver, wa_ifc_mxa, qmxa, qfinal_mxa)
 
       if (geometry .eq. F_sphere) then
         do tt = 0, ns_mxa
@@ -168,7 +177,7 @@ program fd_1d
 
       call solver_edwards(bc_lo_mxb, bc_hi_mxb, n_dir_nodes, dir_nodes_id, dir_nodes_rdiag, &
 &                           Rg2_per_mon_mxb, nx, ns_mxb, dx, ds_mxb, edwards_solver,      &
-&                           linear_solver, wa_ifc, qmxb, qfinal_mxb)
+&                           linear_solver, wa_ifc_mxb, qmxb, qfinal_mxb)
 
       if (geometry .eq. F_sphere) then
         do tt = 0, ns_mxb
@@ -229,7 +238,7 @@ program fd_1d
 
       call solver_edwards(bc_lo_grafted, bc_hi_grafted, n_dir_nodes, dir_nodes_id, dir_nodes_rdiag, &
 &                           Rg2_per_mon_glo, nx, ns_glo, dx, ds_glo, edwards_solver,        &
-&                           linear_solver, wa_ifc, qglo_aux, qfinal_glo_aux)
+&                           linear_solver, wa_ifc_glo, qglo_aux, qfinal_glo_aux)
 
       if (geometry .eq. F_sphere) then
         do tt = 0, ns_glo
@@ -261,7 +270,7 @@ program fd_1d
 
       call solver_edwards(bc_lo_grafted, bc_hi_grafted, n_dir_nodes, dir_nodes_id, dir_nodes_rdiag, &
 &                           Rg2_per_mon_glo, nx, ns_glo, dx, ds_glo, edwards_solver,        &
-&                           linear_solver, wa_ifc, qglo, qfinal_glo)
+&                           linear_solver, wa_ifc_glo, qglo, qfinal_glo)
 
       if (geometry .eq. F_sphere) then
         do tt = 0, ns_glo
@@ -322,7 +331,7 @@ program fd_1d
 
       call solver_edwards(bc_lo_grafted, bc_hi_grafted, n_dir_nodes, dir_nodes_id, dir_nodes_rdiag, &
 &                           Rg2_per_mon_ghi, nx, ns_ghi, dx, ds_ghi, edwards_solver,        &
-&                           linear_solver, wa_ifc, qghi_aux, qfinal_ghi_aux)
+&                           linear_solver, wa_ifc_ghi, qghi_aux, qfinal_ghi_aux)
 
       if (geometry .eq. F_sphere) then
         do tt = 0, ns_ghi
@@ -354,7 +363,7 @@ program fd_1d
 
       call solver_edwards(bc_lo_grafted, bc_hi_grafted, n_dir_nodes, dir_nodes_id, dir_nodes_rdiag, &
 &                           Rg2_per_mon_ghi, nx, ns_ghi, dx, ds_ghi, edwards_solver,        &
-&                           linear_solver, wa_ifc, qghi, qfinal_ghi)
+&                           linear_solver, wa_ifc_ghi, qghi, qfinal_ghi)
 
       if (geometry .eq. F_sphere) then
         do tt = 0, ns_ghi
@@ -406,10 +415,28 @@ program fd_1d
       wa(jj) = +(eos_df_drho(phi_tot(jj)))*beta &
 &                - k_gr*(rho_seg_bulk*d2phi_dr2(jj))*beta &
 &                + Ufield(jj)
+      wa_mxa(jj) = +(eos_df_drho(phi_tot(jj)))*beta &
+&                - k_gr*(rho_seg_bulk*d2phi_dr2(jj))*beta &
+&                + Ufield(jj)
+      wa_mxb(jj) = +(eos_df_drho(phi_tot(jj)))*beta &
+&                - k_gr*(rho_seg_bulk*d2phi_dr2(jj))*beta &
+&                + Ufield(jj)
+      wa_glo(jj) = +(eos_df_drho(phi_tot(jj)))*beta &
+&                - k_gr*(rho_seg_bulk*d2phi_dr2(jj))*beta &
+&                + Ufield(jj)
+      wa_ghi(jj) = +(eos_df_drho(phi_tot(jj)))*beta &
+&                - k_gr*(rho_seg_bulk*d2phi_dr2(jj))*beta &
+&                + Ufield(jj)
     end do
 
     wa_bulk = eos_df_drho(1.d0)*beta
     wa_ifc_new = wa - wa_bulk
+
+    ! APS: TEMP
+    wa_ifc_new_mxa = wa_mxa - wa_bulk
+    wa_ifc_new_mxb = wa_mxb - wa_bulk
+    wa_ifc_new_glo = wa_glo - wa_bulk
+    wa_ifc_new_ghi = wa_ghi - wa_bulk
 
     wa_error_new = 0.d0
     do jj = 0, nx
@@ -419,6 +446,10 @@ program fd_1d
     !apply field mixing rule and update field
     do jj = 0, nx
       wa_ifc(jj) = (1.d0 - frac)*wa_ifc(jj) + frac*wa_ifc_new(jj)
+      wa_ifc_mxa(jj) = (1.d0 - frac)*wa_ifc_mxa(jj) + frac*wa_ifc_new_mxa(jj)
+      wa_ifc_mxb(jj) = (1.d0 - frac)*wa_ifc_mxb(jj) + frac*wa_ifc_new_mxb(jj)
+      wa_ifc_glo(jj) = (1.d0 - frac)*wa_ifc_glo(jj) + frac*wa_ifc_new_glo(jj)
+      wa_ifc_ghi(jj) = (1.d0 - frac)*wa_ifc_ghi(jj) + frac*wa_ifc_new_ghi(jj)
     end do
 
     !The present section checks the behavior of the field.

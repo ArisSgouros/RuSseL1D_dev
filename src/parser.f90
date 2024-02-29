@@ -468,9 +468,9 @@ subroutine parser()
         read (line, '(I6)') eos_type
         log_eos_type = .true.
       elseif (index(line, "! EOS coeffs") > 0) then
-        if (eos_type .eq. 0) then
+        if (eos_type .eq. F_helfand) then
           read (line, *) HF_kappa_T
-        else if (eos_type .eq. 1) then
+        else if (eos_type .eq. F_sanchez_lacombe) then
           read (line, *) rho_star, T_star, P_star
         end if
         log_eos_coeffs = .true.

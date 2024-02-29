@@ -5,7 +5,7 @@
 subroutine parser()
 !----------------------------------------------------------------------------------------------------------!
   use flags, only: F_bc_dirichlet_eq_0, F_bc_dirichlet_eq_1, F_bc_neuman, F_both, F_custom, F_film,  &
-                        & F_sphere, F_implicit, F_semi_implicit, F_helfand, F_sanchez_lacombe, F_hi, F_lo,  &
+                        & F_sphere, F_implicit, F_semi_implicit, F_helfand, F_sanchez_lacombe, F_incompressible, F_hi, F_lo,  &
                         & F_vacuum, F_hybrid, F_square_well, F_table, F_ramp, F_hamaker, F_hamaker_well,    &
                         & F_uniform, F_nonuniform, F_simpson_rule, F_rectangle_rule, F_tridag, F_gelim,     &
                         & F_bc_periodic
@@ -468,7 +468,9 @@ subroutine parser()
         read (line, '(I6)') eos_type
         log_eos_type = .true.
       elseif (index(line, "! EOS coeffs") > 0) then
-        if (eos_type .eq. F_helfand) then
+        if (eos_type .eq. F_incompressible) then
+          ! do nothing
+        else if (eos_type .eq. F_helfand) then
           read (line, *) HF_kappa_T
         else if (eos_type .eq. F_sanchez_lacombe) then
           read (line, *) rho_star, T_star, P_star
@@ -1456,15 +1458,18 @@ subroutine parser()
   write (iow, '(A85)') adjl('------------------------------SETUP THE EQUATION OF STATE----------------------------', 85)
   write (*, '(A85)') adjl('------------------------------SETUP THE EQUATION OF STATE----------------------------', 85)
   if (log_eos_type) then
-    if (eos_type .eq. F_helfand) then
+    if (eos_type .eq. F_incompressible) then
+      write (iow, '(3X,A45)') adjl('The incompressible model was chosen:', 45)
+      write (*, '(3X,A45)') adjl('The incompressible model was chosen', 45)
+    else if (eos_type .eq. F_helfand) then
       write (iow, '(3X,A45)') adjl('The Helfand EoS was chosen with coeffs:', 45)
       write (*, '(3X,A45)') adjl('The Helfand EoS was chosen with coeffs:', 45)
     elseif (eos_type .eq. F_sanchez_lacombe) then
       write (iow, '(3X,A45)') adjl('The Sanchez-Lacombe EoS was chosen with coeffs:', 45)
       write (*, '(3X,A45)') adjl('The Sanchez-Lacombe EoS was chosen with coeffs:', 45)
     else
-      write (iow, '(A45,I16)') 'Error: EOS flag different than 0 (HF) or 1 (SL)', eos_type
-      write (*, '(A45,I16)') 'Error: EOS flag different than 0 (HF) or 1 (SL)', eos_type
+      write (iow, '(A45,I16)') 'Error: EOS flag different than -1 (incomp), 0 (HF) or 1 (SL)', eos_type
+      write (*, '(A45,I16)') 'Error: EOS flag different than -1 (incomp), 0 (HF) or 1 (SL)', eos_type
       STOP
     end if
   else
@@ -1474,7 +1479,9 @@ subroutine parser()
   end if
 
   if (log_eos_coeffs) then
-    if (eos_type .eq. F_helfand) then
+    if (eos_type .eq. F_incompressible) then
+      ! do nothing
+    else if (eos_type .eq. F_helfand) then
       write (iow, '(3X,A45,1(E16.4),'' Pa^-1'')') adjl('*Isothermal compressibility:', 45), HF_kappa_T
       write (*, '(3X,A45,1(E16.4),'' Pa^-1'')') adjl('*Isothermal compressibility:', 45), HF_kappa_T
     elseif (eos_type .eq. F_sanchez_lacombe) then
@@ -1485,7 +1492,7 @@ subroutine parser()
       write (*, '(3X,A45,F16.4,'' K'')') adjl('*T_star   :', 45), T_star
       write (*, '(3X,A45,F16.4,'' Pa'')') adjl('*P_star   :', 45), P_star
     end if
-  else
+  else if (eos_type .ne. F_incompressible) then
     write (iow, '(3X,A45)') adjl('Error: EOS coeffs not set', 45)
     write (*, '(3X,A45)') adjl('Error: EOS coeffs not set', 45)
     STOP

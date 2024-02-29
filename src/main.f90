@@ -6,9 +6,9 @@
 program fd_1d
 !----------------------------------------------------------------------------------------------------------!
   use constants, only: iow
-  use eos, only: eos_df_drho
+  use eos, only: eos_df_drho, eos_type
   use write_helper, only: adjl
-  use flags, only: F_bc_dirichlet_eq_0, F_bc_dirichlet_eq_1, F_sphere
+  use flags, only: F_bc_dirichlet_eq_0, F_bc_dirichlet_eq_1, F_sphere, F_incompressible
   use parser_vars, only: beta, k_gr, delta,      &
                         & mxa_kind, mxb_kind, ghi_kind, glo_kind, &
                         & bc_lo_mxa, bc_lo_mxb, bc_lo_grafted, bc_hi_mxa, bc_hi_mxb, bc_hi_grafted, &

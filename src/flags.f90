@@ -17,6 +17,7 @@ module flags
   integer, parameter :: F_cylinder = -1
   integer, parameter :: F_sphere = 1
 ! EoS
+  integer, parameter :: F_incompressible = -1
   integer, parameter :: F_helfand = 0
   integer, parameter :: F_sanchez_lacombe = 1
 ! wall types

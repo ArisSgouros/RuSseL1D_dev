@@ -373,25 +373,21 @@ program fd_1d
     end if
 
     phi_tot = 0.d0
-    do jj = 0, nx
-      if (exist_mxa) phi_tot(jj) = phi_tot(jj) + phi_mxa(jj)
-      if (exist_mxb) phi_tot(jj) = phi_tot(jj) + phi_mxb(jj)
-      if (exist_glo) phi_tot(jj) = phi_tot(jj) + phi_glo(jj)
-      if (exist_ghi) phi_tot(jj) = phi_tot(jj) + phi_ghi(jj)
-    end do
+    if (exist_mxa) phi_tot = phi_tot + phi_mxa
+    if (exist_mxb) phi_tot = phi_tot + phi_mxb
+    if (exist_glo) phi_tot = phi_tot + phi_glo
+    if (exist_ghi) phi_tot = phi_tot + phi_ghi
 
     phi_kd1 = 0.d0
     phi_kd2 = 0.d0
-    do jj = 0, nx
-      if (mxa_kind==1) phi_kd1(jj) = phi_kd1(jj) + phi_mxa(jj)
-      if (mxb_kind==1) phi_kd1(jj) = phi_kd1(jj) + phi_mxb(jj)
-      if (glo_kind==1) phi_kd1(jj) = phi_kd1(jj) + phi_glo(jj)
-      if (ghi_kind==1) phi_kd1(jj) = phi_kd1(jj) + phi_ghi(jj)
-      if (mxa_kind==2) phi_kd2(jj) = phi_kd2(jj) + phi_mxa(jj)
-      if (mxb_kind==2) phi_kd2(jj) = phi_kd2(jj) + phi_mxb(jj)
-      if (glo_kind==2) phi_kd2(jj) = phi_kd2(jj) + phi_glo(jj)
-      if (ghi_kind==2) phi_kd2(jj) = phi_kd2(jj) + phi_ghi(jj)
-    end do
+    if (mxa_kind==1) phi_kd1 = phi_kd1 + phi_mxa
+    if (mxb_kind==1) phi_kd1 = phi_kd1 + phi_mxb
+    if (glo_kind==1) phi_kd1 = phi_kd1 + phi_glo
+    if (ghi_kind==1) phi_kd1 = phi_kd1 + phi_ghi
+    if (mxa_kind==2) phi_kd2 = phi_kd2 + phi_mxa
+    if (mxb_kind==2) phi_kd2 = phi_kd2 + phi_mxb
+    if (glo_kind==2) phi_kd2 = phi_kd2 + phi_glo
+    if (ghi_kind==2) phi_kd2 = phi_kd2 + phi_ghi
 
     if (square_gradient) then
       do jj = 1, nx - 1

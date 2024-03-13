@@ -31,9 +31,8 @@ program fd_1d
                         & ds_mxa, ds_mxb, ds_glo, ds_ghi, &
                         & Ufield, &
                         & wa_kd1, wa_bulk_kd1, wa_ifc_kd1, wa_ifc_new_kd1, wa_ifc_backup_kd1,     &
-                        & wa_mxa, wa_mxb, wa_glo, wa_ghi, &
+                        & wa_kd2, wa_bulk_kd2, wa_ifc_kd2, wa_ifc_new_kd2, wa_ifc_backup_kd2,     &
                         & wa_ifc_mxa, wa_ifc_mxb, wa_ifc_glo, wa_ifc_ghi, &
-                        & wa_ifc_new_mxa, wa_ifc_new_mxb, wa_ifc_new_glo, wa_ifc_new_ghi, &
                         & surface_area, rr, irr, layer_area
 !----------------------------------------------------------------------------------------------------------!
   implicit none
@@ -58,12 +57,6 @@ program fd_1d
   call init_geom
   call init_solid
   call init_field
-
-  ! APS: TEMP
-  wa_ifc_mxa = wa_ifc_kd1
-  wa_ifc_mxb = wa_ifc_kd1
-  wa_ifc_glo = wa_ifc_kd1
-  wa_ifc_ghi = wa_ifc_kd1
 
   write (iow, '(A85)') adjl("---------------------------------BEGIN THE SIMULATION--------------------------------", 85)
   write (*, '(A85)') adjl("---------------------------------BEGIN THE SIMULATION--------------------------------", 85)
@@ -417,16 +410,7 @@ program fd_1d
       wa_kd1(jj) = +(eos_df_drho(phi_tot(jj)))*beta &
 &                - k_gr*(rho_seg_bulk*d2phi_dr2(jj))*beta &
 &                + Ufield(jj)
-      wa_mxa(jj) = +(eos_df_drho(phi_tot(jj)))*beta &
-&                - k_gr*(rho_seg_bulk*d2phi_dr2(jj))*beta &
-&                + Ufield(jj)
-      wa_mxb(jj) = +(eos_df_drho(phi_tot(jj)))*beta &
-&                - k_gr*(rho_seg_bulk*d2phi_dr2(jj))*beta &
-&                + Ufield(jj)
-      wa_glo(jj) = +(eos_df_drho(phi_tot(jj)))*beta &
-&                - k_gr*(rho_seg_bulk*d2phi_dr2(jj))*beta &
-&                + Ufield(jj)
-      wa_ghi(jj) = +(eos_df_drho(phi_tot(jj)))*beta &
+      wa_kd2(jj) = +(eos_df_drho(phi_tot(jj)))*beta &
 &                - k_gr*(rho_seg_bulk*d2phi_dr2(jj))*beta &
 &                + Ufield(jj)
     end do
@@ -434,33 +418,37 @@ program fd_1d
     ! APS: TEMP
     if (chi12 .gt. 1e-7) then
       do jj = 0, nx
-        wa_mxa(jj) = wa_mxa(jj) + chi12 * phi_kd2(jj)
-        wa_mxb(jj) = wa_mxb(jj) + chi12 * phi_kd1(jj)
+        wa_kd1(jj) = wa_kd1(jj) + chi12 * phi_kd2(jj)
+        wa_kd2(jj) = wa_kd2(jj) + chi12 * phi_kd1(jj)
       end do
     end if
 
     wa_bulk_kd1 = eos_df_drho(1.d0)*beta
+    wa_bulk_kd2 = eos_df_drho(1.d0)*beta
     wa_ifc_new_kd1 = wa_kd1 - wa_bulk_kd1
-
-    ! APS: TEMP
-    wa_ifc_new_mxa = wa_mxa - wa_bulk_kd1
-    wa_ifc_new_mxb = wa_mxb - wa_bulk_kd1
-    wa_ifc_new_glo = wa_glo - wa_bulk_kd1
-    wa_ifc_new_ghi = wa_ghi - wa_bulk_kd1
+    wa_ifc_new_kd2 = wa_kd2 - wa_bulk_kd2
 
     wa_error_new = 0.d0
     do jj = 0, nx
-      wa_error_new = max(wa_error_new, dabs((wa_ifc_new_kd1(jj) - wa_ifc_kd1(jj))))
+      wa_error_new = max(wa_error_new, &
+                   &     dabs(wa_ifc_new_kd1(jj) - wa_ifc_kd1(jj)), &
+                   &     dabs(wa_ifc_new_kd2(jj) - wa_ifc_kd2(jj)))
     end do
 
     !apply field mixing rule and update field
     do jj = 0, nx
       wa_ifc_kd1(jj) = (1.d0 - frac)*wa_ifc_kd1(jj) + frac*wa_ifc_new_kd1(jj)
-      wa_ifc_mxa(jj) = (1.d0 - frac)*wa_ifc_mxa(jj) + frac*wa_ifc_new_mxa(jj)
-      wa_ifc_mxb(jj) = (1.d0 - frac)*wa_ifc_mxb(jj) + frac*wa_ifc_new_mxb(jj)
-      wa_ifc_glo(jj) = (1.d0 - frac)*wa_ifc_glo(jj) + frac*wa_ifc_new_glo(jj)
-      wa_ifc_ghi(jj) = (1.d0 - frac)*wa_ifc_ghi(jj) + frac*wa_ifc_new_ghi(jj)
+      wa_ifc_kd2(jj) = (1.d0 - frac)*wa_ifc_kd2(jj) + frac*wa_ifc_new_kd2(jj)
     end do
+
+    if (mxa_kind==1) wa_ifc_mxa = wa_ifc_kd1
+    if (mxb_kind==1) wa_ifc_mxb = wa_ifc_kd1
+    if (glo_kind==1) wa_ifc_glo = wa_ifc_kd1
+    if (ghi_kind==1) wa_ifc_ghi = wa_ifc_kd1
+    if (mxa_kind==2) wa_ifc_mxa = wa_ifc_kd2
+    if (mxb_kind==2) wa_ifc_mxb = wa_ifc_kd2
+    if (glo_kind==2) wa_ifc_glo = wa_ifc_kd2
+    if (ghi_kind==2) wa_ifc_ghi = wa_ifc_kd2
 
     !The present section checks the behavior of the field.
     !In case it diverges or it converges to a bad solution, the field is

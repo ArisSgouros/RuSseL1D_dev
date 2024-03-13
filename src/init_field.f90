@@ -5,18 +5,18 @@
 subroutine init_field()
 !----------------------------------------------------------------------------------------------------------!
   use parser_vars, only: read_field, field_in_filename
-  use arrays, only: wa_ifc, wa_ifc_backup
+  use arrays, only: wa_ifc_kd1, wa_ifc_backup_kd1
 !----------------------------------------------------------------------------------------------------------!
   implicit none
 !----------------------------------------------------------------------------------------------------------!
   if (read_field) then
     open (unit=21, file=field_in_filename, form='unformatted')
-    read (21) wa_ifc
+    read (21) wa_ifc_kd1
     close (21)
   end if
 
 !store the initial field for backup
-  wa_ifc_backup = wa_ifc
+  wa_ifc_backup_kd1 = wa_ifc_kd1
 
   return
 !----------------------------------------------------------------------------------------------------------!

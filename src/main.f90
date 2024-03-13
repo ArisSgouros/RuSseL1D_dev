@@ -30,7 +30,7 @@ program fd_1d
                         & coeff_ns_mxa, coeff_ns_mxb, coeff_ns_glo, coeff_ns_ghi, &
                         & ds_mxa, ds_mxb, ds_glo, ds_ghi, &
                         & Ufield, &
-                        & wa, wa_bulk, wa_ifc, wa_ifc_new, wa_ifc_backup,     &
+                        & wa_kd1, wa_bulk_kd1, wa_ifc_kd1, wa_ifc_new_kd1, wa_ifc_backup_kd1,     &
                         & wa_mxa, wa_mxb, wa_glo, wa_ghi, &
                         & wa_ifc_mxa, wa_ifc_mxb, wa_ifc_glo, wa_ifc_ghi, &
                         & wa_ifc_new_mxa, wa_ifc_new_mxb, wa_ifc_new_glo, wa_ifc_new_ghi, &
@@ -60,10 +60,10 @@ program fd_1d
   call init_field
 
   ! APS: TEMP
-  wa_ifc_mxa = wa_ifc
-  wa_ifc_mxb = wa_ifc
-  wa_ifc_glo = wa_ifc
-  wa_ifc_ghi = wa_ifc
+  wa_ifc_mxa = wa_ifc_kd1
+  wa_ifc_mxb = wa_ifc_kd1
+  wa_ifc_glo = wa_ifc_kd1
+  wa_ifc_ghi = wa_ifc_kd1
 
   write (iow, '(A85)') adjl("---------------------------------BEGIN THE SIMULATION--------------------------------", 85)
   write (*, '(A85)') adjl("---------------------------------BEGIN THE SIMULATION--------------------------------", 85)
@@ -414,7 +414,7 @@ program fd_1d
 
     !calculate new field and maximum absolute wa_error
     do jj = 0, nx
-      wa(jj) = +(eos_df_drho(phi_tot(jj)))*beta &
+      wa_kd1(jj) = +(eos_df_drho(phi_tot(jj)))*beta &
 &                - k_gr*(rho_seg_bulk*d2phi_dr2(jj))*beta &
 &                + Ufield(jj)
       wa_mxa(jj) = +(eos_df_drho(phi_tot(jj)))*beta &
@@ -439,23 +439,23 @@ program fd_1d
       end do
     end if
 
-    wa_bulk = eos_df_drho(1.d0)*beta
-    wa_ifc_new = wa - wa_bulk
+    wa_bulk_kd1 = eos_df_drho(1.d0)*beta
+    wa_ifc_new_kd1 = wa_kd1 - wa_bulk_kd1
 
     ! APS: TEMP
-    wa_ifc_new_mxa = wa_mxa - wa_bulk
-    wa_ifc_new_mxb = wa_mxb - wa_bulk
-    wa_ifc_new_glo = wa_glo - wa_bulk
-    wa_ifc_new_ghi = wa_ghi - wa_bulk
+    wa_ifc_new_mxa = wa_mxa - wa_bulk_kd1
+    wa_ifc_new_mxb = wa_mxb - wa_bulk_kd1
+    wa_ifc_new_glo = wa_glo - wa_bulk_kd1
+    wa_ifc_new_ghi = wa_ghi - wa_bulk_kd1
 
     wa_error_new = 0.d0
     do jj = 0, nx
-      wa_error_new = max(wa_error_new, dabs((wa_ifc_new(jj) - wa_ifc(jj))))
+      wa_error_new = max(wa_error_new, dabs((wa_ifc_new_kd1(jj) - wa_ifc_kd1(jj))))
     end do
 
     !apply field mixing rule and update field
     do jj = 0, nx
-      wa_ifc(jj) = (1.d0 - frac)*wa_ifc(jj) + frac*wa_ifc_new(jj)
+      wa_ifc_kd1(jj) = (1.d0 - frac)*wa_ifc_kd1(jj) + frac*wa_ifc_new_kd1(jj)
       wa_ifc_mxa(jj) = (1.d0 - frac)*wa_ifc_mxa(jj) + frac*wa_ifc_new_mxa(jj)
       wa_ifc_mxb(jj) = (1.d0 - frac)*wa_ifc_mxb(jj) + frac*wa_ifc_new_mxb(jj)
       wa_ifc_glo(jj) = (1.d0 - frac)*wa_ifc_glo(jj) + frac*wa_ifc_new_glo(jj)
@@ -493,28 +493,28 @@ program fd_1d
       end if
 
       if (restart) then
-        wa_ifc = 0.d0
-        wa_ifc_backup = 0.d0
+        wa_ifc_kd1 = 0.d0
+        wa_ifc_backup_kd1 = 0.d0
         frac = frac*0.5d0
         wa_error_old = 1.d10
         write (iow, '(3X,"Restart simulation with a new fraction:",E16.7)') frac
         write (6, '(3X,"Restart simulation with a new fraction:",E16.7)') frac
       elseif (restore) then
         frac = frac*0.5d0
-        wa_ifc = wa_ifc_backup
+        wa_ifc_kd1 = wa_ifc_backup_kd1
         wa_error_old = 1.d10
         write (iow, '(3X,"Restore previous field with a new fraction:",E16.7)') frac
         write (6, '(3X,"Restore previous field with a new fraction:",E16.7)') frac
       else
         wa_error_old = wa_error_new
-        wa_ifc_backup = wa_ifc
+        wa_ifc_backup_kd1 = wa_ifc_kd1
       end if
     end if
     end if
 
     convergence = (wa_error_new .lt. max_wa_error)
 
-    if (mod(iter, field_every) .eq. 0 .or. convergence) call export_field_binary(wa_ifc, nx)
+    if (mod(iter, field_every) .eq. 0 .or. convergence) call export_field_binary(wa_ifc_kd1, nx)
     if (compute_every .gt. 0) then
       if (mod(iter, compute_every) .eq. 0 .or. convergence) call export_computes(qinit_lo, qinit_hi)
     end if

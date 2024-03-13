@@ -7,7 +7,7 @@ subroutine compute_energies(free_energy)
   use eos, only: eos_ff, eos_df_drho
   use arrays, only: ufield, layer_area, coeff_nx, &
                        & qfinal_mxa, qfinal_mxb, qfinal_glo, qfinal_ghi, qfinal_glo_aux, qfinal_ghi_aux, &
-                       & wa_ifc_new, wa, wa_bulk,  &
+                       & wa_ifc_new_kd1, wa_kd1, wa_bulk_kd1,  &
                        & phi_mxa, phi_mxb, phi_glo, phi_ghi, phi_tot, &
                        & dphi_dr, d2phi_dr2, &
                        & surface_area, volume, rx
@@ -81,15 +81,15 @@ subroutine compute_energies(free_energy)
     ! total contributions
     prof_eos_f(kk) = eos_ff(phi_tot(kk))
     prof_eos_rdfdr(kk) = -phi_tot(kk)*eos_df_drho(phi_tot(kk))
-    prof_field(kk) = -phi_tot(kk)*wa(kk)
+    prof_field(kk) = -phi_tot(kk)*wa_kd1(kk)
     prof_solid(kk) = phi_tot(kk)*Ufield(kk)/beta
     prof_sgt_f(kk) = 0.5d0*k_gr*(rho_seg_bulk*dphi_dr(kk))**2
     prof_sgt_rdfdr(kk) = k_gr*(rho_seg_bulk**2*phi_tot(kk)*d2phi_dr2(kk))
     ! partial contributions
-    prof_rho_wifc_glo(kk) = -phi_glo(kk)*wa_ifc_new(kk)
-    prof_rho_wifc_ghi(kk) = -phi_ghi(kk)*wa_ifc_new(kk)
-    prof_rho_wifc_mxa(kk) = -phi_mxa(kk)*wa_ifc_new(kk)
-    prof_rho_wifc_mxb(kk) = -phi_mxb(kk)*wa_ifc_new(kk)
+    prof_rho_wifc_glo(kk) = -phi_glo(kk)*wa_ifc_new_kd1(kk)
+    prof_rho_wifc_ghi(kk) = -phi_ghi(kk)*wa_ifc_new_kd1(kk)
+    prof_rho_wifc_mxa(kk) = -phi_mxa(kk)*wa_ifc_new_kd1(kk)
+    prof_rho_wifc_mxb(kk) = -phi_mxb(kk)*wa_ifc_new_kd1(kk)
     prof_solid_glo(kk) = phi_glo(kk)*Ufield(kk)/beta
     prof_solid_ghi(kk) = phi_ghi(kk)*Ufield(kk)/beta
     prof_solid_mxa(kk) = phi_mxa(kk)*Ufield(kk)/beta
@@ -100,7 +100,7 @@ subroutine compute_energies(free_energy)
     do kk = 0, nx
       prof_eos_f(kk) = prof_eos_f(kk) - eos_ff(1.d0)
       prof_eos_rdfdr(kk) = prof_eos_rdfdr(kk) + 1.d0*eos_df_drho(1.d0)
-      prof_field(kk) = prof_field(kk) + 1.d0*wa_bulk
+      prof_field(kk) = prof_field(kk) + 1.d0*wa_bulk_kd1
     end do
   end if
 

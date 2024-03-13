@@ -14,7 +14,7 @@ subroutine init_arrays()
   allocate (ds_mxb(0:ns_mxb))
   allocate (rs_mxa(0:ns_mxa), rs_glo(0:ns_glo), rs_ghi(0:ns_ghi))
   allocate (rs_mxb(0:ns_mxb))
-  allocate (wa(0:nx), wa_ifc(0:nx), wa_ifc_new(0:nx), wa_ifc_backup(0:nx), Ufield(0:nx), df_drho(0:nx))
+  allocate (Ufield(0:nx), df_drho(0:nx))
   allocate (wa_mxa(0:nx), wa_mxb(0:nx), wa_glo(0:nx), wa_ghi(0:nx))
   allocate (wa_ifc_mxa(0:nx), wa_ifc_mxb(0:nx), wa_ifc_glo(0:nx), wa_ifc_ghi(0:nx))
   allocate (wa_ifc_new_mxa(0:nx), wa_ifc_new_mxb(0:nx), wa_ifc_new_glo(0:nx), wa_ifc_new_ghi(0:nx))
@@ -41,29 +41,24 @@ subroutine init_arrays()
 
   dir_nodes_id = 0
 
-  wa_bulk = 0.d0
-  wa = 0.d0
   wa_mxa = 0.d0
   wa_mxb = 0.d0
   wa_glo = 0.d0
   wa_ghi = 0.d0
   wa_kd1 = 0.d0
   wa_kd2 = 0.d0
-  wa_ifc = 0.d0
   wa_ifc_mxa = 0.d0
   wa_ifc_mxb = 0.d0
   wa_ifc_glo = 0.d0
   wa_ifc_ghi = 0.d0
   wa_ifc_kd1 = 0.d0
   wa_ifc_kd2 = 0.d0
-  wa_ifc_new = 0.d0
   wa_ifc_new_mxa = 0.d0
   wa_ifc_new_mxb = 0.d0
   wa_ifc_new_glo = 0.d0
   wa_ifc_new_ghi = 0.d0
   wa_ifc_new_kd1 = 0.d0
   wa_ifc_new_kd2 = 0.d0
-  wa_ifc_backup = 0.d0
   wa_ifc_backup_kd1 = 0.d0
   wa_ifc_backup_kd2 = 0.d0
   dir_nodes_rdiag = 0.d0

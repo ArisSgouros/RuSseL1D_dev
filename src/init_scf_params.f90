@@ -6,7 +6,7 @@ subroutine init_scf_params()
 !----------------------------------------------------------------------------------------------------------!
   use eos, only: rsl_N, T_tilde, P_tilde, rho_tilde_bulk, T_star, P_star, V_star, rho_star,             &
                         & eos_type, eos_rho_tilde_0
-  use flags, only: F_sanchez_lacombe
+  use flags, only: F_sanchez_lacombe, F_incompressible
   use parser_vars, only: chainlen_mxa, chainlen_mxb, chainlen_glo, chainlen_ghi, &
                         & ds_ave_mxa, ds_ave_mxb,  &
                         & ds_ave_glo, ds_ave_ghi, ns_mxa, ns_mxb, ns_glo, ns_ghi,         &
@@ -15,7 +15,8 @@ subroutine init_scf_params()
                         & square_gradient, gdens_hi, gdens_lo, chainlen_bulk, &
                         & bond_length_mxa, bond_length_mxb, bond_length_glo, bond_length_ghi,       &
                         & CN_mxa, CN_mxb, CN_glo, CN_ghi,                                           &
-                        & Rg2_per_mon_mxa, Rg2_per_mon_mxb, Rg2_per_mon_glo, Rg2_per_mon_ghi
+                        & Rg2_per_mon_mxa, Rg2_per_mon_mxb, Rg2_per_mon_glo, Rg2_per_mon_ghi, &
+                        & beta, chi12
   use constants, only: N_avog, boltz_const_Joule_molK, boltz_const_Joule_K, gr_cm3_to_kg_m3, iow, tol
   use write_helper, only: adjl
 !----------------------------------------------------------------------------------------------------------!
@@ -88,5 +89,10 @@ subroutine init_scf_params()
 
   write (iow, '(3X,A45,F16.4," mol/m3")') adjl("molar density in bulk", 45), rho_mol_bulk
   write (*, '(3X,A45,F16.4," mol/m3")') adjl("molar density in bulk", 45), rho_mol_bulk
+
+  if (eos_type.eq.F_incompressible) then
+    write (*, '(3X,A45,E16.4," Pa-1")') adjl("effective compressibility from chi12", 45), 2.d0*beta / (chi12*rho_seg_bulk)
+  endif
+
 !----------------------------------------------------------------------------------------------------------!
 end subroutine init_scf_params

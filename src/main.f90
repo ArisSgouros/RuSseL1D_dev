@@ -6,7 +6,7 @@
 program fd_1d
 !----------------------------------------------------------------------------------------------------------!
   use constants, only: iow
-  use eos, only: eos_df_drho, eos_type, HF_kappa_T
+  use eos, only: eos_df_drho, eos_type
   use write_helper, only: adjl
   use flags, only: F_bc_dirichlet_eq_0, F_bc_dirichlet_eq_1, F_sphere, F_incompressible
   use parser_vars, only: beta, k_gr, delta,      &
@@ -41,9 +41,6 @@ program fd_1d
 
   integer :: iter, jj, ii, tt
 
-  real(8) :: phi_eff = 0.d0
-  real(8) :: rho_seg_bulk_mix = 0.d0
-  real(8) :: phi_bulk_mix = 0.d0
   real(8) :: pressure = 0.d0
   real(8) :: get_nchains
   real(8) :: wa_error_new = 1.d10, wa_error_old = 1.d10
@@ -414,14 +411,8 @@ program fd_1d
     !eos term
     if (eos_type.ne.F_incompressible) then
       do jj = 0, nx
-        !wa_kd1(jj) = wa_kd1(jj) + eos_df_drho(phi_tot(jj))*beta
-        !wa_kd2(jj) = wa_kd2(jj) + eos_df_drho(phi_tot(jj))*beta
-
-        phi_eff = phi_kd1(jj)/(phi_kd1(jj) + phi_kd2(jj))
-        rho_seg_bulk_mix = phi_eff*rho_seg_bulk*0.8 + (1.d0 - phi_eff)*rho_seg_bulk*1.2
-        phi_bulk_mix = phi_eff*0.8 + (1.d0 - phi_eff)*1.2
-        wa_kd1(jj) = wa_kd1(jj) + beta*(phi_tot(jj)/phi_bulk_mix - 1.d0)/(HF_kappa_T*rho_seg_bulk_mix)
-        wa_kd2(jj) = wa_kd2(jj) + beta*(phi_tot(jj)/phi_bulk_mix - 1.d0)/(HF_kappa_T*rho_seg_bulk_mix)
+        wa_kd1(jj) = wa_kd1(jj) + eos_df_drho(phi_tot(jj))*beta
+        wa_kd2(jj) = wa_kd2(jj) + eos_df_drho(phi_tot(jj))*beta
       end do
     end if
 

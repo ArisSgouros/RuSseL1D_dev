@@ -41,7 +41,7 @@ program fd_1d
 
   integer :: iter, jj, ii, tt
 
-  ! APS: TEMP
+  real(8) :: pressure = 0.d0
   real(8) :: get_nchains
   real(8) :: wa_error_new = 1.d10, wa_error_old = 1.d10
   real(8) :: qinit_lo = 0.d0, qinit_hi = 0.d0
@@ -389,6 +389,42 @@ program fd_1d
     if (glo_kind==2) phi_kd2 = phi_kd2 + phi_glo
     if (ghi_kind==2) phi_kd2 = phi_kd2 + phi_ghi
 
+
+    !calculate new fields
+    wa_kd1 = 0.d0
+    wa_kd2 = 0.d0
+
+    !solid field
+    do jj = 0, nx
+      wa_kd1(jj) = wa_kd1(jj) + Ufield(jj) ! TODO: different solid field for kd1/2
+      wa_kd2(jj) = wa_kd2(jj) + Ufield(jj)
+    end do
+
+    !mixing term
+    if (dabs(chi12) .gt. 1e-7) then
+      do jj = 0, nx
+        wa_kd1(jj) = wa_kd1(jj) + chi12 * phi_kd2(jj)
+        wa_kd2(jj) = wa_kd2(jj) + chi12 * phi_kd1(jj)
+      end do
+    end if
+
+    !eos term
+    if (eos_type.ne.F_incompressible) then
+      do jj = 0, nx
+        wa_kd1(jj) = wa_kd1(jj) + eos_df_drho(phi_tot(jj))*beta
+        wa_kd2(jj) = wa_kd2(jj) + eos_df_drho(phi_tot(jj))*beta
+      end do
+    end if
+
+    if (eos_type.eq.F_incompressible) then
+      do jj = 0, nx
+        pressure = 0.5*(wa_kd1(jj) + wa_kd2(jj) - chi12)
+        wa_kd1(jj) = wa_kd1(jj) + pressure
+        wa_kd2(jj) = wa_kd2(jj) + pressure
+      end do
+    end if
+
+    ! gradient term
     if (square_gradient) then
       do jj = 1, nx - 1
         d2phi_dr2(jj) = (phi_tot(jj - 1) - 2.d0*phi_tot(jj) + phi_tot(jj + 1))/(dx(jj)*1.e-10)**2
@@ -399,26 +435,14 @@ program fd_1d
 
       dphi_dr(0) = (phi_tot(1) - phi_tot(0))/(dx(1)*1.e-10)
       dphi_dr(nx) = 0.d0
-    end if
 
-    !calculate new field and maximum absolute wa_error
-    do jj = 0, nx
-      wa_kd1(jj) = +(eos_df_drho(phi_tot(jj)))*beta &
-&                - k_gr*(rho_seg_bulk*d2phi_dr2(jj))*beta &
-&                + Ufield(jj)
-      wa_kd2(jj) = +(eos_df_drho(phi_tot(jj)))*beta &
-&                - k_gr*(rho_seg_bulk*d2phi_dr2(jj))*beta &
-&                + Ufield(jj)
-    end do
-
-    ! APS: TEMP
-    if (chi12 .gt. 1e-7) then
       do jj = 0, nx
-        wa_kd1(jj) = wa_kd1(jj) + chi12 * phi_kd2(jj)
-        wa_kd2(jj) = wa_kd2(jj) + chi12 * phi_kd1(jj)
+        wa_kd1(jj) = wa_kd1(jj) - k_gr*(rho_seg_bulk*d2phi_dr2(jj))*beta
+        wa_kd2(jj) = wa_kd2(jj) - k_gr*(rho_seg_bulk*d2phi_dr2(jj))*beta
       end do
     end if
 
+    !subtract bulk contribution
     wa_bulk_kd1 = eos_df_drho(1.d0)*beta
     wa_bulk_kd2 = eos_df_drho(1.d0)*beta
     wa_ifc_new_kd1 = wa_kd1 - wa_bulk_kd1

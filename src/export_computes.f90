@@ -21,7 +21,8 @@ subroutine export_computes(qinit_lo, qinit_hi)
   use arrays, only: rx, coeff_nx, layer_area, &
                   & phi_mxa, phi_mxb, phi_glo, phi_ghi, phi_kd1, phi_kd2, phi_tot, &
                   & qfinal_mxa, qfinal_mxb, qfinal_glo, qfinal_ghi, qfinal_glo_aux, qfinal_ghi_aux, &
-                  & wa_ifc_kd1, wa_ifc_new_kd1, rx, dx, ds_mxa, ds_glo, rr,    &
+                  & wa_ifc_kd1, wa_ifc_new_kd1, wa_ifc_kd2, wa_ifc_new_kd2, &
+                  & rx, dx, ds_mxa, ds_glo, rr,    &
                   & ds_mxa, ds_mxb, ds_glo, ds_ghi, &
                   & coeff_ns_mxa, coeff_ns_mxb, coeff_ns_glo, coeff_ns_ghi, &
                   & rs_mxa, rs_mxb, rs_glo, rs_ghi
@@ -31,7 +32,7 @@ subroutine export_computes(qinit_lo, qinit_hi)
   real(8), intent(in) :: qinit_lo, qinit_hi
 !----------------------------------------------------------------------------------------------------------!
   if (out_phi) call export_phi(rx, phi_mxa, phi_mxb, phi_glo, phi_ghi, phi_kd1, phi_kd2, phi_tot)
-  if (out_field) call export_field(rx, wa_ifc_kd1, wa_ifc_new_kd1)
+  if (out_field) call export_field(rx, wa_ifc_kd1, wa_ifc_new_kd1, wa_ifc_kd2, wa_ifc_new_kd2)
 
   if (exist_mxa) then
     if (out_q) call export_q(qfinal_mxa, ns_mxa, nx, rs_mxa, rx, "matrix")

@@ -18,6 +18,10 @@ subroutine init_arrays()
   allocate (wa_mxa(0:nx), wa_mxb(0:nx), wa_glo(0:nx), wa_ghi(0:nx))
   allocate (wa_ifc_mxa(0:nx), wa_ifc_mxb(0:nx), wa_ifc_glo(0:nx), wa_ifc_ghi(0:nx))
   allocate (wa_ifc_new_mxa(0:nx), wa_ifc_new_mxb(0:nx), wa_ifc_new_glo(0:nx), wa_ifc_new_ghi(0:nx))
+  allocate (wa_kd1(0:nx), wa_kd2(0:nx))
+  allocate (wa_ifc_kd1(0:nx), wa_ifc_kd2(0:nx))
+  allocate (wa_ifc_new_kd1(0:nx), wa_ifc_new_kd2(0:nx))
+  allocate (wa_ifc_backup_kd1(0:nx), wa_ifc_backup_kd2(0:nx))
   allocate (rr(0:nx), irr(0:nx), layer_area(0:nx))
   allocate (phi_tot(0:nx), phi_mxa(0:nx), phi_mxb(0:nx), phi_glo(0:nx), phi_ghi(0:nx), phi_kd1(0:nx), phi_kd2(0:nx))
   allocate (qmxa(0:nx, 2))
@@ -43,17 +47,25 @@ subroutine init_arrays()
   wa_mxb = 0.d0
   wa_glo = 0.d0
   wa_ghi = 0.d0
+  wa_kd1 = 0.d0
+  wa_kd2 = 0.d0
   wa_ifc = 0.d0
   wa_ifc_mxa = 0.d0
   wa_ifc_mxb = 0.d0
   wa_ifc_glo = 0.d0
   wa_ifc_ghi = 0.d0
+  wa_ifc_kd1 = 0.d0
+  wa_ifc_kd2 = 0.d0
   wa_ifc_new = 0.d0
   wa_ifc_new_mxa = 0.d0
   wa_ifc_new_mxb = 0.d0
   wa_ifc_new_glo = 0.d0
   wa_ifc_new_ghi = 0.d0
+  wa_ifc_new_kd1 = 0.d0
+  wa_ifc_new_kd2 = 0.d0
   wa_ifc_backup = 0.d0
+  wa_ifc_backup_kd1 = 0.d0
+  wa_ifc_backup_kd2 = 0.d0
   dir_nodes_rdiag = 0.d0
   rr = 0.d0
   layer_area = 0.d0

@@ -14,6 +14,10 @@ module arrays
   real(8), allocatable, dimension(:)   :: wa_mxa, wa_mxb, wa_glo, wa_ghi
   real(8), allocatable, dimension(:)   :: wa_ifc_mxa, wa_ifc_mxb, wa_ifc_glo, wa_ifc_ghi
   real(8), allocatable, dimension(:)   :: wa_ifc_new_mxa, wa_ifc_new_mxb, wa_ifc_new_glo, wa_ifc_new_ghi
+  real(8), allocatable, dimension(:)   :: wa_kd1, wa_kd2
+  real(8), allocatable, dimension(:)   :: wa_ifc_kd1, wa_ifc_kd2
+  real(8), allocatable, dimension(:)   :: wa_ifc_new_kd1, wa_ifc_new_kd2
+  real(8), allocatable, dimension(:)   :: wa_ifc_backup_kd1, wa_ifc_backup_kd2
   real(8), allocatable, dimension(:)   :: dx, rx, coeff_nx
   real(8), allocatable, dimension(:)   :: ds_mxa, ds_mxb, ds_glo, ds_ghi
 

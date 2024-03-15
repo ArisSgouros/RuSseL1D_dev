@@ -864,6 +864,10 @@ subroutine parser()
     if (contour_integr_scheme .eq. F_rectangle_rule) then
       write (iow, '(3X,A45,A16)') adjl("Chain contour integration rule:", 45), adjustl('Recrangle rule')
       write (*, '(3X,A45,A16)') adjl("Chain contour integration rule:", 45), adjustl('Recrangle rule')
+      write (iow, '(3X,A45)') adjl("WARNING: does not work properly for chains",45)
+      write (*  , '(3X,A45)') adjl("WARNING: does not work properly for chains",45)
+      write (iow, '(3X,A45)') adjl("         convolution requires chainlen += 1",45)
+      write (*  , '(3X,A45)') adjl("         convolution requires chainlen += 1",45)
     elseif (contour_integr_scheme .eq. F_simpson_rule) then
       write (iow, '(3X,A45,A16)') adjl("Chain contour integration rule:", 45), adjustl('Simpson rule')
       write (*, '(3X,A45,A16)') adjl("Chain contour integration rule:", 45), adjustl('Simpson rule')

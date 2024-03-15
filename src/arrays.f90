@@ -23,7 +23,7 @@ module arrays
   real(8), allocatable, dimension(:)   :: rs_mxa, rs_mxb, rs_glo, rs_ghi
   real(8), allocatable, dimension(:)   :: dir_nodes_rdiag
   real(8), allocatable, dimension(:)   :: dphi_dr, d2phi_dr2
-  real(8), allocatable, dimension(:)   :: phi_tot, phi_mxa, phi_mxb, phi_glo, phi_ghi, phi_kd1, phi_kd2
+  real(8), allocatable, dimension(:)   :: phi_tot, phi_mxa, phi_mxb, phi_glo, phi_ghi, phi_kd1, phi_kd2, phi_new_kd1, phi_new_kd2
   real(8), allocatable, dimension(:, :) :: qmxa, qmxb, qglo, qghi, qglo_aux, qghi_aux
   real(8), allocatable, dimension(:, :) :: qfinal_mxa, qfinal_mxb, qfinal_glo, qfinal_ghi, qfinal_glo_aux, qfinal_ghi_aux
 !----------------------------------------------------------------------------------------------------------!

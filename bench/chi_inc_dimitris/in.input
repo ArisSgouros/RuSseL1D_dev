@@ -1,0 +1,57 @@
+ # system setup
+ 0                             ! domain geometry, (0: Film, 1: sphere)
+ 1.000000000D+02               ! domain lx, (Angstrom)
+ 0.5                           ! domain dx
+ 0.500000000D+03               ! system temperature, (K)
+ 0.000000000D+00               ! system pressure, (atm)
+
+ # polymer parameters
+ 1.000000000D+02               ! polymer monomer_mass, (g/mol)
+ 1.000000000D+00               ! polymer mass_density, (g/cm3)
+
+ # simulation parameters
+ 4000                          ! field iterations
+ False                         ! field read, (0: no, 1: yes)
+ 0.100000000D-05               ! field max_error, (J/k_BT)
+ 0.100000000D-00               ! field mixing_fraction
+ 0                             ! edwards solver (0: implicit?, 1: semi-implicit)
+ 0                             ! discret contour (0: uniform, 1: nonuniform)
+ 0                             ! discret spatial (0: uniform, 1: nonuniform)
+ 1                             ! integr contour (0: Rectangle rule, 1: Simpson rule)
+ 0                             ! integr spatial (0: Rectangle rule, 1: Simpson rule)
+
+ # wall parameters
+ 0                                                               ! wall type, (0: vacuum; 1: Hamaker)
+
+ # Flory's parameter
+ 1.000000000D+00               ! chi12
+
+ # mxa chains
+ True                          ! mxa set (1: yes, 0 : no)
+ 1                             ! mxa kind
+ 10.00                         ! mxa chain_length
+ 0.5                           ! mxa ds
+ 1.000000000D+01               ! mxa C_inf
+ 1.000000000D+00               ! mxa bond_length, (Angstrom)
+
+ # mxb chains
+ True                          ! mxb set (1: yes, 0 : no)
+ 2                             ! mxb kind
+ 10.00                         ! mxb chain_length
+ 0.5                           ! mxb ds
+ 1.000000000D+01               ! mxb C_inf
+ 1.000000000D+00               ! mxb bond_length, (Angstrom)
+
+ # boundary conditions
+ 1                             ! boundary_condition lo mxa, (-1: Neuman, 0: Dirichlet q=0, 1: Dirichlet q=1)
+ 0                             ! boundary_condition hi mxa, (-1: Neuman, 0: Dirichlet q=0, 1: Dirichlet q=1)
+ 0                             ! boundary_condition lo mxb, (-1: Neuman, 0: Dirichlet q=0, 1: Dirichlet q=1)
+ 1                             ! boundary_condition hi mxb, (-1: Neuman, 0: Dirichlet q=0, 1: Dirichlet q=1)
+
+ # equation of state
+ -1                            ! EOS type ( -1: incompressible; 0: Helfand; 1: Sanchez-Lacombe )
+# 1.000000000D-08               ! EOS coeffs ( Helfand: kappa_T, SL: rho_star,T_star, P_star)
+# 0.000000000D+00               ! EOS influence_parameter (J m^5/mol^2)
+
+ 1000                     ! compute every 
+ 100                      ! thermo every 

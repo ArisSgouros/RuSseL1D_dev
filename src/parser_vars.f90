@@ -29,7 +29,8 @@ module parser_vars
   integer :: mxa_kind, mxb_kind, glo_kind, ghi_kind
 
   real(8) :: max_wa_error, r_ads_lo, r_ads_hi
-  real(8) :: chainlen_mxa, chainlen_mxb, chainlen_glo, chainlen_ghi, chainlen_bulk
+  real(8) :: chainlen_mxa, chainlen_mxb, chainlen_glo, chainlen_ghi, chainlen_bulk, &
+           & chainlen_max
   real(8) :: ds_ave_mxa, ds_ave_mxb, ds_ave_glo, ds_ave_ghi
   real(8) :: lx, dx_ave
   real(8) :: graft_pos, gdens_lo, gdens_hi, delta

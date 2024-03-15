@@ -12,7 +12,7 @@ program fd_1d
   use parser_vars, only: beta, k_gr, delta,      &
                         & mxa_kind, mxb_kind, ghi_kind, glo_kind, &
                         & bc_lo_mxa, bc_lo_mxb, bc_lo_grafted, bc_hi_mxa, bc_hi_mxb, bc_hi_grafted, &
-                        & chainlen_mxa, chainlen_mxb, chainlen_glo, chainlen_ghi,  &
+                        & chainlen_mxa, chainlen_mxb, chainlen_glo, chainlen_ghi, chainlen_max, &
                         & ns_mxa, ns_mxb, ns_glo, ns_ghi, &
                         & exist_mxa, exist_mxb, exist_glo, exist_ghi,            &
                         & Rg2_per_mon_mxa, Rg2_per_mon_mxb, Rg2_per_mon_glo, Rg2_per_mon_ghi, &

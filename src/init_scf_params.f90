@@ -7,7 +7,7 @@ subroutine init_scf_params()
   use eos, only: rsl_N, T_tilde, P_tilde, rho_tilde_bulk, T_star, P_star, V_star, rho_star,             &
                         & eos_type, eos_rho_tilde_0
   use flags, only: F_sanchez_lacombe, F_incompressible
-  use parser_vars, only: chainlen_mxa, chainlen_mxb, chainlen_glo, chainlen_ghi, &
+  use parser_vars, only: chainlen_mxa, chainlen_mxb, chainlen_glo, chainlen_ghi, chainlen_max, &
                         & ds_ave_mxa, ds_ave_mxb,  &
                         & ds_ave_glo, ds_ave_ghi, ns_mxa, ns_mxb, ns_glo, ns_ghi,         &
                         & exist_mxa, exist_mxb, exist_glo, exist_ghi, rho_seg_bulk,       &
@@ -59,6 +59,9 @@ subroutine init_scf_params()
     write (iow, '(3X,A45,I16," nodes")') adjl("ghi nodes along chain contour:", 45), ns_ghi
     write (*, '(3X,A45,I16," nodes")') adjl("ghi nodes along chain contour:", 45), ns_ghi
   end if
+
+  ! find maximum chain length
+  chainlen_max = max(chainlen_mxa, chainlen_mxb, chainlen_glo, chainlen_ghi)
 
   if (eos_type .eq. F_sanchez_lacombe) then
     write (iow, '(3X,A45)') adjl("Computation of the mass density from SL EoS..", 45)

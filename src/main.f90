@@ -452,10 +452,17 @@ program fd_1d
     end if
 
     !subtract bulk contribution
-    wa_bulk_kd1 = eos_df_drho(1.d0)*beta
-    wa_bulk_kd2 = eos_df_drho(1.d0)*beta
-    wa_ifc_new_kd1 = wa_kd1 - wa_bulk_kd1
-    wa_ifc_new_kd2 = wa_kd2 - wa_bulk_kd2
+    if (eos_type.ne.F_incompressible) then
+      wa_bulk_kd1 = eos_df_drho(1.d0)*beta
+      wa_bulk_kd2 = eos_df_drho(1.d0)*beta
+      wa_ifc_new_kd1 = wa_kd1 - wa_bulk_kd1
+      wa_ifc_new_kd2 = wa_kd2 - wa_bulk_kd2
+    else
+      wa_bulk_kd1 = 0.d0
+      wa_bulk_kd2 = 0.d0
+      wa_ifc_new_kd1 = wa_kd1
+      wa_ifc_new_kd2 = wa_kd2
+    end if
 
     wa_error_new = 0.d0
     do jj = 0, nx

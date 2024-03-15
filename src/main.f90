@@ -409,8 +409,10 @@ program fd_1d
     !mixing term
     if (dabs(chi12) .gt. 1e-7) then
       do jj = 0, nx
-        wa_kd1(jj) = wa_kd1(jj) + chi12 * phi_kd2(jj)
-        wa_kd2(jj) = wa_kd2(jj) + chi12 * phi_kd1(jj)
+        !wa_kd1(jj) = wa_kd1(jj) + chi12 * phi_kd2(jj)
+        !wa_kd2(jj) = wa_kd2(jj) + chi12 * phi_kd1(jj)
+        wa_kd1(jj) = wa_kd1(jj) + chi12 * phi_new_kd2(jj)
+        wa_kd2(jj) = wa_kd2(jj) + chi12 * phi_new_kd1(jj)
       end do
     end if
 
@@ -424,8 +426,8 @@ program fd_1d
 
     if (eos_type.eq.F_incompressible) then
       do jj = 0, nx
-        pressure = 0.5*(wa_kd1(jj) + wa_kd2(jj) - chi12)
-        !pressure = 0.5*(wa_ifc_kd1(jj) + wa_ifc_kd2(jj) - chi12)
+        !pressure = 0.5*(wa_kd1(jj) + wa_kd2(jj) - chi12)
+        pressure = 0.5*(wa_ifc_kd1(jj) + wa_ifc_kd2(jj) - chi12)
         wa_kd1(jj) = wa_kd1(jj) + pressure
         wa_kd2(jj) = wa_kd2(jj) + pressure
       end do

@@ -419,6 +419,7 @@ program fd_1d
     if (eos_type.eq.F_incompressible) then
       do jj = 0, nx
         pressure = 0.5*(wa_kd1(jj) + wa_kd2(jj) - chi12)
+        !pressure = 0.5*(wa_ifc_kd1(jj) + wa_ifc_kd2(jj) - chi12)
         wa_kd1(jj) = wa_kd1(jj) + pressure
         wa_kd2(jj) = wa_kd2(jj) + pressure
       end do

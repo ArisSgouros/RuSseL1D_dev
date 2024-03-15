@@ -390,6 +390,12 @@ program fd_1d
     if (ghi_kind==2) phi_kd2 = phi_kd2 + phi_ghi
 
 
+    !TODO: create variables for old/new fields
+    !TODO: create variables for old/new phi
+    !TODO: generate functions for determining current field
+    !TODO: generate functions for incompressibility
+    !TODO: generate functions for field/density mixing
+
     !calculate new fields
     wa_kd1 = 0.d0
     wa_kd2 = 0.d0

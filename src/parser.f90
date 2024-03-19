@@ -29,8 +29,6 @@ subroutine parser()
 
   integer :: Reason, wall_itype
 
-  logical :: log_field_in_filename = .false.
-
   logical :: log_system_geometry = .false.
   logical :: log_sphere_radius = .false.
   logical :: log_lx = .false.
@@ -162,11 +160,7 @@ subroutine parser()
       if (index(comment_flag, "#") > 0 .or. index(comment_flag, "!") > 0) cycle
 
       ! system setup
-      ! TODO: fix
-      if (index(line, "# field input file") > 0) then
-        read (line, '(A50)') field_in_filename
-        log_field_in_filename = .true.
-      elseif (index(line, "! domain geometry") > 0) then
+      if (index(line, "! domain geometry") > 0) then
         read (line, '(I9)') geometry
         log_system_geometry = .true.
       elseif (index(line, "! domain lx") > 0) then
@@ -725,30 +719,18 @@ subroutine parser()
 
   if (log_read_field) then
     if (read_field) then
-      if (log_field_in_filename) then
-        inquire (file=field_in_filename, exist=FILE_EXISTS)
-        if (.not. FILE_EXISTS) then
-          write (ERROR_MESSAGE, '("Field input file ",A16," does not exist!")') adjustl(field_in_filename)
-          write (iow, *) ERROR_MESSAGE
-          write (6, *) ERROR_MESSAGE
-          STOP
-        end if
-        write (iow, '(3X,A45,A16)') adjl("Field will be read from file:", 45), adjustl(field_in_filename)
-        write (6, '(3X,A45,A16)') adjl("Field will be read from file:", 45), adjustl(field_in_filename)
-      else
-        field_in_filename = "./in.field.bin"
-        write (iow, '(3X,A45)') adjl("Field input file not specified.", 45)
-        write (iow, '(3X,A45,A16)') adjl("Reading default field input file:", 45), adjustl(field_in_filename)
-        write (6, '(3X,A45)') adjl("Field input file not specified.", 45)
-        write (6, '(3X,A45,A16)') adjl("Reading default field input file:", 45), adjustl(field_in_filename)
+      field_in_filename = "./in.field.bin"
+      write (iow, '(3X,A45)') adjl("Field input file not specified.", 45)
+      write (iow, '(3X,A45,A16)') adjl("Reading default field input file:", 45), adjustl(field_in_filename)
+      write (6, '(3X,A45)') adjl("Field input file not specified.", 45)
+      write (6, '(3X,A45,A16)') adjl("Reading default field input file:", 45), adjustl(field_in_filename)
 
-        inquire (file=field_in_filename, exist=FILE_EXISTS)
-        if (.not. FILE_EXISTS) then
-          write (ERROR_MESSAGE, '("Default field input file ",A16," does not exist!")') field_in_filename
-          write (iow, *) ERROR_MESSAGE
-          write (6, *) ERROR_MESSAGE
-          STOP
-        end if
+      inquire (file=field_in_filename, exist=FILE_EXISTS)
+      if (.not. FILE_EXISTS) then
+        write (ERROR_MESSAGE, '("Default field input file ",A16," does not exist!")') field_in_filename
+        write (iow, *) ERROR_MESSAGE
+        write (6, *) ERROR_MESSAGE
+        STOP
       end if
     else
       write (iow, '(3X,A45)') adjl('Field will be initialized to zero', 45)

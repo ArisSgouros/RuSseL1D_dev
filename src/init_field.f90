@@ -4,15 +4,13 @@
 
 subroutine init_field()
 !----------------------------------------------------------------------------------------------------------!
-  use parser_vars, only: read_field, field_in_filename, mxa_kind, mxb_kind, glo_kind, ghi_kind, &
+  use parser_vars, only: read_field, mxa_kind, mxb_kind, glo_kind, ghi_kind, &
                         & exist_kd1, exist_kd2
   use arrays, only: wa_ifc_kd1, wa_ifc_backup_kd1, wa_ifc_kd2, wa_ifc_backup_kd2, &
                    & wa_ifc_mxa, wa_ifc_mxb, wa_ifc_glo, wa_ifc_ghi
 !----------------------------------------------------------------------------------------------------------!
   implicit none
 !----------------------------------------------------------------------------------------------------------!
-  ! TODO: remove
-  character(len=100) :: field_in_filename_kd2 = ""
 
   wa_ifc_kd1 = 0.d0
   wa_ifc_kd2 = 0.d0

@@ -5,7 +5,7 @@
 module parser_vars
 !----------------------------------------------------------------------------------------------------------!
   logical :: exist_glo, exist_ghi, exist_mxa, exist_mxb
-  logical :: read_field
+  logical :: read_field, random_field
   logical :: square_gradient
   logical :: out_phi, out_q, out_field, out_phi_seg
   logical :: out_chainshape, out_ads_free, out_brush_thickness
@@ -29,6 +29,7 @@ module parser_vars
   integer :: n_wall_custom_vars
   integer :: mxa_kind, mxb_kind, glo_kind, ghi_kind
 
+  real(8) :: random_field_magn
   real(8) :: max_wa_error, r_ads_lo, r_ads_hi
   real(8) :: chainlen_mxa, chainlen_mxb, chainlen_glo, chainlen_ghi, chainlen_bulk, &
            & chainlen_max

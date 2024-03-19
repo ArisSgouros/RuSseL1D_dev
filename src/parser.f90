@@ -56,6 +56,7 @@ subroutine parser()
   logical :: log_max_wa_error = .false.
   logical :: log_fraction_of_new_field = .false.
   logical :: log_read_field = .false.
+  logical :: log_random_field = .false.
 
   logical :: log_out_phi = .false.
   logical :: log_out_equimolar = .false.
@@ -206,6 +207,10 @@ subroutine parser()
       elseif (index(line, "! field read") > 0) then
         read (line, '(L10)') read_field
         log_read_field = .true.
+      elseif (index(line, "! field random") > 0) then
+        read (line, '(E16.9)') random_field_magn
+        random_field = .true.
+        log_random_field = .true.
       elseif (index(line, "! field max_error") > 0) then
         read (line, '(E16.9)') max_wa_error
         log_max_wa_error = .true.
@@ -740,6 +745,11 @@ subroutine parser()
     write (iow, '(3X,A45,'' initialization to zero'')') adjl('Field read flag not found. Auto:', 45)
     write (*, '(3X,A45,'' initialization to zero'')') adjl('Field read flag not found. Auto:', 45)
     read_field = .false.
+  end if
+
+  if (log_random_field.and.random_field) then
+    write (iow, '(3X,A45,F16.4,'' J/k_BT'')') adjl('Field randomized with magnitude:', 45), random_field_magn
+    write (*  , '(3X,A45,F16.4,'' J/k_BT'')') adjl('Field randomized with magnitude:', 45), random_field_magn
   end if
 
   if (log_max_wa_error) then

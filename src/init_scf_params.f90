@@ -16,7 +16,10 @@ subroutine init_scf_params()
                         & bond_length_mxa, bond_length_mxb, bond_length_glo, bond_length_ghi,       &
                         & CN_mxa, CN_mxb, CN_glo, CN_ghi,                                           &
                         & Rg2_per_mon_mxa, Rg2_per_mon_mxb, Rg2_per_mon_glo, Rg2_per_mon_ghi, &
-                        & beta, chi12
+                        & beta, chi12, &
+                        & exist_kd1, exist_kd2, exist_mxa, exist_mxb, exist_glo, exist_ghi, &
+                        & mxa_kind, mxb_kind, glo_kind, ghi_kind
+
   use constants, only: N_avog, boltz_const_Joule_molK, boltz_const_Joule_K, gr_cm3_to_kg_m3, iow, tol
   use write_helper, only: adjl
 !----------------------------------------------------------------------------------------------------------!
@@ -96,6 +99,17 @@ subroutine init_scf_params()
   if (eos_type.eq.F_incompressible) then
     write (*, '(3X,A45,E16.4," Pa-1")') adjl("effective compressibility from chi12", 45), 2.d0*beta / (chi12*rho_seg_bulk)
   endif
+
+  exist_kd1 = .False.
+  exist_kd2 = .False.
+  if (exist_mxa.and.mxa_kind.eq.1) exist_kd1 = .True.
+  if (exist_mxa.and.mxa_kind.eq.2) exist_kd2 = .True.
+  if (exist_mxb.and.mxb_kind.eq.1) exist_kd1 = .True.
+  if (exist_mxb.and.mxb_kind.eq.2) exist_kd2 = .True.
+  if (exist_glo.and.glo_kind.eq.1) exist_kd1 = .True.
+  if (exist_glo.and.glo_kind.eq.2) exist_kd2 = .True.
+  if (exist_ghi.and.ghi_kind.eq.1) exist_kd1 = .True.
+  if (exist_ghi.and.ghi_kind.eq.2) exist_kd2 = .True.
 
 !----------------------------------------------------------------------------------------------------------!
 end subroutine init_scf_params

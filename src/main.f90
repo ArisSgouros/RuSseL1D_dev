@@ -14,7 +14,7 @@ program fd_1d
                         & bc_lo_mxa, bc_lo_mxb, bc_lo_grafted, bc_hi_mxa, bc_hi_mxb, bc_hi_grafted, &
                         & chainlen_mxa, chainlen_mxb, chainlen_glo, chainlen_ghi, chainlen_max, &
                         & ns_mxa, ns_mxb, ns_glo, ns_ghi, &
-                        & exist_mxa, exist_mxb, exist_glo, exist_ghi,            &
+                        & exist_kd1, exist_kd2, exist_mxa, exist_mxb, exist_glo, exist_ghi,            &
                         & Rg2_per_mon_mxa, Rg2_per_mon_mxb, Rg2_per_mon_glo, Rg2_per_mon_ghi, &
                         & edwards_solver, linear_solver, geometry,    &
                         & check_stability_every, compute_every, field_every, frac, nx, &
@@ -541,7 +541,10 @@ program fd_1d
 
     convergence = (wa_error_new .lt. max_wa_error)
 
-    if (mod(iter, field_every) .eq. 0 .or. convergence) call export_field_binary(wa_ifc_kd1, nx)
+    if (mod(iter, field_every) .eq. 0 .or. convergence) then
+      if (exist_kd1) call export_field_binary(wa_ifc_kd1, nx, "o.field.bin")
+      if (exist_kd2) call export_field_binary(wa_ifc_kd2, nx, "o.field_kd2.bin")
+    end if
     if (compute_every .gt. 0) then
       if (mod(iter, compute_every) .eq. 0 .or. convergence) call export_computes(qinit_lo, qinit_hi)
     end if

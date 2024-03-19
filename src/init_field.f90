@@ -4,25 +4,36 @@
 
 subroutine init_field()
 !----------------------------------------------------------------------------------------------------------!
-  use parser_vars, only: read_field, field_in_filename, mxa_kind, mxb_kind, glo_kind, ghi_kind
+  use parser_vars, only: read_field, field_in_filename, mxa_kind, mxb_kind, glo_kind, ghi_kind, &
+                        & exist_kd1, exist_kd2
   use arrays, only: wa_ifc_kd1, wa_ifc_backup_kd1, wa_ifc_kd2, wa_ifc_backup_kd2, &
                    & wa_ifc_mxa, wa_ifc_mxb, wa_ifc_glo, wa_ifc_ghi
 !----------------------------------------------------------------------------------------------------------!
   implicit none
 !----------------------------------------------------------------------------------------------------------!
-! TODO: add option for reading both kd1 and kd2 fields
+  ! TODO: remove
+  character(len=100) :: field_in_filename_kd2 = ""
+
+  wa_ifc_kd1 = 0.d0
+  wa_ifc_kd2 = 0.d0
+
   if (read_field) then
-    open (unit=21, file=field_in_filename, form='unformatted')
-    read (21) wa_ifc_kd1
-    close (21)
+    if (exist_kd1) then
+      open (unit=21, file="in.field.bin", form='unformatted')
+      read (21) wa_ifc_kd1
+      close (21)
+    end if
+    if (exist_kd2) then
+      open (unit=21, file="in.field_kd2.bin", form='unformatted')
+      read (21) wa_ifc_kd2
+      close (21)
+    end if
   end if
+
 
 !store the initial field for backup
   wa_ifc_backup_kd1 = wa_ifc_kd1
-
-! TODO: revert tentative initial assignment from kd1 field
-  wa_ifc_kd2 = wa_ifc_kd1
-  wa_ifc_backup_kd2 = wa_ifc_kd1
+  wa_ifc_backup_kd2 = wa_ifc_kd2
 
 ! TODO: add option for randomized initial fields
 

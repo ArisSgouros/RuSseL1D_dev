@@ -162,6 +162,7 @@ subroutine parser()
       if (index(comment_flag, "#") > 0 .or. index(comment_flag, "!") > 0) cycle
 
       ! system setup
+      ! TODO: fix
       if (index(line, "# field input file") > 0) then
         read (line, '(A50)') field_in_filename
         log_field_in_filename = .true.

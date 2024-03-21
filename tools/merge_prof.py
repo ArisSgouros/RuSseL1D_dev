@@ -55,14 +55,13 @@ for iter_ in iters:
 file_out = y_header+".csv"
 print("Exporting to file: %s" % (file_out))
 with open(file_out, "w") as goo:
-   goo.write("%15s," % (x_header))
    for iter_ in iters:
-      goo.write("%15d," % (iter_))
+      goo.write(",%15d" % (iter_))
    goo.write("\n")
    for ix in range(nx):
-      goo.write("%15.7f," % (x_vals[ix]))
+      goo.write("%15.10f" % (x_vals[ix]))
       for iter_ in iters:
-         goo.write("%15.7f," % (y_vals[iter_][ix]))
+         goo.write(",%15.10f" % (y_vals[iter_][ix]))
       goo.write("\n")
       
       

@@ -32,8 +32,8 @@ subroutine export_computes(qinit_lo, qinit_hi, iter)
   real(8), intent(in) :: qinit_lo, qinit_hi
   integer, intent(in) :: iter
 !----------------------------------------------------------------------------------------------------------!
-  if (out_phi) call export_phi(rx, phi_mxa, phi_mxb, phi_glo, phi_ghi, phi_kd1, phi_kd2, phi_tot)
-  if (out_field) call export_field(rx, wa_ifc_kd1, wa_ifc_new_kd1, wa_ifc_kd2, wa_ifc_new_kd2)
+  if (out_phi) call export_phi(rx, phi_mxa, phi_mxb, phi_glo, phi_ghi, phi_kd1, phi_kd2, phi_tot, iter)
+  if (out_field) call export_field(rx, wa_ifc_kd1, wa_ifc_new_kd1, wa_ifc_kd2, wa_ifc_new_kd2, iter)
 
   if (exist_mxa) then
     if (out_q) call export_q(qfinal_mxa, ns_mxa, nx, rs_mxa, rx, "matrix")

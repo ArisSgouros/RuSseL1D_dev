@@ -51,6 +51,7 @@ subroutine parser()
   logical :: log_number_of_iterations = .false.
   logical :: log_thermo_every = .false.
   logical :: log_compute_every = .false.
+  logical :: log_export_multi = .false.
   logical :: log_field_every = .false.
   logical :: log_check_stability_every = .false.
   logical :: log_max_wa_error = .false.
@@ -201,6 +202,9 @@ subroutine parser()
       elseif (index(line, "! compute every") > 0) then
         read (line, '(I10)') compute_every
         log_compute_every = .true.
+      elseif (index(line, "! export multi") > 0) then
+        read (line, '(L10)') export_multi
+        log_export_multi = .true.
       elseif (index(line, "! check stability every") > 0) then
         read (line, '(I10)') check_stability_every
         log_check_stability_every = .true.

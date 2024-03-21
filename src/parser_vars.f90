@@ -14,6 +14,7 @@ module parser_vars
   logical :: wall_hamaker, wall_square_well, wall_ramp, wall_vacuum, wall_hybrid
   logical :: wall_custom, wall_table, wall_hamaker_well
   logical :: exist_kd1, exist_kd2
+  logical :: export_multi
 
   integer :: bc_lo_mxa, bc_lo_mxb, bc_lo_grafted
   integer :: bc_hi_mxa, bc_hi_mxb, bc_hi_grafted

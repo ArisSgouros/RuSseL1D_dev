@@ -546,7 +546,7 @@ program fd_1d
       if (exist_kd2) call export_field_binary(wa_ifc_kd2, nx, "o.field_kd2.bin")
     end if
     if (compute_every .gt. 0) then
-      if (mod(iter, compute_every) .eq. 0 .or. convergence) call export_computes(qinit_lo, qinit_hi)
+      if (mod(iter, compute_every) .eq. 0 .or. convergence) call export_computes(qinit_lo, qinit_hi, iter)
     end if
     if (mod(iter, thermo_every) .eq. 0 .or. convergence) then
       if (exist_mxa) nch_mxa = get_nchains(coeff_nx, nx, layer_area, phi_mxa, &

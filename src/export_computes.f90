@@ -2,7 +2,7 @@
 !
 !See the LICENSE file in the root directory for license information.
 
-subroutine export_computes(qinit_lo, qinit_hi)
+subroutine export_computes(qinit_lo, qinit_hi, iter)
 !----------------------------------------------------------------------------------------------------------!
   use parser_vars, only: geometry, &
                   & ns_mxa, ns_mxb, ns_glo, ns_ghi, &
@@ -30,6 +30,7 @@ subroutine export_computes(qinit_lo, qinit_hi)
   implicit none
 !----------------------------------------------------------------------------------------------------------!
   real(8), intent(in) :: qinit_lo, qinit_hi
+  integer, intent(in) :: iter
 !----------------------------------------------------------------------------------------------------------!
   if (out_phi) call export_phi(rx, phi_mxa, phi_mxb, phi_glo, phi_ghi, phi_kd1, phi_kd2, phi_tot)
   if (out_field) call export_field(rx, wa_ifc_kd1, wa_ifc_new_kd1, wa_ifc_kd2, wa_ifc_new_kd2)

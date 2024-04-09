@@ -10,11 +10,12 @@
  1.000000000D+00               ! polymer mass_density, (g/cm3)
 
  # simulation parameters
- 40000                       ! field iterations
+ 40000                         ! field iterations
  2000                          ! andersen_after_iter
  False                         ! field read, (0: no, 1: yes)
- 0.100000000D-10          ! field max_error, (J/k_BT)
- 0.010000000D-00         ! field mixing_fraction
+ 0.100000000D-10               ! field max_error, (J/k_BT)
+ 0.010000000D-00               ! field mixing_fraction
+ 0.100000000D-00               ! field andersen_fraction
  0                             ! edwards solver (0: implicit?, 1: semi-implicit)
  0                             ! discret contour (0: uniform, 1: nonuniform)
  0                             ! discret spatial (0: uniform, 1: nonuniform)

@@ -23,7 +23,7 @@ subroutine export_phi(rx, phi_mxa, phi_mxb, phi_glo, phi_ghi, phi_kd1, phi_kd2, 
   if (export_multi) then
     write (string_iter, '(I10)') iter
   end if
-  write (filename, '("o.phi",A10)') adjl(string_iter,10)
+  write (filename, '("o.phi",A10)') adjl(string_iter, 10)
 
   open (unit=120, file=filename)
   write (120, '(8(A14,2X))') 'r', "phi_mxa", "phi_mxb", "phi_glo", "phi_ghi", "phi_kd1", "phi_kd2", "phi_tot"

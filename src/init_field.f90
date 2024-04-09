@@ -13,7 +13,7 @@ subroutine init_field()
 !----------------------------------------------------------------------------------------------------------!
   implicit none
 !----------------------------------------------------------------------------------------------------------!
-  
+
   integer :: jj
 
   wa_ifc_kd1 = 0.d0
@@ -35,12 +35,12 @@ subroutine init_field()
   if (random_field) then
     if (exist_kd1) then
       do jj = 0, nx
-        wa_ifc_kd1(jj) = random_field_magn*(1.0d0-2.0d0*RAND())
+        wa_ifc_kd1(jj) = random_field_magn*(1.0d0 - 2.0d0*RAND())
       end do
     end if
     if (exist_kd2) then
       do jj = 0, nx
-        wa_ifc_kd2(jj) = random_field_magn*(1.0d0-2.0d0*RAND())
+        wa_ifc_kd2(jj) = random_field_magn*(1.0d0 - 2.0d0*RAND())
       end do
     end if
   end if
@@ -49,14 +49,14 @@ subroutine init_field()
   wa_ifc_backup_kd1 = wa_ifc_kd1
   wa_ifc_backup_kd2 = wa_ifc_kd2
 
-  if (mxa_kind==1) wa_ifc_mxa = wa_ifc_kd1
-  if (mxb_kind==1) wa_ifc_mxb = wa_ifc_kd1
-  if (glo_kind==1) wa_ifc_glo = wa_ifc_kd1
-  if (ghi_kind==1) wa_ifc_ghi = wa_ifc_kd1
-  if (mxa_kind==2) wa_ifc_mxa = wa_ifc_kd2
-  if (mxb_kind==2) wa_ifc_mxb = wa_ifc_kd2
-  if (glo_kind==2) wa_ifc_glo = wa_ifc_kd2
-  if (ghi_kind==2) wa_ifc_ghi = wa_ifc_kd2
+  if (mxa_kind == 1) wa_ifc_mxa = wa_ifc_kd1
+  if (mxb_kind == 1) wa_ifc_mxb = wa_ifc_kd1
+  if (glo_kind == 1) wa_ifc_glo = wa_ifc_kd1
+  if (ghi_kind == 1) wa_ifc_ghi = wa_ifc_kd1
+  if (mxa_kind == 2) wa_ifc_mxa = wa_ifc_kd2
+  if (mxb_kind == 2) wa_ifc_mxb = wa_ifc_kd2
+  if (glo_kind == 2) wa_ifc_glo = wa_ifc_kd2
+  if (ghi_kind == 2) wa_ifc_ghi = wa_ifc_kd2
 
   return
 !----------------------------------------------------------------------------------------------------------!

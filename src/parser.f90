@@ -365,7 +365,7 @@ subroutine parser()
       elseif (index(line, "! mxa ds") > 0) then
         read (line, *) ds_ave_mxa
         log_ds_ave_mxa = .true.
-      elseif (index(line, "! mxa kind")> 0) then
+      elseif (index(line, "! mxa kind") > 0) then
         read (line, '(I10)') mxa_kind
         log_kind_mxa = .true.
 
@@ -385,8 +385,8 @@ subroutine parser()
       elseif (index(line, "! mxb ds") > 0) then
         read (line, *) ds_ave_mxb
         log_ds_ave_mxb = .true.
-      elseif (index(line, "! mxb kind")> 0) then
-        read (line,'(I10)') mxb_kind
+      elseif (index(line, "! mxb kind") > 0) then
+        read (line, '(I10)') mxb_kind
         log_kind_mxb = .true.
 
         ! mxb chains
@@ -416,9 +416,9 @@ subroutine parser()
       elseif (index(line, "! glo bond_length") > 0) then
         read (line, '(E16.9)') bond_length_glo
         log_bond_length_glo = .true.
-      elseif (index(line,"! glo kind") > 0 ) then
-        read (line,'(I10)') glo_kind
-        log_kind_glo =.true.
+      elseif (index(line, "! glo kind") > 0) then
+        read (line, '(I10)') glo_kind
+        log_kind_glo = .true.
 
         ! ghi chains
       elseif (index(line, "! ghi set") > 0) then
@@ -439,9 +439,9 @@ subroutine parser()
       elseif (index(line, "! ghi bond_length") > 0) then
         read (line, '(E16.9)') bond_length_ghi
         log_bond_length_ghi = .true.
-      elseif (index(line, "! ghi kind") > 0 ) then
+      elseif (index(line, "! ghi kind") > 0) then
         read (line, '(I10)') ghi_kind
-        log_kind_ghi =.true.
+        log_kind_ghi = .true.
 
         ! grafted misc
       elseif (index(line, "! grafted distance_from_solid") > 0) then
@@ -755,9 +755,9 @@ subroutine parser()
     read_field = .false.
   end if
 
-  if (log_random_field.and.random_field) then
+  if (log_random_field .and. random_field) then
     write (iow, '(3X,A45,F16.4,'' J/k_BT'')') adjl('Field randomized with magnitude:', 45), random_field_magn
-    write (*  , '(3X,A45,F16.4,'' J/k_BT'')') adjl('Field randomized with magnitude:', 45), random_field_magn
+    write (*, '(3X,A45,F16.4,'' J/k_BT'')') adjl('Field randomized with magnitude:', 45), random_field_magn
   end if
 
   if (log_max_wa_error) then
@@ -872,10 +872,10 @@ subroutine parser()
     if (contour_integr_scheme .eq. F_rectangle_rule) then
       write (iow, '(3X,A45,A16)') adjl("Chain contour integration rule:", 45), adjustl('Recrangle rule')
       write (*, '(3X,A45,A16)') adjl("Chain contour integration rule:", 45), adjustl('Recrangle rule')
-      write (iow, '(3X,A45)') adjl("WARNING: does not work properly for chains",45)
-      write (*  , '(3X,A45)') adjl("WARNING: does not work properly for chains",45)
-      write (iow, '(3X,A45)') adjl("         convolution requires chainlen += 1",45)
-      write (*  , '(3X,A45)') adjl("         convolution requires chainlen += 1",45)
+      write (iow, '(3X,A45)') adjl("WARNING: does not work properly for chains", 45)
+      write (*, '(3X,A45)') adjl("WARNING: does not work properly for chains", 45)
+      write (iow, '(3X,A45)') adjl("         convolution requires chainlen += 1", 45)
+      write (*, '(3X,A45)') adjl("         convolution requires chainlen += 1", 45)
     elseif (contour_integr_scheme .eq. F_simpson_rule) then
       write (iow, '(3X,A45,A16)') adjl("Chain contour integration rule:", 45), adjustl('Simpson rule')
       write (*, '(3X,A45,A16)') adjl("Chain contour integration rule:", 45), adjustl('Simpson rule')
@@ -923,9 +923,9 @@ subroutine parser()
 
   if (exist_mxa) then ! Start of mxa chains
   if (log_kind_mxa) then ! chain kind
-    if (mxa_kind.ne.1.and.mxa_kind.ne.2) then
+    if (mxa_kind .ne. 1 .and. mxa_kind .ne. 2) then
       write (iow, '(3X,A45)') '*Chain kind must be either 1 or 2'
-      write (*  , '(3X,A45)') '*Chain kind must be either 1 or 2'
+      write (*, '(3X,A45)') '*Chain kind must be either 1 or 2'
       STOP
     end if
   else
@@ -989,9 +989,9 @@ subroutine parser()
 
   if (exist_mxb) then
   if (log_kind_mxb) then ! chain kind
-    if (mxb_kind.ne.1.and.mxb_kind.ne.2) then
+    if (mxb_kind .ne. 1 .and. mxb_kind .ne. 2) then
       write (iow, '(3X,A45)') '*Chain kind must be either 1 or 2'
-      write (*  , '(3X,A45)') '*Chain kind must be either 1 or 2'
+      write (*, '(3X,A45)') '*Chain kind must be either 1 or 2'
       STOP
     end if
   else
@@ -1058,9 +1058,9 @@ subroutine parser()
 
   if (exist_glo) then ! start of glo chains
   if (log_kind_glo) then ! chain kind
-    if (glo_kind.ne.1.and.glo_kind.ne.2) then
+    if (glo_kind .ne. 1 .and. glo_kind .ne. 2) then
       write (iow, '(3X,A45)') '*Chain kind must be either 1 or 2'
-      write (*  , '(3X,A45)') '*Chain kind must be either 1 or 2'
+      write (*, '(3X,A45)') '*Chain kind must be either 1 or 2'
       STOP
     end if
   else
@@ -1138,9 +1138,9 @@ subroutine parser()
 
   if (exist_ghi) then ! start of ghi chains
   if (log_kind_ghi) then ! chain kind
-    if (ghi_kind.ne.1.and.ghi_kind.ne.2) then
+    if (ghi_kind .ne. 1 .and. ghi_kind .ne. 2) then
       write (iow, '(3X,A45)') '*Chain kind must be either 1 or 2'
-      write (*  , '(3X,A45)') '*Chain kind must be either 1 or 2'
+      write (*, '(3X,A45)') '*Chain kind must be either 1 or 2'
       STOP
     end if
   else
@@ -1515,7 +1515,7 @@ subroutine parser()
     write (*, '(3X,A45,F16.4)') adjl('Flory chi parameter :', 45), chi12
   else
     chi12 = 0.d0
-  endif
+  end if
 
   if (log_influence_param) then
     write (iow, '(3X,A45,F16.4)') adjl('Reduced influence parameter:', 45), k_gr_tilde

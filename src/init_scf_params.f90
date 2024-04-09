@@ -96,20 +96,20 @@ subroutine init_scf_params()
   write (iow, '(3X,A45,F16.4," mol/m3")') adjl("molar density in bulk", 45), rho_mol_bulk
   write (*, '(3X,A45,F16.4," mol/m3")') adjl("molar density in bulk", 45), rho_mol_bulk
 
-  if (eos_type.eq.F_incompressible) then
-    write (*, '(3X,A45,E16.4," Pa-1")') adjl("effective compressibility from chi12", 45), 2.d0*beta / (chi12*rho_seg_bulk)
-  endif
+  if (eos_type .eq. F_incompressible) then
+    write (*, '(3X,A45,E16.4," Pa-1")') adjl("effective compressibility from chi12", 45), 2.d0*beta/(chi12*rho_seg_bulk)
+  end if
 
   exist_kd1 = .False.
   exist_kd2 = .False.
-  if (exist_mxa.and.mxa_kind.eq.1) exist_kd1 = .True.
-  if (exist_mxa.and.mxa_kind.eq.2) exist_kd2 = .True.
-  if (exist_mxb.and.mxb_kind.eq.1) exist_kd1 = .True.
-  if (exist_mxb.and.mxb_kind.eq.2) exist_kd2 = .True.
-  if (exist_glo.and.glo_kind.eq.1) exist_kd1 = .True.
-  if (exist_glo.and.glo_kind.eq.2) exist_kd2 = .True.
-  if (exist_ghi.and.ghi_kind.eq.1) exist_kd1 = .True.
-  if (exist_ghi.and.ghi_kind.eq.2) exist_kd2 = .True.
+  if (exist_mxa .and. mxa_kind .eq. 1) exist_kd1 = .True.
+  if (exist_mxa .and. mxa_kind .eq. 2) exist_kd2 = .True.
+  if (exist_mxb .and. mxb_kind .eq. 1) exist_kd1 = .True.
+  if (exist_mxb .and. mxb_kind .eq. 2) exist_kd2 = .True.
+  if (exist_glo .and. glo_kind .eq. 1) exist_kd1 = .True.
+  if (exist_glo .and. glo_kind .eq. 2) exist_kd2 = .True.
+  if (exist_ghi .and. ghi_kind .eq. 1) exist_kd1 = .True.
+  if (exist_ghi .and. ghi_kind .eq. 2) exist_kd2 = .True.
 
 !----------------------------------------------------------------------------------------------------------!
 end subroutine init_scf_params

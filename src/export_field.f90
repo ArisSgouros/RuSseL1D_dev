@@ -22,7 +22,7 @@ subroutine export_field(rx, wa_kd1, wa_new_kd1, wa_kd2, wa_new_kd2, iter)
   if (export_multi) then
     write (string_iter, '(I10)') iter
   end if
-  write (filename, '("o.field",A10)') adjl(string_iter,10)
+  write (filename, '("o.field",A10)') adjl(string_iter, 10)
 
   open (unit=120, file=filename)
   write (120, '(5(A14,2X))') 'r', "wa_kd1", "wa_new_kd1", "wa_kd2", "wa_new_kd2"

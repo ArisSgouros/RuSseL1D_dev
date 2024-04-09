@@ -57,6 +57,7 @@ subroutine parser()
   logical :: log_check_stability_every = .false.
   logical :: log_max_wa_error = .false.
   logical :: log_fraction_of_new_field = .false.
+  logical :: log_field_andersen_fraction = .false.
   logical :: log_read_field = .false.
   logical :: log_random_field = .false.
 
@@ -225,6 +226,9 @@ subroutine parser()
       elseif (index(line, "! field mixing_fraction") > 0) then
         read (line, '(E16.9)') frac
         log_fraction_of_new_field = .true.
+      elseif (index(line, "! field andersen_fraction") > 0) then
+        read (line, '(E16.9)') andersen_fraction
+        log_field_andersen_fraction = .true.
       elseif (index(line, "! edwards solver") > 0) then
         read (line, *) edwards_solver
         log_edwards_solver = .true.
@@ -776,6 +780,11 @@ subroutine parser()
     write (iow, '(3X,A45)') '*Field mixing fraction not found..'
     write (*, '(3X,A45)') '*Field mixing fraction not found..'
     STOP
+  end if
+
+  if (log_field_andersen_fraction) then
+    write (iow, '(3X,A45,F16.9)') adjl('Field andersen fraction:', 45), andersen_fraction
+    write (*  , '(3X,A45,F16.9)') adjl('Field andersen fraction:', 45), andersen_fraction
   end if
 
   if (log_edwards_solver) then

@@ -20,7 +20,7 @@ program fd_1d
                         & check_stability_every, compute_every, field_every, frac, nx, &
                         & gnode_lo, gnode_hi, rho_seg_bulk,&
                         & gdens_lo, gdens_hi, max_iter, max_wa_error, square_gradient, thermo_every, &
-                        & chi12, andersen_after_iter
+                        & chi12, andersen_after_iter, andersen_fraction
   use arrays, only: qmxa, qmxb, qglo, qghi, qglo_aux, qghi_aux, &
                         & qfinal_mxa, qfinal_mxb, qfinal_glo, qfinal_ghi, qfinal_glo_aux, qfinal_ghi_aux, &
                         & dir_nodes_id, dir_nodes_rdiag, n_dir_nodes, &
@@ -515,11 +515,11 @@ program fd_1d
 
       do jj = 0, nx
         wa_ifc_kd1(jj) = wa_old(jj, iter) + C(1)*(wa_old(jj, iter - 1) - wa_old(jj, iter)) + C(2)*(wa_old(jj, iter - 2) - wa_old(jj, iter))
-        wa_ifc_kd2(jj)=wa_old2(jj,iter)+C(1)*(wa_old2(jj,iter-1)-wa_old2(jj,iter))+C(2)*(wa_old2(jj,iter-2)-wa_old2(jj,iter))
-        wa_kd1(jj) = wa_kd1(jj) + C(1)*(wa_0ld(jj, iter - 1) - wa_0ld(jj, iter)) + C(2)*(wa_0ld(jj, iter - 2) - wa_0ld(jj, iter))
-        wa_kd2(jj) = wa_kd2(jj) + C(1)*(wa_0ld2(jj, iter - 1) - wa_0ld2(jj, iter)) + C(2)*(wa_0ld2(jj, iter - 2) - wa_0ld2(jj, iter))
-        wa_ifc_kd1(jj) = wa_ifc_kd1(jj) + 0.1*(wa_kd1(jj) - wa_ifc_kd1(jj))
-        wa_ifc_kd2(jj) = wa_ifc_kd2(jj) + 0.1*(wa_kd2(jj) - wa_ifc_kd2(jj))
+        wa_ifc_kd2(jj) = wa_old2(jj,iter) + C(1)*(wa_old2(jj,iter-1)-wa_old2(jj,iter))+C(2)*(wa_old2(jj,iter-2)-wa_old2(jj,iter))
+        wa_kd1(jj)     = wa_kd1(jj)       + C(1)*(wa_0ld(jj, iter - 1) - wa_0ld(jj, iter)) + C(2)*(wa_0ld(jj, iter - 2) - wa_0ld(jj, iter))
+        wa_kd2(jj)     = wa_kd2(jj)       + C(1)*(wa_0ld2(jj, iter - 1) - wa_0ld2(jj, iter)) + C(2)*(wa_0ld2(jj, iter - 2) - wa_0ld2(jj, iter))
+        wa_ifc_kd1(jj) = wa_ifc_kd1(jj)   + andersen_fraction*(wa_kd1(jj) - wa_ifc_kd1(jj))
+        wa_ifc_kd2(jj) = wa_ifc_kd2(jj)   + andersen_fraction*(wa_kd2(jj) - wa_ifc_kd2(jj))
       end do
     else
       !apply field mixing rule and update field

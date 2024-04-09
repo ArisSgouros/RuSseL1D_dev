@@ -37,7 +37,7 @@ module parser_vars
   real(8) :: ds_ave_mxa, ds_ave_mxb, ds_ave_glo, ds_ave_ghi
   real(8) :: lx, dx_ave
   real(8) :: graft_pos, gdens_lo, gdens_hi, delta
-  real(8) :: Temp, beta, Pressure, frac
+  real(8) :: Temp, beta, Pressure, frac, andersen_fraction
   real(8) :: CN_mxa, CN_mxb, CN_glo, CN_ghi
   real(8) :: bond_length_mxa, bond_length_mxb, bond_length_glo, bond_length_ghi
   real(8) :: Rg2_per_mon_mxa, Rg2_per_mon_mxb, Rg2_per_mon_glo, Rg2_per_mon_ghi

@@ -20,7 +20,7 @@ program fd_1d
                         & check_stability_every, compute_every, field_every, frac, nx, &
                         & gnode_lo, gnode_hi, rho_seg_bulk,&
                         & gdens_lo, gdens_hi, max_iter, max_wa_error, square_gradient, thermo_every, &
-                        & chi12
+                        & chi12, andersen_after_iter
   use arrays, only: qmxa, qmxb, qglo, qghi, qglo_aux, qghi_aux, &
                         & qfinal_mxa, qfinal_mxb, qfinal_glo, qfinal_ghi, qfinal_glo_aux, qfinal_ghi_aux, &
                         & dir_nodes_id, dir_nodes_rdiag, n_dir_nodes, &
@@ -34,17 +34,17 @@ program fd_1d
                         & wa_kd1, wa_bulk_kd1, wa_ifc_kd1, wa_ifc_new_kd1, wa_ifc_backup_kd1,     &
                         & wa_kd2, wa_bulk_kd2, wa_ifc_kd2, wa_ifc_new_kd2, wa_ifc_backup_kd2,     &
                         & wa_ifc_mxa, wa_ifc_mxb, wa_ifc_glo, wa_ifc_ghi, &
-                        & surface_area, rr, irr, layer_area
+                        & surface_area, rr, irr, layer_area,d,wa_old,wa_0ld,wa_0ld2,d2,wa_old2,U,V,C,Uinv
 !----------------------------------------------------------------------------------------------------------!
   implicit none
 !----------------------------------------------------------------------------------------------------------!
   logical :: convergence = .false., restart = .false., restore = .false.
 
-  integer :: iter, jj, ii, tt
+  integer :: iter, jj, ii, tt,kk,sum=0
 
-  real(8) :: pressure = 0.d0
+  real(8) :: pressure = 0.d0,sum1=0,sum2=0,sum3=0,detinv,detinv2
   real(8) :: get_nchains
-  real(8) :: wa_error_new = 1.d10, wa_error_old = 1.d10
+  real(8) :: wa_error_new = 1.d10, wa_error_old = 1.d10,sum4=0
   real(8) :: qinit_lo = 0.d0, qinit_hi = 0.d0
   real(8) :: free_energy = 0.d0
   real(8) :: nchglo = 0.d0, nchghi = 0.d0, nch_mxa = 0.d0, nch_mxb = 0.d0
@@ -430,6 +430,11 @@ program fd_1d
         pressure = 0.5*(wa_ifc_kd1(jj) + wa_ifc_kd2(jj) - chi12)
         wa_kd1(jj) = wa_kd1(jj) + pressure
         wa_kd2(jj) = wa_kd2(jj) + pressure
+        wa_old(jj,iter)=wa_ifc_kd1(jj)
+        wa_old2(jj,iter)=wa_ifc_kd2(jj)
+        wa_0ld(jj,iter)=wa_kd1(jj)
+        wa_0ld2(jj,iter)=wa_kd2(jj)
+      
       end do
     end if
 
@@ -457,25 +462,103 @@ program fd_1d
       wa_bulk_kd2 = eos_df_drho(1.d0)*beta
       wa_ifc_new_kd1 = wa_kd1 - wa_bulk_kd1
       wa_ifc_new_kd2 = wa_kd2 - wa_bulk_kd2
+
     else
       wa_bulk_kd1 = 0.d0
       wa_bulk_kd2 = 0.d0
       wa_ifc_new_kd1 = wa_kd1
       wa_ifc_new_kd2 = wa_kd2
     end if
+    
 
-    wa_error_new = 0.d0
-    do jj = 0, nx
-      wa_error_new = max(wa_error_new, &
-                   &     dabs(wa_ifc_new_kd1(jj) - wa_ifc_kd1(jj)), &
-                   &     dabs(wa_ifc_new_kd2(jj) - wa_ifc_kd2(jj)))
+
+   
+    
+     do jj=0,nx 
+     d(jj,iter)=wa_kd1(jj)-wa_ifc_kd1(jj)
+     
+     d2(jj,iter)=wa_kd2(jj)-wa_ifc_kd2(jj)
     end do
+    
+    U=0.d0
+    V=0.d0
+    wa_error_new=0.d0
+    
+     do jj=0,nx
+      wa_error_new=max(wa_error_new,dabs(wa_ifc_kd1(jj)-wa_ifc_new_kd1(jj)),dabs(wa_ifc_kd2(jj)-wa_ifc_new_kd2(jj)))
+    end do
+   
+    if (iter .gt. andersen_after_iter) then
+       do ii=1,2
+       do kk=1,2
+       do jj=0,nx
+       
+        U(ii,kk)=U(ii,kk)+(d(jj,iter)-d(jj,iter-ii))*(d(jj,iter)-d(jj,iter-kk))+ (d2(jj,iter)-d2(jj,iter-ii))*(d2(jj,iter)-d2(jj,iter-kk))
+     
+        
+        end do
+        end do
+        end do
+       
+        do kk=1,2
+        do jj=0,nx 
+         V(kk)=V(kk)+(d(jj,iter)-d(jj,iter-kk))*d(jj,iter)+(d2(jj,iter)-d2(jj,iter-kk))*(d2(jj,iter))
+       
+        
+        end do
+        end do
+       
+        ! Calculate the inverse determinant of the matrix
+    detinv = 1/(U(1,1)*U(2,2) - U(1,2)*U(2,1))
+
+    ! Calculate the inverse of the matrix
+    Uinv(1,1) = +detinv * U(2,2)
+    Uinv(2,1) = -detinv * U(2,1)
+    Uinv(1,2) = -detinv * U(1,2)
+    Uinv(2,2) = +detinv * U(1,1)
+    
+    C=0.d0
+ 
+        do kk=1,2
+        do ii=1,2
+        C(kk)=C(kk)+Uinv(kk,ii)*V(ii)
+        end do
+        end do
+ 
+    
+      do jj=0,nx
+     
+       
+        wa_ifc_kd1(jj)=wa_old(jj,iter)+C(1)*(wa_old(jj,iter-1)-wa_old(jj,iter))+C(2)*(wa_old(jj,iter-2)-wa_old(jj,iter))
+      wa_ifc_kd2(jj)=wa_old2(jj,iter)+C(1)*(wa_old2(jj,iter-1)-wa_old2(jj,iter))+C(2)*(wa_old2(jj,iter-2)-wa_old2(jj,iter))
+      wa_kd1(jj)=wa_kd1(jj)+C(1)*(wa_0ld(jj,iter-1)-wa_0ld(jj,iter))+C(2)*(wa_0ld(jj,iter-2)-wa_0ld(jj,iter))
+      wa_kd2(jj)=wa_kd2(jj)+C(1)*(wa_0ld2(jj,iter-1)-wa_0ld2(jj,iter))+C(2)*(wa_0ld2(jj,iter-2)-wa_0ld2(jj,iter))
+        wa_ifc_kd1(jj) = wa_ifc_kd1(jj) + 0.1*(wa_kd1(jj)-wa_ifc_kd1(jj))
+     wa_ifc_kd2(jj) = wa_ifc_kd2(jj) + 0.1*(wa_kd2(jj)-wa_ifc_kd2(jj))
+    
+       
+      
+       end do
+    else
+      
+    
+   
+   
 
     !apply field mixing rule and update field
     do jj = 0, nx
+      !wa_ifc_kd1(jj) = wa_ifc_kd1(jj) + 0.1*(wa_kd1(jj)-wa_ifc_kd1(jj))
+      !wa_ifc_kd2(jj) = wa_ifc_kd2(jj) + 0.1*(wa_kd2(jj)-wa_ifc_kd2(jj))
       wa_ifc_kd1(jj) = (1.d0 - frac)*wa_ifc_kd1(jj) + frac*wa_ifc_new_kd1(jj)
       wa_ifc_kd2(jj) = (1.d0 - frac)*wa_ifc_kd2(jj) + frac*wa_ifc_new_kd2(jj)
     end do
+    
+   end if 
+    
+   
+    
+   
+     
 
     phi_kd1 = phi_new_kd1
     phi_kd2 = phi_new_kd2

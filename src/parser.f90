@@ -49,6 +49,7 @@ subroutine parser()
   logical :: log_mass_density = .false.
 
   logical :: log_number_of_iterations = .false.
+  logical :: log_andersen_after_iter = .false.
   logical :: log_thermo_every = .false.
   logical :: log_compute_every = .false.
   logical :: log_export_multi = .false.
@@ -193,6 +194,9 @@ subroutine parser()
       elseif (index(line, "! field iterations") > 0) then
         read (line, '(I10)') max_iter
         log_number_of_iterations = .true.
+      elseif (index(line, "! andersen_after_iter") > 0) then
+        read (line, '(I10)') andersen_after_iter
+        log_andersen_after_iter = .true.
       elseif (index(line, "! thermo every") > 0) then
         read (line, '(I10)') thermo_every
         log_thermo_every = .true.
@@ -817,6 +821,13 @@ subroutine parser()
     max_iter = 500000
     write (iow, '(3X,A45)') adjl('*Maximum iterations not found. Auto:', 45), max_iter
     write (*, '(3X,A45)') adjl('*Maximum iterations not found. Auto:', 45), max_iter
+  end if
+
+  if (log_andersen_after_iter) then
+    write (iow, '(3X,A45,I16,'' andersen_after_iter'')') adjl('Andersen_after_iter:', 45), andersen_after_iter
+    write (*, '(3X,A45,I16,'' andersen_after_iter'')') adjl('Andersen_after_iter:', 45), andersen_after_iter
+  else
+    andersen_after_iter = 100000000
   end if
 
   if (log_contour_discret_scheme) then

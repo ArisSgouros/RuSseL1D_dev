@@ -23,7 +23,7 @@ module parser_vars
   integer :: contour_integr_scheme, spatial_integr_scheme
   integer :: nx
   integer :: ns_mxa, ns_mxb, ns_glo, ns_ghi
-  integer :: gnode_lo, gnode_hi, geometry, max_iter
+  integer :: gnode_lo, gnode_hi, geometry, max_iter, andersen_after_iter
   integer :: thermo_every, field_every, compute_every, check_stability_every
   integer :: export_phi_seg_id
   integer :: wall_type, wall_side

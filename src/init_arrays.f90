@@ -4,7 +4,7 @@
 
 subroutine init_arrays()
 !----------------------------------------------------------------------------------------------------------!
-  use parser_vars, only: ns_mxa, ns_mxb, ns_glo, ns_ghi, nx, nr
+  use parser_vars, only: ns_mxa, ns_mxb, ns_glo, ns_ghi, nx, fh_nr
   use arrays
 !----------------------------------------------------------------------------------------------------------!
   implicit none
@@ -21,10 +21,11 @@ subroutine init_arrays()
   allocate (wa_ifc_new_kd1(0:nx), wa_ifc_new_kd2(0:nx))
   allocate (wa_ifc_backup_kd1(0:nx), wa_ifc_backup_kd2(0:nx))
   allocate (rr(0:nx), irr(0:nx), layer_area(0:nx))
- allocate (phi_tot(0:nx), phi_mxa(0:nx), phi_mxb(0:nx), phi_glo(0:nx), phi_ghi(0:nx), d(0:nx, 0:nr), wa_prv_iter1(0:nx, 0:nr))
-  allocate (phi_kd1(0:nx), phi_kd2(0:nx), phi_new_kd1(0:nx), phi_new_kd2(0:nx), d2(0:nx, 0:nr), wa_prv_iter2(0:nx, 0:nr))
-  allocate (qmxa(0:nx, 2), U(1:nr, 1:nr), V(1:nr), Uinv(1:nr, 1:nr), wa_mix_iter1(0:nx, 0:nr), wa_mix_iter2(0:nx, 0:nr))
-  allocate (qmxb(0:nx, 2), C(1:nr))
+  allocate (phi_tot(0:nx), phi_mxa(0:nx), phi_mxb(0:nx), phi_glo(0:nx), phi_ghi(0:nx))
+  allocate (phi_kd1(0:nx), phi_kd2(0:nx), phi_new_kd1(0:nx), phi_new_kd2(0:nx))
+  allocate (fh_d1(0:nx, 0:fh_nr), fh_d2(0:nx, 0:fh_nr), wa_prv_iter1(0:nx, 0:fh_nr), wa_prv_iter2(0:nx, 0:fh_nr), wa_mix_iter1(0:nx, 0:fh_nr), wa_mix_iter2(0:nx, 0:fh_nr))
+  allocate (fh_U(1:fh_nr, 1:fh_nr), fh_V(1:fh_nr), fh_C(1:fh_nr), fh_Uinv(1:fh_nr, 1:fh_nr))
+  allocate (qmxa(0:nx, 2), qmxb(0:nx, 2))
   allocate (qfinal_mxa(0:nx, 0:ns_mxa))
   allocate (qfinal_mxb(0:nx, 0:ns_mxb))
   allocate (qglo(0:nx, 2), qglo_aux(0:nx, 2), qghi(0:nx, 2), qghi_aux(0:nx, 2))
@@ -38,17 +39,14 @@ subroutine init_arrays()
   allocate (dphi_dr(0:nx), d2phi_dr2(0:nx))
   allocate (dx(0:nx), rx(0:nx))
 
-  U = 0
-  Uinv = 0
-
-  V = 0
+  fh_U = 0
+  fh_Uinv = 0
+  fh_V = 0
+  fh_d1 = 0
+  fh_d2 = 0
+  fh_C = 0
 
   dir_nodes_id = 0
-
-  d = 0
-
-  d2 = 0
-  C = 0
 
   wa_prv_iter1 = 0.d0
   wa_prv_iter2 = 0.d0

@@ -21,7 +21,7 @@ module parser_vars
   integer :: edwards_solver, linear_solver
   integer :: contour_discret_scheme, spatial_discret_scheme
   integer :: contour_integr_scheme, spatial_integr_scheme
-  integer :: nx, nr
+  integer :: nx, fh_nr
   integer :: ns_mxa, ns_mxb, ns_glo, ns_ghi
   integer :: gnode_lo, gnode_hi, geometry, max_iter, andersen_after_iter
   integer :: thermo_every, field_every, compute_every, check_stability_every

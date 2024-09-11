@@ -126,7 +126,7 @@ subroutine parser()
   logical :: log_eos_coeffs = .false.
   logical :: log_influence_param = .false.
   logical :: log_real_influence_param = .false.
-  logical :: log_nr = .false.
+  logical :: log_fh_nr = .false.
 !----------------------------------------------------------------------------------------------------------!
   wall_hamaker = .false.
   wall_hamaker_well = .false.
@@ -498,9 +498,9 @@ subroutine parser()
       elseif (index(line, "! chi12") > 0) then
         read (line, '(E16.9)') chi12
         log_chi12 = .true.
-      elseif (index(line, "! invrs_dim") > 0) then
-        read (line, *) nr
-        log_nr = .true.
+      elseif (index(line, "! fh_dim") > 0) then
+        read (line, *) fh_nr
+        log_fh_nr = .true.
       end if
     end if
   end do
@@ -1702,11 +1702,11 @@ subroutine parser()
   else
     wall_auto = .false.
   end if
-  if (log_nr) then
-    write (iow, '(3X,A45,I16)') adjl("nr:", 45), nr
-    write (*, '(3X,A45,I16)') adjl("nr:", 45), nr
+  if (log_fh_nr) then
+    write (iow, '(3X,A45,I16)') adjl("fh_nr:", 45), fh_nr
+    write (*, '(3X,A45,I16)') adjl("fh_nr:", 45), fh_nr
   else
-    nr = 2
+    fh_nr = 2
   end if
 
   return

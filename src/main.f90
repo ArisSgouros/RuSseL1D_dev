@@ -9,7 +9,7 @@ program fd_1d
   use eos, only: eos_df_drho, eos_type
   use write_helper, only: adjl
   use flags, only: F_bc_dirichlet_eq_0, F_bc_dirichlet_eq_1, F_sphere, F_incompressible
-  use parser_vars, only: beta, k_gr, delta, nr,      &
+  use parser_vars, only: beta, k_gr, delta, fh_nr,      &
                         & mxa_kind, mxb_kind, ghi_kind, glo_kind, &
                         & bc_lo_mxa, bc_lo_mxb, bc_lo_grafted, bc_hi_mxa, bc_hi_mxb, bc_hi_grafted, &
                         & chainlen_mxa, chainlen_mxb, chainlen_glo, chainlen_ghi, chainlen_max, &
@@ -34,7 +34,8 @@ program fd_1d
                         & wa_kd1, wa_bulk_kd1, wa_ifc_kd1, wa_ifc_new_kd1, wa_ifc_backup_kd1,     &
                         & wa_kd2, wa_bulk_kd2, wa_ifc_kd2, wa_ifc_new_kd2, wa_ifc_backup_kd2,     &
                         & wa_ifc_mxa, wa_ifc_mxb, wa_ifc_glo, wa_ifc_ghi, &
-                        & surface_area, rr, irr, layer_area, d, wa_prv_iter1, wa_mix_iter1, wa_mix_iter2, d2, wa_prv_iter2, U, V, C, Uinv
+                        & surface_area, rr, irr, layer_area, &
+                        & fh_d1, fh_d2, fh_V, fh_U, fh_Uinv, fh_C, wa_prv_iter1, wa_mix_iter1, wa_mix_iter2, wa_prv_iter2
 !----------------------------------------------------------------------------------------------------------!
   implicit none
 !----------------------------------------------------------------------------------------------------------!
@@ -463,7 +464,7 @@ program fd_1d
       wa_ifc_new_kd2 = wa_kd2 - wa_bulk_kd2
 
       do jj = 0, nx
-        do kk = nr, 1, -1
+        do kk = fh_nr, 1, -1
           wa_prv_iter1(jj, kk) = wa_prv_iter1(jj, kk-1)
           wa_prv_iter2(jj, kk) = wa_prv_iter2(jj, kk-1)
           wa_mix_iter1(jj, kk) = wa_mix_iter1(jj, kk-1)
@@ -477,16 +478,16 @@ program fd_1d
     end if
 
     do jj = 0, nx
-      do kk = nr, 1, -1
-        d(jj, kk) = d(jj, kk-1)
-        d2(jj, kk) = d2(jj, kk-1)
+      do kk = fh_nr, 1, -1
+        fh_d1(jj, kk) = fh_d1(jj, kk-1)
+        fh_d2(jj, kk) = fh_d2(jj, kk-1)
       end do
-      d(jj, 0)  = wa_ifc_new_kd1(jj) - wa_ifc_kd1(jj)
-      d2(jj, 0) = wa_ifc_new_kd2(jj) - wa_ifc_kd2(jj)
+      fh_d1(jj, 0) = wa_ifc_new_kd1(jj) - wa_ifc_kd1(jj)
+      fh_d2(jj, 0) = wa_ifc_new_kd2(jj) - wa_ifc_kd2(jj)
     end do
 
-    U = 0.d0
-    V = 0.d0
+    fh_U = 0.d0
+    fh_V = 0.d0
     wa_error_new = 0.d0
 
     do jj = 0, nx
@@ -494,27 +495,27 @@ program fd_1d
     end do
 
     if (iter .gt. andersen_after_iter) then
-      do ii = 1, nr
-        do kk = 1, nr
+      do ii = 1, fh_nr
+        do kk = 1, fh_nr
           do jj = 0, nx
-            U(ii,kk)=U(ii,kk)+(d(jj,0)-d(jj,ii))*(d(jj,0)-d(jj,kk))+ (d2(jj,0)-d2(jj,ii))*(d2(jj,0)-d2(jj,kk))
+            fh_U(ii,kk)=fh_U(ii,kk)+(fh_d1(jj,0)-fh_d1(jj,ii))*(fh_d1(jj,0)-fh_d1(jj,kk))+ (fh_d2(jj,0)-fh_d2(jj,ii))*(fh_d2(jj,0)-fh_d2(jj,kk))
           end do
         end do
       end do
 
-      do kk = 1, nr
+      do kk = 1, fh_nr
         do jj = 0, nx
-          V(kk) = V(kk) + (d(jj, 0) - d(jj, kk))*d(jj, 0) + (d2(jj, 0) - d2(jj, kk))*(d2(jj, 0))
+          fh_V(kk) = fh_V(kk) + (fh_d1(jj, 0) - fh_d1(jj, kk))*fh_d1(jj, 0) + (fh_d2(jj, 0) - fh_d2(jj, kk))*(fh_d2(jj, 0))
         end do
       end do
 
       ! Calculate the inverse determinant of the matrix
-      call invrsmtx(U, nr, Uinv)
+      call invrsmtx(fh_U, fh_nr, fh_Uinv)
 
-      C = 0.d0
-      do kk = 1, nr
-        do ii = 1, nr
-          C(kk) = C(kk) + Uinv(kk, ii)*V(ii)
+      fh_C = 0.d0
+      do kk = 1, fh_nr
+        do ii = 1, fh_nr
+          fh_C(kk) = fh_C(kk) + fh_Uinv(kk, ii)*fh_V(ii)
         end do
       end do
 
@@ -524,11 +525,11 @@ program fd_1d
         !wa_ifc_new_kd1(jj) = wa_ifc_new_kd1(jj)  !+ C(1)*(wa_mix_iter1(jj, 1) - wa_mix_iter1(jj, 0)) + C(2)*(wa_mix_iter1(jj, 2) - wa_mix_iter1(jj, 0))
         !wa_ifc_new_kd2(jj) = wa_ifc_new_kd2(jj)  !+ C(1)*(wa_mix_iter2(jj, 1) - wa_mix_iter2(jj, 0)) + C(2)*(wa_mix_iter2(jj, 2) - wa_mix_iter2(jj, 0))
 
-        do ii = 1, nr
-          wa_ifc_kd1(jj) = wa_ifc_kd1(jj) + C(ii)*(wa_prv_iter1(jj, ii) - wa_prv_iter1(jj, 0))
-          wa_ifc_kd2(jj) = wa_ifc_kd2(jj) + C(ii)*(wa_prv_iter2(jj, ii) - wa_prv_iter2(jj, 0))
-          wa_ifc_new_kd1(jj) = wa_ifc_new_kd1(jj) + C(ii)*(wa_mix_iter1(jj, ii) - wa_mix_iter1(jj, 0))
-          wa_ifc_new_kd2(jj) = wa_ifc_new_kd2(jj) + C(ii)*(wa_mix_iter2(jj, ii) - wa_mix_iter2(jj, 0))
+        do ii = 1, fh_nr
+          wa_ifc_kd1(jj) = wa_ifc_kd1(jj) + fh_C(ii)*(wa_prv_iter1(jj, ii) - wa_prv_iter1(jj, 0))
+          wa_ifc_kd2(jj) = wa_ifc_kd2(jj) + fh_C(ii)*(wa_prv_iter2(jj, ii) - wa_prv_iter2(jj, 0))
+          wa_ifc_new_kd1(jj) = wa_ifc_new_kd1(jj) + fh_C(ii)*(wa_mix_iter1(jj, ii) - wa_mix_iter1(jj, 0))
+          wa_ifc_new_kd2(jj) = wa_ifc_new_kd2(jj) + fh_C(ii)*(wa_mix_iter2(jj, ii) - wa_mix_iter2(jj, 0))
         end do
 
 

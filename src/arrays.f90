@@ -24,7 +24,7 @@ module arrays
   real(8), allocatable, dimension(:)   :: dir_nodes_rdiag, C, V
   real(8), allocatable, dimension(:)   :: dphi_dr, d2phi_dr2
   real(8), allocatable, dimension(:)   :: phi_tot, phi_mxa, phi_mxb, phi_glo, phi_ghi, phi_kd1, phi_kd2, phi_new_kd1, phi_new_kd2
-  real(8), allocatable, dimension(:, :) :: qmxa, qmxb, qglo, qghi, qglo_aux, qghi_aux, wa_old, d, d2, wa_old2, wa_0ld, wa_0ld2
+  real(8), allocatable, dimension(:, :) :: qmxa, qmxb, qglo, qghi, qglo_aux, qghi_aux, wa_prv_iter1, d, d2, wa_prv_iter2, wa_mix_iter1, wa_mix_iter2
   real(8), allocatable, dimension(:, :) :: qfinal_mxa, qfinal_mxb, qfinal_glo, qfinal_ghi, qfinal_glo_aux, qfinal_ghi_aux, U, Uinv
 !----------------------------------------------------------------------------------------------------------!
 end module arrays

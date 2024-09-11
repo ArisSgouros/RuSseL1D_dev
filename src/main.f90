@@ -416,57 +416,62 @@ program fd_1d
       end do
     end if
 
-    !eos term
+    !eos term for compressible
     if (eos_type .ne. F_incompressible) then
       do jj = 0, nx
         wa_kd1(jj) = wa_kd1(jj) + eos_df_drho(phi_tot(jj))*beta
         wa_kd2(jj) = wa_kd2(jj) + eos_df_drho(phi_tot(jj))*beta
       end do
-    end if
 
-    if (eos_type .eq. F_incompressible) then
-      do jj = 0, nx
-        !pressure = 0.5*(wa_kd1(jj) + wa_kd2(jj) - chi12)
-        pressure = 0.5*(wa_ifc_kd1(jj) + wa_ifc_kd2(jj) - chi12)
-        wa_kd1(jj) = wa_kd1(jj) + pressure
-        wa_kd2(jj) = wa_kd2(jj) + pressure
-        wa_old(jj, iter) = wa_ifc_kd1(jj)
-        wa_old2(jj, iter) = wa_ifc_kd2(jj)
-        wa_0ld(jj, iter) = wa_kd1(jj)
-        wa_0ld2(jj, iter) = wa_kd2(jj)
+      ! gradient term
+      if (square_gradient) then
+        do jj = 1, nx - 1
+          d2phi_dr2(jj) = (phi_tot(jj - 1) - 2.d0*phi_tot(jj) + phi_tot(jj + 1))/(dx(jj)*1.e-10)**2
+          dphi_dr(jj) = (phi_tot(jj + 1) - phi_tot(jj))/(dx(jj)*1.e-10)
+        end do
+        d2phi_dr2(0) = (phi_tot(0) - 2.d0*phi_tot(0) + phi_tot(1))/(dx(1)*1.e-10)**2
+        d2phi_dr2(nx) = (phi_tot(nx - 1) - 2.d0*phi_tot(nx) + phi_tot(nx))/(dx(nx)*1.e-10)**2
 
-      end do
-    end if
+        dphi_dr(0) = (phi_tot(1) - phi_tot(0))/(dx(1)*1.e-10)
+        dphi_dr(nx) = 0.d0
 
-    ! gradient term
-    if (square_gradient) then
-      do jj = 1, nx - 1
-        d2phi_dr2(jj) = (phi_tot(jj - 1) - 2.d0*phi_tot(jj) + phi_tot(jj + 1))/(dx(jj)*1.e-10)**2
-        dphi_dr(jj) = (phi_tot(jj + 1) - phi_tot(jj))/(dx(jj)*1.e-10)
-      end do
-      d2phi_dr2(0) = (phi_tot(0) - 2.d0*phi_tot(0) + phi_tot(1))/(dx(1)*1.e-10)**2
-      d2phi_dr2(nx) = (phi_tot(nx - 1) - 2.d0*phi_tot(nx) + phi_tot(nx))/(dx(nx)*1.e-10)**2
+        do jj = 0, nx
+          wa_kd1(jj) = wa_kd1(jj) - k_gr*(rho_seg_bulk*d2phi_dr2(jj))*beta
+          wa_kd2(jj) = wa_kd2(jj) - k_gr*(rho_seg_bulk*d2phi_dr2(jj))*beta
+        end do
+      end if
 
-      dphi_dr(0) = (phi_tot(1) - phi_tot(0))/(dx(1)*1.e-10)
-      dphi_dr(nx) = 0.d0
-
-      do jj = 0, nx
-        wa_kd1(jj) = wa_kd1(jj) - k_gr*(rho_seg_bulk*d2phi_dr2(jj))*beta
-        wa_kd2(jj) = wa_kd2(jj) - k_gr*(rho_seg_bulk*d2phi_dr2(jj))*beta
-      end do
-    end if
-
-    !subtract bulk contribution
-    if (eos_type .ne. F_incompressible) then
+      !subtract bulk contribution
       wa_bulk_kd1 = eos_df_drho(1.d0)*beta
       wa_bulk_kd2 = eos_df_drho(1.d0)*beta
       wa_ifc_new_kd1 = wa_kd1 - wa_bulk_kd1
       wa_ifc_new_kd2 = wa_kd2 - wa_bulk_kd2
-    else
-      wa_bulk_kd1 = 0.d0
-      wa_bulk_kd2 = 0.d0
+    end if
+
+    !eos term for incompressible
+    if (eos_type .eq. F_incompressible) then
+      do jj = 0, nx
+        pressure = 0.5*(wa_ifc_kd1(jj) + wa_ifc_kd2(jj))
+        wa_kd1(jj) = wa_kd1(jj) + pressure
+        wa_kd2(jj) = wa_kd2(jj) + pressure
+      end do
+
+
+      wa_bulk_kd1 = 0.5d0*chi12
+      wa_bulk_kd2 = 0.5d0*chi12
+      wa_kd1 = wa_kd1 - wa_bulk_kd1
+      wa_kd2 = wa_kd2 - wa_bulk_kd2
       wa_ifc_new_kd1 = wa_kd1
       wa_ifc_new_kd2 = wa_kd2
+      !wa_kd1 = wa_kd1 - wa_bulk_kd1
+      !wa_kd2 = wa_kd2 - wa_bulk_kd2
+
+      do jj = 0, nx
+        wa_old(jj, iter) = wa_ifc_kd1(jj)
+        wa_old2(jj, iter) = wa_ifc_kd2(jj)
+        wa_0ld(jj, iter) = wa_kd1(jj)
+        wa_0ld2(jj, iter) = wa_kd2(jj)
+      end do
     end if
 
     do jj = 0, nx

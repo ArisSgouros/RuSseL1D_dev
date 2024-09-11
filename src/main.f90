@@ -9,7 +9,7 @@ program fd_1d
   use eos, only: eos_df_drho, eos_type
   use write_helper, only: adjl
   use flags, only: F_bc_dirichlet_eq_0, F_bc_dirichlet_eq_1, F_sphere, F_incompressible
-  use parser_vars, only: beta, k_gr, delta,      &
+  use parser_vars, only: beta, k_gr, delta, nr,      &
                         & mxa_kind, mxb_kind, ghi_kind, glo_kind, &
                         & bc_lo_mxa, bc_lo_mxb, bc_lo_grafted, bc_hi_mxa, bc_hi_mxb, bc_hi_grafted, &
                         & chainlen_mxa, chainlen_mxb, chainlen_glo, chainlen_ghi, chainlen_max, &
@@ -471,8 +471,12 @@ program fd_1d
     end if
 
     do jj = 0, nx
-      d(jj, iter)  = wa_ifc_new_kd1(jj) - wa_ifc_kd1(jj)
-      d2(jj, iter) = wa_ifc_new_kd2(jj) - wa_ifc_kd2(jj)
+      do kk = nr, 1, -1
+        d(jj, kk) = d(jj, kk-1)
+        d2(jj, kk) = d2(jj, kk-1)
+      end do
+      d(jj, 0)  = wa_ifc_new_kd1(jj) - wa_ifc_kd1(jj)
+      d2(jj, 0) = wa_ifc_new_kd2(jj) - wa_ifc_kd2(jj)
     end do
 
     U = 0.d0
@@ -487,14 +491,14 @@ program fd_1d
       do ii = 1, 2
         do kk = 1, 2
           do jj = 0, nx
-            U(ii,kk)=U(ii,kk)+(d(jj,iter)-d(jj,iter-ii))*(d(jj,iter)-d(jj,iter-kk))+ (d2(jj,iter)-d2(jj,iter-ii))*(d2(jj,iter)-d2(jj,iter-kk))
+            U(ii,kk)=U(ii,kk)+(d(jj,0)-d(jj,ii))*(d(jj,0)-d(jj,kk))+ (d2(jj,0)-d2(jj,ii))*(d2(jj,0)-d2(jj,kk))
           end do
         end do
       end do
 
       do kk = 1, 2
         do jj = 0, nx
-          V(kk) = V(kk) + (d(jj, iter) - d(jj, iter - kk))*d(jj, iter) + (d2(jj, iter) - d2(jj, iter - kk))*(d2(jj, iter))
+          V(kk) = V(kk) + (d(jj, 0) - d(jj, kk))*d(jj, 0) + (d2(jj, 0) - d2(jj, kk))*(d2(jj, 0))
         end do
       end do
 

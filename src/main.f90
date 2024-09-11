@@ -456,27 +456,23 @@ program fd_1d
         wa_kd2(jj) = wa_kd2(jj) + pressure
       end do
 
-
+      !subtrack bulk contribution
       wa_bulk_kd1 = 0.5d0*chi12
       wa_bulk_kd2 = 0.5d0*chi12
-      wa_kd1 = wa_kd1 - wa_bulk_kd1
-      wa_kd2 = wa_kd2 - wa_bulk_kd2
-      wa_ifc_new_kd1 = wa_kd1
-      wa_ifc_new_kd2 = wa_kd2
-      !wa_kd1 = wa_kd1 - wa_bulk_kd1
-      !wa_kd2 = wa_kd2 - wa_bulk_kd2
+      wa_ifc_new_kd1 = wa_kd1 - wa_bulk_kd1
+      wa_ifc_new_kd2 = wa_kd2 - wa_bulk_kd2
 
       do jj = 0, nx
         wa_old(jj, iter) = wa_ifc_kd1(jj)
         wa_old2(jj, iter) = wa_ifc_kd2(jj)
-        wa_0ld(jj, iter) = wa_kd1(jj)
-        wa_0ld2(jj, iter) = wa_kd2(jj)
+        wa_0ld(jj, iter) = wa_ifc_new_kd1(jj)
+        wa_0ld2(jj, iter) = wa_ifc_new_kd2(jj)
       end do
     end if
 
     do jj = 0, nx
-      d(jj, iter) = wa_kd1(jj) - wa_ifc_kd1(jj)
-      d2(jj, iter) = wa_kd2(jj) - wa_ifc_kd2(jj)
+      d(jj, iter) = wa_ifc_new_kd1(jj) - wa_ifc_kd1(jj)
+      d2(jj, iter) = wa_ifc_new_kd2(jj) - wa_ifc_kd2(jj)
     end do
 
     U = 0.d0
@@ -521,10 +517,10 @@ program fd_1d
       do jj = 0, nx
         wa_ifc_kd1(jj) = wa_old(jj, iter) + C(1)*(wa_old(jj, iter - 1) - wa_old(jj, iter)) + C(2)*(wa_old(jj, iter - 2) - wa_old(jj, iter))
         wa_ifc_kd2(jj) = wa_old2(jj,iter) + C(1)*(wa_old2(jj,iter-1)-wa_old2(jj,iter))+C(2)*(wa_old2(jj,iter-2)-wa_old2(jj,iter))
-        wa_kd1(jj)     = wa_kd1(jj)       + C(1)*(wa_0ld(jj, iter - 1) - wa_0ld(jj, iter)) + C(2)*(wa_0ld(jj, iter - 2) - wa_0ld(jj, iter))
-        wa_kd2(jj)     = wa_kd2(jj)       + C(1)*(wa_0ld2(jj, iter - 1) - wa_0ld2(jj, iter)) + C(2)*(wa_0ld2(jj, iter - 2) - wa_0ld2(jj, iter))
-        wa_ifc_kd1(jj) = wa_ifc_kd1(jj)   + andersen_fraction*(wa_kd1(jj) - wa_ifc_kd1(jj))
-        wa_ifc_kd2(jj) = wa_ifc_kd2(jj)   + andersen_fraction*(wa_kd2(jj) - wa_ifc_kd2(jj))
+        wa_ifc_new_kd1(jj)     = wa_ifc_new_kd1(jj)       + C(1)*(wa_0ld(jj, iter - 1) - wa_0ld(jj, iter)) + C(2)*(wa_0ld(jj, iter - 2) - wa_0ld(jj, iter))
+        wa_ifc_new_kd2(jj)     = wa_ifc_new_kd2(jj)       + C(1)*(wa_0ld2(jj, iter - 1) - wa_0ld2(jj, iter)) + C(2)*(wa_0ld2(jj, iter - 2) - wa_0ld2(jj, iter))
+        wa_ifc_kd1(jj) = wa_ifc_kd1(jj)   + andersen_fraction*(wa_ifc_new_kd1(jj) - wa_ifc_kd1(jj))
+        wa_ifc_kd2(jj) = wa_ifc_kd2(jj)   + andersen_fraction*(wa_ifc_new_kd2(jj) - wa_ifc_kd2(jj))
       end do
     else
       !apply field mixing rule and update field

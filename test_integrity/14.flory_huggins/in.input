@@ -52,6 +52,7 @@
 
  # equation of state
  -1                            ! EOS type ( -1: incompressible; 0: Helfand; 1: Sanchez-Lacombe )
+ 5                             ! fh_dim
 # 1.000000000D-08               ! EOS coeffs ( Helfand: kappa_T, SL: rho_star,T_star, P_star)
 # 0.000000000D+00               ! EOS influence_parameter (J m^5/mol^2)
 

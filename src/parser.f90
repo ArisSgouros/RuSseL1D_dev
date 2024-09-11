@@ -126,6 +126,7 @@ subroutine parser()
   logical :: log_eos_coeffs = .false.
   logical :: log_influence_param = .false.
   logical :: log_real_influence_param = .false.
+  logical :: log_nr = .false.
 !----------------------------------------------------------------------------------------------------------!
   wall_hamaker = .false.
   wall_hamaker_well = .false.
@@ -497,6 +498,9 @@ subroutine parser()
       elseif (index(line, "! chi12") > 0) then
         read (line, '(E16.9)') chi12
         log_chi12 = .true.
+      elseif (index(line, "! invrs_dim") > 0) then
+        read (line, *) nr
+        log_nr = .true.
       end if
     end if
   end do
@@ -1697,6 +1701,12 @@ subroutine parser()
     write (*, '(3X,A45,F16.4,'' k_B T'')') adjl('Recalibration of hard-sphere wall. E-target:', 45), E_wall_target
   else
     wall_auto = .false.
+  end if
+  if (log_nr) then
+    write (iow, '(3X,A45,I16)') adjl("nr:", 45), nr
+    write (*, '(3X,A45,I16)') adjl("nr:", 45), nr
+  else
+    nr = 2
   end if
 
   return

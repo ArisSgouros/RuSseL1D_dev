@@ -509,13 +509,7 @@ program fd_1d
       end do
 
       ! Calculate the inverse determinant of the matrix
-      detinv = 1/(U(1, 1)*U(2, 2) - U(1, 2)*U(2, 1))
-
-      ! Calculate the inverse of the matrix
-      Uinv(1, 1) = +detinv*U(2, 2)
-      Uinv(2, 1) = -detinv*U(2, 1)
-      Uinv(1, 2) = -detinv*U(1, 2)
-      Uinv(2, 2) = +detinv*U(1, 1)
+      call invrsmtx(U, nr, Uinv)
 
       C = 0.d0
       do kk = 1, nr

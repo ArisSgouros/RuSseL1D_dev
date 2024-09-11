@@ -32,6 +32,7 @@ add_executable(RSL1D
      init_mesh.f90
      init_scf_params.f90
      integr_coeffs.f90
+     invrsmtx.f90
      tools_interp.f90
      main.f90
      parser.f90

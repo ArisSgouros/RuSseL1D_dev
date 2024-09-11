@@ -494,15 +494,15 @@ program fd_1d
     end do
 
     if (iter .gt. andersen_after_iter) then
-      do ii = 1, 2
-        do kk = 1, 2
+      do ii = 1, nr
+        do kk = 1, nr
           do jj = 0, nx
             U(ii,kk)=U(ii,kk)+(d(jj,0)-d(jj,ii))*(d(jj,0)-d(jj,kk))+ (d2(jj,0)-d2(jj,ii))*(d2(jj,0)-d2(jj,kk))
           end do
         end do
       end do
 
-      do kk = 1, 2
+      do kk = 1, nr
         do jj = 0, nx
           V(kk) = V(kk) + (d(jj, 0) - d(jj, kk))*d(jj, 0) + (d2(jj, 0) - d2(jj, kk))*(d2(jj, 0))
         end do
@@ -518,17 +518,26 @@ program fd_1d
       Uinv(2, 2) = +detinv*U(1, 1)
 
       C = 0.d0
-      do kk = 1, 2
-        do ii = 1, 2
+      do kk = 1, nr
+        do ii = 1, nr
           C(kk) = C(kk) + Uinv(kk, ii)*V(ii)
         end do
       end do
 
       do jj = 0, nx
-        wa_ifc_kd1(jj)     = wa_prv_iter1(jj, 0) + C(1)*(wa_prv_iter1(jj, 1) - wa_prv_iter1(jj, 0)) + C(2)*(wa_prv_iter1(jj, 2) - wa_prv_iter1(jj, 0))
-        wa_ifc_kd2(jj)     = wa_prv_iter2(jj, 0) + C(1)*(wa_prv_iter2(jj, 1) - wa_prv_iter2(jj, 0)) + C(2)*(wa_prv_iter2(jj, 2) - wa_prv_iter2(jj, 0))
-        wa_ifc_new_kd1(jj) = wa_ifc_new_kd1(jj)  + C(1)*(wa_mix_iter1(jj, 1) - wa_mix_iter1(jj, 0)) + C(2)*(wa_mix_iter1(jj, 2) - wa_mix_iter1(jj, 0))
-        wa_ifc_new_kd2(jj) = wa_ifc_new_kd2(jj)  + C(1)*(wa_mix_iter2(jj, 1) - wa_mix_iter2(jj, 0)) + C(2)*(wa_mix_iter2(jj, 2) - wa_mix_iter2(jj, 0))
+        wa_ifc_kd1(jj)     = wa_prv_iter1(jj, 0) !+ C(1)*(wa_prv_iter1(jj, 1) - wa_prv_iter1(jj, 0)) + C(2)*(wa_prv_iter1(jj, 2) - wa_prv_iter1(jj, 0))
+        wa_ifc_kd2(jj)     = wa_prv_iter2(jj, 0) !+ C(1)*(wa_prv_iter2(jj, 1) - wa_prv_iter2(jj, 0)) + C(2)*(wa_prv_iter2(jj, 2) - wa_prv_iter2(jj, 0))
+        !wa_ifc_new_kd1(jj) = wa_ifc_new_kd1(jj)  !+ C(1)*(wa_mix_iter1(jj, 1) - wa_mix_iter1(jj, 0)) + C(2)*(wa_mix_iter1(jj, 2) - wa_mix_iter1(jj, 0))
+        !wa_ifc_new_kd2(jj) = wa_ifc_new_kd2(jj)  !+ C(1)*(wa_mix_iter2(jj, 1) - wa_mix_iter2(jj, 0)) + C(2)*(wa_mix_iter2(jj, 2) - wa_mix_iter2(jj, 0))
+
+        do ii = 1, nr
+          wa_ifc_kd1(jj) = wa_ifc_kd1(jj) + C(ii)*(wa_prv_iter1(jj, ii) - wa_prv_iter1(jj, 0))
+          wa_ifc_kd2(jj) = wa_ifc_kd2(jj) + C(ii)*(wa_prv_iter2(jj, ii) - wa_prv_iter2(jj, 0))
+          wa_ifc_new_kd1(jj) = wa_ifc_new_kd1(jj) + C(ii)*(wa_mix_iter1(jj, ii) - wa_mix_iter1(jj, 0))
+          wa_ifc_new_kd2(jj) = wa_ifc_new_kd2(jj) + C(ii)*(wa_mix_iter2(jj, ii) - wa_mix_iter2(jj, 0))
+        end do
+
+
         wa_ifc_kd1(jj) = (1.d0 - andersen_fraction)*wa_ifc_kd1(jj) + andersen_fraction*wa_ifc_new_kd1(jj)
         wa_ifc_kd2(jj) = (1.d0 - andersen_fraction)*wa_ifc_kd2(jj) + andersen_fraction*wa_ifc_new_kd2(jj)
       end do

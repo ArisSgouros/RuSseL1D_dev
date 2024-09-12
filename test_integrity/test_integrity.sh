@@ -33,6 +33,7 @@ fi
 mv $run_path"/in.input" $run_path"/TEMP.in.input"
 
 declare -a TEST_LIST=( \
+   $test_path"/15.flory_huggins_short" \
    $test_path"/14.flory_huggins" \
    $test_path"/13.8_w_matrixB/" \
    $test_path"/0.ps_fg_sph_ham_it1/" \

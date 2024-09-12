@@ -1,0 +1,94 @@
+-----------------------------------SYSTEM PARAMETERS---------------------------------
+   System geometry:                                         film
+   Domain in Angstroms:                                 250.0000 Angstrom
+   Domain discretization:                                 0.5000 Angstrom
+   Nodes across the domain:                                  500 nodes
+   Temperature:                                         500.0000 K
+   Pressure:                                              0.0000 atm
+----------------------------------POLYMER PROPERTIES---------------------------------
+   Monomer mass:                                        100.0000 g/mol
+   Mass density:                                          1.0000 g/cm^3
+--------------------------------SIMULATION PARAMETERS--------------------------------
+   Output thermodynamics every:                              100           steps
+   Output computes every:                                   1000 steps
+   Field will be initialized to zero            
+   Field error tolerance:                                 0.0000 J/k_BT
+   Field mixing fraction:                            0.010000000
+   Field andersen fraction:                          0.500000000
+   Edwards solver                                       implicit
+   *Linear solver not set.. we will use tridag..
+   Maximum iterations:                                     40000 iterations
+   Andersen_after_iter:                                     2000 andersen_after_iter
+   Spacing for chain contour discret:                    uniform
+   Spacing for spatial discret:                          uniform
+   Chain contour integration rule:                  Simpson rule
+   Spatial integration rule:                      Recrangle rule
+-------------------------------------mxa CHAINS-----------------------------------   
+   chain kind:                                                 1
+   Chain contour discretization:                 0.500000000E+00 monomers
+   Chain length:                                    50.000000000 monomers
+   Chain characteristic ratio C_infinity:                10.0000
+   Bond length:                                           1.0000 Angstrom
+-------------------------------------mxb CHAINS-----------------------------------   
+   chain kind:                                                 2
+   Chain contour discretization:                 0.500000000E+00 monomers
+   Chain length:                                    50.000000000 monomers
+   Chain characteristic ratio C_infinity:                10.0000
+   Bond length:                                           1.0000 Angstrom
+------------------------------------ BULK CHAINS ------------------------------------
+   Chain length (auto):                             50.000000000 monomers
+---------------------------------BOUNDARY CONDITIONS---------------------------------
+   mxa boundary condition for lo edge:                 Dirichlet q=     0.988367695
+   mxa boundary condition for hi edge:                   Neumann (dq/dr=0)
+   mxb boundary condition for lo edge:                   Neumann (dq/dr=0)
+   mxb boundary condition for hi edge:                 Dirichlet q=     0.988367695
+------------------------------SETUP THE EQUATION OF STATE----------------------------
+   The incompressible model was chosen:         
+   Flory chi parameter :                             0.080000000
+   Flory bulk density :                              0.976870700
+------------------------------------SETUP THE WALLS----------------------------------
+   Wall type:                                             vacuum
+   *Side of the solid wall not detected..       
+                  ..it will be set to both sides
+   *Hard sphere wall position not found. Auto:            0.0000 Angstrom
+   fh_nr:                                                      5
+-----------------------------INITIALIZE THE SCF PARAMETERS---------------------------
+   mxa radious of gyration:                               9.1287 Angstrom
+   mxa nodes along chain contour:                            100 nodes
+   mxb radious of gyration:                               9.1287 Angstrom
+   mxb nodes along chain contour:                            100 nodes
+   molar density in bulk                              10000.0000 mol/m3
+---------------------------------BEGIN THE SIMULATION--------------------------------
+        Iteration    energy (mN/m)    error (k_B T)         gdens_lo         gdens_hi            nch_m          nch_mxb          nch_glo          nch_ghi         fraction
+                0    0.8133946E+02    0.4000000E-01    0.0000000E+00    0.0000000E+00    0.3015110E-01    0.3015110E-01    0.0000000E+00    0.0000000E+00    0.1000000E-01
+              100    0.4103878E+02    0.2608013E-01    0.0000000E+00    0.0000000E+00    0.1625469E-01    0.1625469E-01    0.0000000E+00    0.0000000E+00    0.1000000E-01
+              200    0.3886897E+02    0.1536939E-01    0.0000000E+00    0.0000000E+00    0.1540462E-01    0.1540462E-01    0.0000000E+00    0.0000000E+00    0.1000000E-01
+              300    0.3697888E+02    0.2432252E-01    0.0000000E+00    0.0000000E+00    0.1566880E-01    0.1566880E-01    0.0000000E+00    0.0000000E+00    0.1000000E-01
+              400    0.3408532E+02    0.2859466E-01    0.0000000E+00    0.0000000E+00    0.1624649E-01    0.1624649E-01    0.0000000E+00    0.0000000E+00    0.1000000E-01
+              500    0.3142911E+02    0.2850243E-01    0.0000000E+00    0.0000000E+00    0.1646016E-01    0.1646016E-01    0.0000000E+00    0.0000000E+00    0.1000000E-01
+              600    0.2930903E+02    0.2864556E-01    0.0000000E+00    0.0000000E+00    0.1630511E-01    0.1630511E-01    0.0000000E+00    0.0000000E+00    0.1000000E-01
+              700    0.2726291E+02    0.2874503E-01    0.0000000E+00    0.0000000E+00    0.1614369E-01    0.1614369E-01    0.0000000E+00    0.0000000E+00    0.1000000E-01
+              800    0.2510134E+02    0.2880812E-01    0.0000000E+00    0.0000000E+00    0.1611109E-01    0.1611109E-01    0.0000000E+00    0.0000000E+00    0.1000000E-01
+              900    0.2305466E+02    0.2850188E-01    0.0000000E+00    0.0000000E+00    0.1610389E-01    0.1610389E-01    0.0000000E+00    0.0000000E+00    0.1000000E-01
+             1000    0.2190057E+02    0.2516618E-01    0.0000000E+00    0.0000000E+00    0.1584497E-01    0.1584497E-01    0.0000000E+00    0.0000000E+00    0.1000000E-01
+             1100    0.2183987E+02    0.1571728E-01    0.0000000E+00    0.0000000E+00    0.1535069E-01    0.1535069E-01    0.0000000E+00    0.0000000E+00    0.1000000E-01
+             1200    0.2202621E+02    0.6645349E-02    0.0000000E+00    0.0000000E+00    0.1504051E-01    0.1504051E-01    0.0000000E+00    0.0000000E+00    0.1000000E-01
+             1300    0.2204098E+02    0.4840867E-02    0.0000000E+00    0.0000000E+00    0.1501101E-01    0.1501101E-01    0.0000000E+00    0.0000000E+00    0.1000000E-01
+             1400    0.2197363E+02    0.2516675E-02    0.0000000E+00    0.0000000E+00    0.1507527E-01    0.1507527E-01    0.0000000E+00    0.0000000E+00    0.1000000E-01
+             1500    0.2194010E+02    0.1781170E-02    0.0000000E+00    0.0000000E+00    0.1510525E-01    0.1510525E-01    0.0000000E+00    0.0000000E+00    0.1000000E-01
+             1600    0.2195170E+02    0.1089036E-02    0.0000000E+00    0.0000000E+00    0.1509569E-01    0.1509569E-01    0.0000000E+00    0.0000000E+00    0.1000000E-01
+             1700    0.2197141E+02    0.5911842E-03    0.0000000E+00    0.0000000E+00    0.1508210E-01    0.1508210E-01    0.0000000E+00    0.0000000E+00    0.1000000E-01
+             1800    0.2197865E+02    0.4219652E-03    0.0000000E+00    0.0000000E+00    0.1507991E-01    0.1507991E-01    0.0000000E+00    0.0000000E+00    0.1000000E-01
+             1900    0.2197698E+02    0.2109376E-03    0.0000000E+00    0.0000000E+00    0.1508378E-01    0.1508378E-01    0.0000000E+00    0.0000000E+00    0.1000000E-01
+             2000    0.2197492E+02    0.1536541E-03    0.0000000E+00    0.0000000E+00    0.1508643E-01    0.1508643E-01    0.0000000E+00    0.0000000E+00    0.1000000E-01
+             2100    0.2197600E+02    0.6354611E-05    0.0000000E+00    0.0000000E+00    0.1508547E-01    0.1508547E-01    0.0000000E+00    0.0000000E+00    0.1000000E-01
+             2200    0.2197537E+02    0.1021065E-05    0.0000000E+00    0.0000000E+00    0.1508546E-01    0.1508547E-01    0.0000000E+00    0.0000000E+00    0.1000000E-01
+             2300    0.2197538E+02    0.9741631E-07    0.0000000E+00    0.0000000E+00    0.1508546E-01    0.1508546E-01    0.0000000E+00    0.0000000E+00    0.1000000E-01
+
+Convergence of max field error   0.9741631E-07 k_B T
+-------------------------------------FINAL OUTPUT------------------------------------
+   Free energy:        0.2197538E+02 mN/m
+------------------------------------mxa CHAINS-----------------------------------    
+   matrix chains:      0.1508546E-01 chains
+------------------------------------mxb CHAINS-----------------------------------    
+   matrix chains:      0.1508546E-01 chains

@@ -39,7 +39,7 @@
    grafted boundary condition for lo edge:             Dirichlet q=0
    grafted boundary condition for hi edge:             Dirichlet q=0
    mxa boundary condition for lo edge:                 Dirichlet q=0
-   mxa boundary condition for hi edge:                 Dirichlet q=1
+   mxa boundary condition for hi edge:                 Dirichlet q=     1.000000000
    Critical lo position of adsorbed segs             9.000000000 Angstrom
    Critical hi position of adsorbed segs             0.000000000 Angstrom
 ------------------------------SETUP THE EQUATION OF STATE----------------------------

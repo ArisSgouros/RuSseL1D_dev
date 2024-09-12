@@ -51,7 +51,7 @@ module parser_vars
   real(8) :: hamaker_well_constant, hamaker_well_rc
   real(8) :: wall_pos, E_wall_target
   real(8) :: k_gr, k_gr_tilde
-  real(8) :: chi12
+  real(8) :: chi12, fh_rho_bulk
 
   character(100) :: field_in_filename
 !----------------------------------------------------------------------------------------------------------!

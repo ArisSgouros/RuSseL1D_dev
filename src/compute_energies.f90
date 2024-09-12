@@ -22,7 +22,7 @@ subroutine compute_energies(free_energy)
                        & gnode_lo, gnode_hi, &
                        & gdens_lo, gdens_hi, beta, sig_solid, wall_pos, wall_side, asolid, &
                        & Rg2_per_mon_glo, Rg2_per_mon_ghi, &
-                       & chi12
+                       & chi12, fh_rho_bulk
 !----------------------------------------------------------------------------------------------------------!
   implicit none
 !----------------------------------------------------------------------------------------------------------!
@@ -101,7 +101,7 @@ subroutine compute_energies(free_energy)
 
   if (dabs(chi12) .gt. 1e-7) then
     do kk = 0, nx
-      prof_Flory(kk) = chi12*phi_kd1(kk)*phi_kd2(kk)
+      prof_Flory(kk) = chi12*(phi_kd1(kk)*phi_kd2(kk) - fh_rho_bulk*(1.d0-fh_rho_bulk))
     end do
   end if
 

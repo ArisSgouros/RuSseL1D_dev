@@ -133,6 +133,7 @@ subroutine parser()
   logical :: log_influence_param = .false.
   logical :: log_real_influence_param = .false.
   logical :: log_fh_nr = .false.
+  logical :: log_fh_rho_bulk = .false.
 !----------------------------------------------------------------------------------------------------------!
   wall_hamaker = .false.
   wall_hamaker_well = .false.
@@ -525,6 +526,9 @@ subroutine parser()
       elseif (index(line, "! fh_dim") > 0) then
         read (line, *) fh_nr
         log_fh_nr = .true.
+      elseif (index(line, "! fh_rho_bulk") > 0) then
+        read (line, *) fh_rho_bulk
+        log_fh_rho_bulk = .true.
       end if
     end if
   end do
@@ -1572,6 +1576,13 @@ subroutine parser()
     write (*, '(3X,A45,F16.4)') adjl('Flory chi parameter :', 45), chi12
   else
     chi12 = 0.d0
+  end if
+
+  if (log_fh_rho_bulk) then
+    write (iow, '(3X,A45,F16.4)') adjl('Flory bulk density :', 45), fh_rho_bulk
+    write (*, '(3X,A45,F16.4)') adjl('Flory bulk density :', 45), fh_rho_bulk
+  else
+    fh_rho_bulk = 1.d0
   end if
 
   if (log_influence_param) then

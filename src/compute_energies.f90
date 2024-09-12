@@ -10,7 +10,8 @@ subroutine compute_energies(free_energy)
                        & wa_ifc_new_kd1, wa_kd1, wa_bulk_kd1,  &
                        & phi_mxa, phi_mxb, phi_glo, phi_ghi, phi_tot, &
                        & dphi_dr, d2phi_dr2, &
-                       & surface_area, volume, rx
+                       & surface_area, volume, rx, &
+                       & phi_kd1, phi_kd2
   use constants, only: pi
   use flags, only: F_both
   use parser_vars, only: wall_hamaker, rho_seg_bulk, lx, &
@@ -20,7 +21,8 @@ subroutine compute_energies(free_energy)
                        & chainlen_mxa, chainlen_mxb, chainlen_glo, chainlen_ghi, chainlen_bulk, &
                        & gnode_lo, gnode_hi, &
                        & gdens_lo, gdens_hi, beta, sig_solid, wall_pos, wall_side, asolid, &
-                       & Rg2_per_mon_glo, Rg2_per_mon_ghi
+                       & Rg2_per_mon_glo, Rg2_per_mon_ghi, &
+                       & chi12
 !----------------------------------------------------------------------------------------------------------!
   implicit none
 !----------------------------------------------------------------------------------------------------------!
@@ -29,7 +31,7 @@ subroutine compute_energies(free_energy)
   real(8), intent(out)     :: free_energy
   real(8), dimension(0:nx) :: prof_eos_f, prof_eos_rdfdr, prof_sgt_f, prof_sgt_rdfdr, prof_field, prof_solid
   real(8), dimension(0:nx) :: prof_rho_wifc_mxa, prof_rho_wifc_mxb, prof_rho_wifc_glo, prof_rho_wifc_ghi, &
-                       &      prof_solid_mxa, prof_solid_mxb, prof_solid_glo, prof_solid_ghi
+                       &      prof_solid_mxa, prof_solid_mxb, prof_solid_glo, prof_solid_ghi, prof_Flory
   real(8), dimension(0:nx) :: phi_end, rho_end, A_stretch
   real(8)                  :: get_nchains, get_part_func, nchglo, nchghi
   real(8)                  :: part_func_mxa, part_func_mxb
@@ -37,7 +39,7 @@ subroutine compute_energies(free_energy)
                        &      E_rhoVkTQ_mxa, E_rhoVkTQ_mxb
   real(8)                  :: E_rho_wifc_mxa, E_rho_wifc_mxb, E_rho_wifc_glo, E_rho_wifc_ghi, &
                        &      E_solid_mxa, E_solid_mxb, E_solid_glo, E_solid_ghi, E_solid_solid
-  real(8)                  :: E_stretch_glo, E_stretch_add_glo, E_stretch_ghi, E_stretch_add_ghi, dz
+  real(8)                  :: E_stretch_glo, E_stretch_add_glo, E_stretch_ghi, E_stretch_add_ghi, E_Flory, dz
 !----------------------------------------------------------------------------------------------------------!
   E_eos_f = 0.d0
   E_eos_rdfdr = 0.d0
@@ -61,6 +63,7 @@ subroutine compute_energies(free_energy)
   E_stretch_ghi = 0.d0
   E_stretch_add_glo = 0.d0
   E_stretch_add_ghi = 0.d0
+  E_Flory = 0.d0
 
   prof_eos_f = 0.d0
   prof_eos_rdfdr = 0.d0
@@ -76,7 +79,7 @@ subroutine compute_energies(free_energy)
   prof_solid_ghi = 0.d0
   prof_solid_mxa = 0.d0
   prof_solid_mxb = 0.d0
-
+  prof_Flory = 0.d0
   do kk = 0, nx
     ! total contributions
     prof_eos_f(kk) = eos_ff(phi_tot(kk))
@@ -96,6 +99,12 @@ subroutine compute_energies(free_energy)
     prof_solid_mxb(kk) = phi_mxb(kk)*Ufield(kk)/beta
   end do
 
+  if (dabs(chi12) .gt. 1e-7) then
+    do kk = 0, nx
+      prof_Flory(kk) = chi12*phi_kd1(kk)*phi_kd2(kk)
+    end do
+  end if
+
   if (exist_mxa .or. exist_mxb) then
     do kk = 0, nx
       prof_eos_f(kk) = prof_eos_f(kk) - eos_ff(1.d0)
@@ -112,6 +121,7 @@ subroutine compute_energies(free_energy)
     E_sgt_f = E_sgt_f + coeff_nx(kk)*prof_sgt_f(kk)*layer_area(kk)
     E_sgt_rdfdr = E_sgt_rdfdr + coeff_nx(kk)*prof_sgt_rdfdr(kk)*layer_area(kk)
     E_solid = E_solid + coeff_nx(kk)*prof_solid(kk)*layer_area(kk)
+    E_Flory = E_Flory + coeff_nx(kk)*prof_Flory(kk)*layer_area(kk)
     ! partial contributions
     E_rho_wifc_glo = E_rho_wifc_glo + coeff_nx(kk)*prof_rho_wifc_glo(kk)*layer_area(kk)
     E_rho_wifc_ghi = E_rho_wifc_ghi + coeff_nx(kk)*prof_rho_wifc_ghi(kk)*layer_area(kk)
@@ -130,6 +140,8 @@ subroutine compute_energies(free_energy)
   E_solid = E_solid*1.d-30*rho_seg_bulk
   E_sgt_f = E_sgt_f*1.d-30
   E_sgt_rdfdr = E_sgt_rdfdr*1.d-30
+  E_Flory = E_Flory*1.d-30*rho_seg_bulk/beta
+
 ! partial contributions
   E_rho_wifc_glo = E_rho_wifc_glo*1.d-30*rho_seg_bulk/beta
   E_rho_wifc_ghi = E_rho_wifc_ghi*1.d-30*rho_seg_bulk/beta
@@ -225,6 +237,7 @@ subroutine compute_energies(free_energy)
   E_nkTlnQm = E_nkTlnQm/(surface_area*1.e-20)*1e+3
   E_sgt_f = E_sgt_f/(surface_area*1.e-20)*1e+3
   E_sgt_rdfdr = E_sgt_rdfdr/(surface_area*1.e-20)*1e+3
+  E_Flory  = E_Flory/(surface_area*1.e-20)*1e+3
 ! partial contributions
   E_rho_wifc_glo = E_rho_wifc_glo/(surface_area*1.e-20)*1e+3
   E_rho_wifc_ghi = E_rho_wifc_ghi/(surface_area*1.e-20)*1e+3
@@ -240,18 +253,20 @@ subroutine compute_energies(free_energy)
   E_stretch_add_ghi = E_stretch_add_ghi/(surface_area*1.e-20)*1e+3
   E_solid_solid = E_solid_solid/(surface_area*1.e-20)*1e+3
 !estimate the free energy in mJ/m^2
-  free_energy = E_eos_f + E_sgt_f + E_eos_rdfdr + E_sgt_rdfdr + E_rhoVkTQ_mxa + E_rhoVkTQ_mxb + E_nkTlnQm + E_solid_solid
+  free_energy = E_eos_f + E_sgt_f + E_eos_rdfdr + E_sgt_rdfdr + E_rhoVkTQ_mxa + E_rhoVkTQ_mxb + E_nkTlnQm + E_solid_solid + E_Flory
 
   open (unit=777, file="o.energies")
-  write (777, '(23(A16))') "eos_f", "eos_rdfdr", "sgt_f", "sgt_rdfdr", "rhoVkTQmxa", "rhoVkTQmxb", "nkTlnQm_ns",       &
+  write (777, '(24(A16))') "eos_f", "eos_rdfdr", "sgt_f", "sgt_rdfdr", "rhoVkTQmxa", "rhoVkTQmxb", "nkTlnQm_ns",       &
   &                       "field", "solid", "free_energy", "E_rho_wifc_glo", "E_rho_wifc_ghi",         &
   &                       "E_rho_wifc_mxa", "E_rho_wifc_mxb", "E_str_glo", "E_str_add_glo", "E_str_ghi", "E_str_add_ghi",&
-  &                       "solid_glo", "solid_ghi", "solid_mxa", "solid_mxb", "solid_solid"
+  &                       "solid_glo", "solid_ghi", "solid_mxa", "solid_mxb", "solid_solid", &
+  &                       "E_Flory"
 
-  write (777, '(23(E16.7))') E_eos_f, E_eos_rdfdr, E_sgt_f, E_sgt_rdfdr, E_rhoVkTQ_mxa, E_rhoVkTQ_mxb, E_nkTlnQm, E_field,       &
+  write (777, '(24(E16.7))') E_eos_f, E_eos_rdfdr, E_sgt_f, E_sgt_rdfdr, E_rhoVkTQ_mxa, E_rhoVkTQ_mxb, E_nkTlnQm, E_field,       &
   &                        E_solid, free_energy, E_rho_wifc_glo, E_rho_wifc_ghi, E_rho_wifc_mxa, E_rho_wifc_mxb, E_stretch_glo, &
   &                        E_stretch_add_glo, E_stretch_ghi, E_stretch_add_ghi, E_solid_glo, E_solid_ghi,   &
-  &                        E_solid_mxa, E_solid_mxb, E_solid_solid
+  &                        E_solid_mxa, E_solid_mxb, E_solid_solid, &
+  &                        E_Flory
   close (777)
 
   return

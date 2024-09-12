@@ -1572,15 +1572,15 @@ subroutine parser()
   end if
 
   if (log_chi12) then
-    write (iow, '(3X,A45,F16.4)') adjl('Flory chi parameter :', 45), chi12
-    write (*, '(3X,A45,F16.4)') adjl('Flory chi parameter :', 45), chi12
+    write (iow, '(3X,A45,F16.9)') adjl('Flory chi parameter :', 45), chi12
+    write (*, '(3X,A45,F16.9)') adjl('Flory chi parameter :', 45), chi12
   else
     chi12 = 0.d0
   end if
 
   if (log_fh_rho_bulk) then
-    write (iow, '(3X,A45,F16.4)') adjl('Flory bulk density :', 45), fh_rho_bulk
-    write (*, '(3X,A45,F16.4)') adjl('Flory bulk density :', 45), fh_rho_bulk
+    write (iow, '(3X,A45,F16.9)') adjl('Flory bulk density :', 45), fh_rho_bulk
+    write (*, '(3X,A45,F16.9)') adjl('Flory bulk density :', 45), fh_rho_bulk
   else
     fh_rho_bulk = 1.d0
   end if

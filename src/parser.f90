@@ -121,6 +121,12 @@ subroutine parser()
   logical :: log_lo_BC_of_mxb = .false.
   logical :: log_hi_BC_of_grafted = .false.
   logical :: log_lo_BC_of_grafted = .false.
+  logical :: log_bc_lo_mxa_val = .false.
+  logical :: log_bc_lo_mxb_val = .false.
+  logical :: log_bc_hi_mxa_val = .false.
+  logical :: log_bc_hi_mxb_val = .false.
+  logical :: log_bc_lo_grafted_val = .false.
+  logical :: log_bc_hi_grafted_val = .false.
 
   logical :: log_eos_type = .false.
   logical :: log_eos_coeffs = .false.
@@ -476,6 +482,24 @@ subroutine parser()
       elseif (index(line, "! boundary_condition hi grafted") > 0) then
         read (line, '(I10)') bc_hi_grafted
         log_hi_BC_of_grafted = .true.
+      elseif (index(line, "! val lo mxa") > 0) then
+        read (line, '(E16.9)') bc_lo_mxa_val
+        log_bc_lo_mxa_val = .true.
+      elseif (index(line, "! val lo mxb") > 0) then
+        read (line, '(E16.9)') bc_lo_mxb_val
+        log_bc_lo_mxb_val = .true.
+      elseif (index(line, "! val hi mxa") > 0) then
+        read (line, '(E16.9)') bc_hi_mxa_val
+        log_bc_hi_mxa_val = .true.
+      elseif (index(line, "! val hi mxb") > 0) then
+        read (line, '(E16.9)') bc_hi_mxb_val
+        log_bc_hi_mxb_val = .true.
+      elseif (index(line, "! val lo grafted") > 0) then
+        read (line, '(E16.9)') bc_lo_grafted_val
+        log_bc_lo_grafted_val = .true.
+      elseif (index(line, "! val hi grafted") > 0) then
+        read (line, '(E16.9)') bc_hi_grafted_val
+        log_bc_hi_grafted_val = .true.
         ! EOS
       elseif (index(line, "! EOS type") > 0) then
         read (line, '(I6)') eos_type
@@ -1270,6 +1294,26 @@ subroutine parser()
 ! Boundary conditions
   write (iow, '(A85)') adjl('---------------------------------BOUNDARY CONDITIONS---------------------------------', 85)
   write (*, '(A85)') adjl('---------------------------------BOUNDARY CONDITIONS---------------------------------', 85)
+
+  if (.not.log_bc_lo_mxa_val) then
+    bc_lo_mxa_val = 1.d0
+  endif
+  if (.not.log_bc_lo_mxb_val) then
+    bc_lo_mxb_val = 1.d0
+  endif
+  if (.not.log_bc_hi_mxa_val) then
+    bc_hi_mxa_val = 1.d0
+  endif
+  if (.not.log_bc_hi_mxb_val) then
+    bc_hi_mxb_val = 1.d0
+  endif
+  if (.not.log_bc_hi_grafted_val) then
+    bc_hi_grafted_val = 1.d0
+  endif
+  if (.not.log_bc_lo_grafted_val) then
+    bc_lo_grafted_val = 1.d0
+  endif
+
   if (log_lo_BC_of_grafted) then
     if (bc_lo_grafted == F_bc_neuman) then
       write (iow, '(3X,A45,A16,'' (dq/dr=0)'')') adjl('grafted boundary condition for lo edge:', 45), adjustl('Neumann')
@@ -1278,8 +1322,8 @@ subroutine parser()
       write (iow, '(3X,A45,A16,'' q=0'')') adjl('grafted boundary condition for lo edge:', 45), adjustl('Dirichlet')
       write (*, '(3X,A45,A16,'' q=0'')') adjl('grafted boundary condition for lo edge:', 45), adjustl('Dirichlet')
     else if (bc_lo_grafted == F_bc_dirichlet_eq_1) then
-      write (iow, '(3X,A45,A16,'' q=1'')') adjl('grafted boundary condition for lo edge:', 45), adjustl('Dirichlet')
-      write (*, '(3X,A45,A16,'' q=1'')') adjl('grafted boundary condition for lo edge:', 45), adjustl('Dirichlet')
+      write (iow, '(3X,A45,A16,'' q='',F16.9)') adjl('grafted boundary condition for lo edge:', 45), adjustl('Dirichlet'), bc_lo_grafted_val
+      write (*, '(3X,A45,A16,'' q='',F16.9)') adjl('grafted boundary condition for lo edge:', 45), adjustl('Dirichlet'), bc_lo_grafted_val
     else if (bc_lo_grafted == F_bc_periodic) then
       write (iow, '(3X,A45,A16,'' q0=qN'')') adjl('grafted boundary condition for lo edge:', 45), adjustl('Periodic')
       write (*, '(3X,A45,A16,'' q0=qN'')') adjl('grafted boundary condition for lo edge:', 45), adjustl('Periodic')
@@ -1306,8 +1350,8 @@ subroutine parser()
       write (iow, '(3X,A45,A16,'' q=0'')') adjl('grafted boundary condition for hi edge:', 45), adjustl('Dirichlet')
       write (*, '(3X,A45,A16,'' q=0'')') adjl('grafted boundary condition for hi edge:', 45), adjustl('Dirichlet')
     else if (bc_hi_grafted == F_bc_dirichlet_eq_1) then
-      write (iow, '(3X,A45,A16,'' q=1'')') adjl('grafted boundary condition for hi edge:', 45), adjustl('Dirichlet')
-      write (*, '(3X,A45,A16,'' q=1'')') adjl('grafted boundary condition for hi edge:', 45), adjustl('Dirichlet')
+      write (iow, '(3X,A45,A16,'' q='',F16.9)') adjl('grafted boundary condition for hi edge:', 45), adjustl('Dirichlet'), bc_hi_grafted_val
+      write (*, '(3X,A45,A16,'' q='',F16.9)') adjl('grafted boundary condition for hi edge:', 45), adjustl('Dirichlet'), bc_hi_grafted_val
     else if (bc_hi_grafted == F_bc_periodic) then
       write (iow, '(3X,A45,A16,'' q0=qN'')') adjl('grafted boundary condition for hi edge:', 45), adjustl('Periodic')
       write (*, '(3X,A45,A16,'' q0=qN'')') adjl('grafted boundary condition for hi edge:', 45), adjustl('Periodic')
@@ -1334,8 +1378,8 @@ subroutine parser()
       write (iow, '(3X,A45,A16,'' q=0'')') adjl('mxa boundary condition for lo edge:', 45), adjustl('Dirichlet')
       write (*, '(3X,A45,A16,'' q=0'')') adjl('mxa boundary condition for lo edge:', 45), adjustl('Dirichlet')
     else if (bc_lo_mxa == F_bc_dirichlet_eq_1) then
-      write (iow, '(3X,A45,A16,'' q=1'')') adjl('mxa boundary condition for lo edge:', 45), adjustl('Dirichlet')
-      write (*, '(3X,A45,A16,'' q=1'')') adjl('mxa boundary condition for lo edge:', 45), adjustl('Dirichlet')
+      write (iow, '(3X,A45,A16,'' q='',F16.9)') adjl('mxa boundary condition for lo edge:', 45), adjustl('Dirichlet'), bc_lo_mxa_val
+      write (*, '(3X,A45,A16,'' q='',F16.9)') adjl('mxa boundary condition for lo edge:', 45), adjustl('Dirichlet'), bc_lo_mxa_val
     else if (bc_lo_mxa == F_bc_periodic) then
       write (iow, '(3X,A45,A16,'' q0=qN'')') adjl('mxa boundary condition for lo edge:', 45), adjustl('Periodic')
       write (*, '(3X,A45,A16,'' q0=qN'')') adjl('mxa boundary condition for lo edge:', 45), adjustl('Periodic')
@@ -1362,8 +1406,8 @@ subroutine parser()
       write (iow, '(3X,A45,A16,'' q=0'')') adjl('mxa boundary condition for hi edge:', 45), adjustl('Dirichlet')
       write (*, '(3X,A45,A16,'' q=0'')') adjl('mxa boundary condition for hi edge:', 45), adjustl('Dirichlet')
     else if (bc_hi_mxa == F_bc_dirichlet_eq_1) then
-      write (iow, '(3X,A45,A16,'' q=1'')') adjl('mxa boundary condition for hi edge:', 45), adjustl('Dirichlet')
-      write (*, '(3X,A45,A16,'' q=1'')') adjl('mxa boundary condition for hi edge:', 45), adjustl('Dirichlet')
+      write (iow, '(3X,A45,A16,'' q='',F16.9)') adjl('mxa boundary condition for hi edge:', 45), adjustl('Dirichlet'), bc_hi_mxa_val
+      write (*, '(3X,A45,A16,'' q='',F16.9)') adjl('mxa boundary condition for hi edge:', 45), adjustl('Dirichlet'), bc_hi_mxa_val
     else if (bc_hi_mxa == F_bc_periodic) then
       write (iow, '(3X,A45,A16,'' q0=qN'')') adjl('mxa boundary condition for hi edge:', 45), adjustl('Periodic')
       write (*, '(3X,A45,A16,'' q0=qN'')') adjl('mxa boundary condition for hi edge:', 45), adjustl('Periodic')
@@ -1390,8 +1434,8 @@ subroutine parser()
       write (iow, '(3X,A45,A16,'' q=0'')') adjl('mxb boundary condition for lo edge:', 45), adjustl('Dirichlet')
       write (*, '(3X,A45,A16,'' q=0'')') adjl('mxb boundary condition for lo edge:', 45), adjustl('Dirichlet')
     else if (bc_lo_mxb == F_bc_dirichlet_eq_1) then
-      write (iow, '(3X,A45,A16,'' q=1'')') adjl('mxb boundary condition for lo edge:', 45), adjustl('Dirichlet')
-      write (*, '(3X,A45,A16,'' q=1'')') adjl('mxb boundary condition for lo edge:', 45), adjustl('Dirichlet')
+      write (iow, '(3X,A45,A16,'' q='',F16.9)') adjl('mxb boundary condition for lo edge:', 45), adjustl('Dirichlet'), bc_lo_mxb_val
+      write (*, '(3X,A45,A16,'' q='',F16.9)') adjl('mxb boundary condition for lo edge:', 45), adjustl('Dirichlet'), bc_lo_mxb_val
     else if (bc_lo_mxb == F_bc_periodic) then
       write (iow, '(3X,A45,A16,'' q0=qN'')') adjl('mxb boundary condition for lo edge:', 45), adjustl('Periodic')
       write (*, '(3X,A45,A16,'' q0=qN'')') adjl('mxb boundary condition for lo edge:', 45), adjustl('Periodic')
@@ -1418,8 +1462,8 @@ subroutine parser()
       write (iow, '(3X,A45,A16,'' q=0'')') adjl('mxb boundary condition for hi edge:', 45), adjustl('Dirichlet')
       write (*, '(3X,A45,A16,'' q=0'')') adjl('mxb boundary condition for hi edge:', 45), adjustl('Dirichlet')
     else if (bc_hi_mxb == F_bc_dirichlet_eq_1) then
-      write (iow, '(3X,A45,A16,'' q=1'')') adjl('mxb boundary condition for hi edge:', 45), adjustl('Dirichlet')
-      write (*, '(3X,A45,A16,'' q=1'')') adjl('mxb boundary condition for hi edge:', 45), adjustl('Dirichlet')
+      write (iow, '(3X,A45,A16,'' q='',F16.9)') adjl('mxb boundary condition for hi edge:', 45), adjustl('Dirichlet'), bc_hi_mxb_val
+      write (*, '(3X,A45,A16,'' q='',F16.9)') adjl('mxb boundary condition for hi edge:', 45), adjustl('Dirichlet'), bc_hi_mxb_val
     else if (bc_hi_mxb == F_bc_periodic) then
       write (iow, '(3X,A45,A16,'' q0=qN'')') adjl('mxb boundary condition for hi edge:', 45), adjustl('Periodic')
       write (*, '(3X,A45,A16,'' q0=qN'')') adjl('mxb boundary condition for hi edge:', 45), adjustl('Periodic')

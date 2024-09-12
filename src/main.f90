@@ -12,6 +12,7 @@ program fd_1d
   use parser_vars, only: beta, k_gr, delta, fh_nr,      &
                         & mxa_kind, mxb_kind, ghi_kind, glo_kind, &
                         & bc_lo_mxa, bc_lo_mxb, bc_lo_grafted, bc_hi_mxa, bc_hi_mxb, bc_hi_grafted, &
+                        & bc_lo_mxa_val, bc_lo_mxb_val, bc_lo_grafted_val, bc_hi_mxa_val, bc_hi_mxb_val, bc_hi_grafted_val, &
                         & chainlen_mxa, chainlen_mxb, chainlen_glo, chainlen_ghi, chainlen_max, &
                         & ns_mxa, ns_mxb, ns_glo, ns_ghi, &
                         & exist_kd1, exist_kd2, exist_mxa, exist_mxb, exist_glo, exist_ghi,            &
@@ -80,7 +81,7 @@ program fd_1d
         n_dir_nodes = n_dir_nodes + 1
       else if (bc_lo_mxa .eq. F_bc_dirichlet_eq_1) then
         dir_nodes_id(n_dir_nodes) = 0
-        dir_nodes_rdiag(n_dir_nodes) = 1.0d0
+        dir_nodes_rdiag(n_dir_nodes) = bc_lo_mxa_val
         n_dir_nodes = n_dir_nodes + 1
       end if
       !dirichlet upper bound
@@ -90,7 +91,7 @@ program fd_1d
         n_dir_nodes = n_dir_nodes + 1
       else if (bc_hi_mxa .eq. F_bc_dirichlet_eq_1) then
         dir_nodes_id(n_dir_nodes) = nx
-        dir_nodes_rdiag(n_dir_nodes) = 1.0d0
+        dir_nodes_rdiag(n_dir_nodes) = bc_hi_mxa_val
         n_dir_nodes = n_dir_nodes + 1
       end if
 
@@ -139,7 +140,7 @@ program fd_1d
         n_dir_nodes = n_dir_nodes + 1
       else if (bc_lo_mxb .eq. F_bc_dirichlet_eq_1) then
         dir_nodes_id(n_dir_nodes) = 0
-        dir_nodes_rdiag(n_dir_nodes) = 1.0d0
+        dir_nodes_rdiag(n_dir_nodes) = bc_lo_mxb_val
         n_dir_nodes = n_dir_nodes + 1
       end if
       !dirichlet upper bound
@@ -149,7 +150,7 @@ program fd_1d
         n_dir_nodes = n_dir_nodes + 1
       else if (bc_hi_mxb .eq. F_bc_dirichlet_eq_1) then
         dir_nodes_id(n_dir_nodes) = nx
-        dir_nodes_rdiag(n_dir_nodes) = 1.0d0
+        dir_nodes_rdiag(n_dir_nodes) = bc_hi_mxb_val
         n_dir_nodes = n_dir_nodes + 1
       end if
 
@@ -200,7 +201,7 @@ program fd_1d
         n_dir_nodes = n_dir_nodes + 1
       else if (bc_lo_grafted .eq. F_bc_dirichlet_eq_1) then
         dir_nodes_id(n_dir_nodes) = 0
-        dir_nodes_rdiag(n_dir_nodes) = 1.0d0
+        dir_nodes_rdiag(n_dir_nodes) = bc_lo_grafted_val
         n_dir_nodes = n_dir_nodes + 1
       end if
       !dirichlet upper bound
@@ -210,7 +211,7 @@ program fd_1d
         n_dir_nodes = n_dir_nodes + 1
       else if (bc_hi_grafted .eq. F_bc_dirichlet_eq_1) then
         dir_nodes_id(n_dir_nodes) = nx
-        dir_nodes_rdiag(n_dir_nodes) = 1.0d0
+        dir_nodes_rdiag(n_dir_nodes) = bc_hi_grafted_val
         n_dir_nodes = n_dir_nodes + 1
       end if
 

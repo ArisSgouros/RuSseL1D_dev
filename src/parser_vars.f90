@@ -30,6 +30,8 @@ module parser_vars
   integer :: n_wall_custom_vars
   integer :: mxa_kind, mxb_kind, glo_kind, ghi_kind
 
+  real(8) :: bc_lo_mxa_val, bc_lo_mxb_val, bc_lo_grafted_val
+  real(8) :: bc_hi_mxa_val, bc_hi_mxb_val, bc_hi_grafted_val
   real(8) :: random_field_magn
   real(8) :: max_wa_error, r_ads_lo, r_ads_hi
   real(8) :: chainlen_mxa, chainlen_mxb, chainlen_glo, chainlen_ghi, chainlen_bulk, &

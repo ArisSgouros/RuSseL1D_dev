@@ -402,16 +402,17 @@ program fd_1d
       wa_kd2(jj) = wa_kd2(jj) + Ufield(jj)
     end do
 
-    !mixing term
-    if (dabs(chi12) .gt. 1e-7) then
-      do jj = 0, nx
-        wa_kd1(jj) = wa_kd1(jj) + chi12*phi_kd2(jj)
-        wa_kd2(jj) = wa_kd2(jj) + chi12*phi_kd1(jj)
-      end do
-    end if
-
     !eos term for compressible
     if (eos_type .ne. F_incompressible) then
+
+      !mixing term
+      if (dabs(chi12) .gt. 1e-7) then
+        do jj = 0, nx
+          wa_kd1(jj) = wa_kd1(jj) + chi12*phi_kd2(jj)
+          wa_kd2(jj) = wa_kd2(jj) + chi12*phi_kd1(jj)
+        end do
+      end if
+
       do jj = 0, nx
         wa_kd1(jj) = wa_kd1(jj) + eos_df_drho(phi_tot(jj))*beta
         wa_kd2(jj) = wa_kd2(jj) + eos_df_drho(phi_tot(jj))*beta
@@ -455,6 +456,12 @@ program fd_1d
 
     !eos term for incompressible
     if (eos_type .eq. F_incompressible) then
+      !mixing term
+      do jj = 0, nx
+        wa_kd1(jj) = wa_kd1(jj) + chi12*phi_kd2(jj)
+        wa_kd2(jj) = wa_kd2(jj) + chi12*phi_kd1(jj)
+      end do
+
       do jj = 0, nx
         pressure = 0.5*(wa_ifc_kd1(jj) + wa_ifc_kd2(jj))
         wa_kd1(jj) = wa_kd1(jj) + pressure

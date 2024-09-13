@@ -448,6 +448,19 @@ program fd_1d
       wa_bulk_kd2 = eos_df_drho(1.d0)*beta
       wa_ifc_new_kd1 = wa_kd1 - wa_bulk_kd1
       wa_ifc_new_kd2 = wa_kd2 - wa_bulk_kd2
+
+
+      wa_error_new = 0.d0
+
+      do jj = 0, nx
+        wa_error_new = max(wa_error_new, dabs(wa_ifc_kd1(jj) - wa_ifc_new_kd1(jj)), dabs(wa_ifc_kd2(jj) - wa_ifc_new_kd2(jj)))
+      end do
+
+      !apply field mixing rule and update field
+      do jj = 0, nx
+        wa_ifc_kd1(jj) = (1.d0 - frac)*wa_ifc_kd1(jj) + frac*wa_ifc_new_kd1(jj)
+        wa_ifc_kd2(jj) = (1.d0 - frac)*wa_ifc_kd2(jj) + frac*wa_ifc_new_kd2(jj)
+      end do
     end if
 
     !eos term for incompressible
@@ -476,7 +489,6 @@ program fd_1d
         wa_mix_iter1(jj, 0) = wa_ifc_new_kd1(jj)
         wa_mix_iter2(jj, 0) = wa_ifc_new_kd2(jj)
       end do
-    end if
 
     do jj = 0, nx
       do kk = fh_nr, 1, -1
@@ -543,6 +555,7 @@ program fd_1d
         wa_ifc_kd1(jj) = (1.d0 - frac)*wa_ifc_kd1(jj) + frac*wa_ifc_new_kd1(jj)
         wa_ifc_kd2(jj) = (1.d0 - frac)*wa_ifc_kd2(jj) + frac*wa_ifc_new_kd2(jj)
       end do
+    end if
     end if
 
     phi_kd1 = phi_new_kd1

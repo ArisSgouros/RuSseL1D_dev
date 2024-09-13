@@ -22,7 +22,7 @@ subroutine init_arrays()
   allocate (wa_ifc_backup_kd1(0:nx), wa_ifc_backup_kd2(0:nx))
   allocate (rr(0:nx), irr(0:nx), layer_area(0:nx))
   allocate (phi_tot(0:nx), phi_mxa(0:nx), phi_mxb(0:nx), phi_glo(0:nx), phi_ghi(0:nx))
-  allocate (phi_kd1(0:nx), phi_kd2(0:nx), phi_new_kd1(0:nx), phi_new_kd2(0:nx))
+  allocate (phi_kd1(0:nx), phi_kd2(0:nx))
   allocate (fh_d1(0:nx, 0:fh_nr), fh_d2(0:nx, 0:fh_nr), wa_prv_iter1(0:nx, 0:fh_nr), wa_prv_iter2(0:nx, 0:fh_nr), wa_mix_iter1(0:nx, 0:fh_nr), wa_mix_iter2(0:nx, 0:fh_nr))
   allocate (fh_U(1:fh_nr, 1:fh_nr), fh_V(1:fh_nr), fh_C(1:fh_nr), fh_Uinv(1:fh_nr, 1:fh_nr))
   allocate (qmxa(0:nx, 2), qmxb(0:nx, 2))
@@ -77,8 +77,6 @@ subroutine init_arrays()
   phi_ghi = 0.d0
   phi_kd1 = 0.d0
   phi_kd2 = 0.d0
-  phi_new_kd1 = 0.d0
-  phi_new_kd2 = 0.d0
   qmxa = 0.d0
   qmxb = 0.d0
   qglo = 0.d0

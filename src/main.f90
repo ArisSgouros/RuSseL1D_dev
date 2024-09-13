@@ -26,7 +26,7 @@ program fd_1d
                         & qfinal_mxa, qfinal_mxb, qfinal_glo, qfinal_ghi, qfinal_glo_aux, qfinal_ghi_aux, &
                         & dir_nodes_id, dir_nodes_rdiag, n_dir_nodes, &
                         & phi_mxa, phi_mxb, phi_glo, phi_ghi, phi_tot, &
-                        & phi_kd1, phi_kd2, phi_new_kd1, phi_new_kd2, &
+                        & phi_kd1, phi_kd2, &
                         & dphi_dr, d2phi_dr2, &
                         & dx, coeff_nx, &
                         & coeff_ns_mxa, coeff_ns_mxb, coeff_ns_glo, coeff_ns_ghi, &
@@ -381,16 +381,16 @@ program fd_1d
     if (exist_glo) phi_tot = phi_tot + phi_glo
     if (exist_ghi) phi_tot = phi_tot + phi_ghi
 
-    phi_new_kd1 = 0.d0
-    phi_new_kd2 = 0.d0
-    if (mxa_kind == 1) phi_new_kd1 = phi_new_kd1 + phi_mxa
-    if (mxb_kind == 1) phi_new_kd1 = phi_new_kd1 + phi_mxb
-    if (glo_kind == 1) phi_new_kd1 = phi_new_kd1 + phi_glo
-    if (ghi_kind == 1) phi_new_kd1 = phi_new_kd1 + phi_ghi
-    if (mxa_kind == 2) phi_new_kd2 = phi_new_kd2 + phi_mxa
-    if (mxb_kind == 2) phi_new_kd2 = phi_new_kd2 + phi_mxb
-    if (glo_kind == 2) phi_new_kd2 = phi_new_kd2 + phi_glo
-    if (ghi_kind == 2) phi_new_kd2 = phi_new_kd2 + phi_ghi
+    phi_kd1 = 0.d0
+    phi_kd2 = 0.d0
+    if (mxa_kind == 1) phi_kd1 = phi_kd1 + phi_mxa
+    if (mxb_kind == 1) phi_kd1 = phi_kd1 + phi_mxb
+    if (glo_kind == 1) phi_kd1 = phi_kd1 + phi_glo
+    if (ghi_kind == 1) phi_kd1 = phi_kd1 + phi_ghi
+    if (mxa_kind == 2) phi_kd2 = phi_kd2 + phi_mxa
+    if (mxb_kind == 2) phi_kd2 = phi_kd2 + phi_mxb
+    if (glo_kind == 2) phi_kd2 = phi_kd2 + phi_glo
+    if (ghi_kind == 2) phi_kd2 = phi_kd2 + phi_ghi
 
     !TODO: create variables for old/new fields
     !TODO: create variables for old/new phi
@@ -413,8 +413,8 @@ program fd_1d
       do jj = 0, nx
         !wa_kd1(jj) = wa_kd1(jj) + chi12 * phi_kd2(jj)
         !wa_kd2(jj) = wa_kd2(jj) + chi12 * phi_kd1(jj)
-        wa_kd1(jj) = wa_kd1(jj) + chi12*phi_new_kd2(jj)
-        wa_kd2(jj) = wa_kd2(jj) + chi12*phi_new_kd1(jj)
+        wa_kd1(jj) = wa_kd1(jj) + chi12*phi_kd2(jj)
+        wa_kd2(jj) = wa_kd2(jj) + chi12*phi_kd1(jj)
       end do
     end if
 
@@ -557,9 +557,6 @@ program fd_1d
       end do
     end if
     end if
-
-    phi_kd1 = phi_new_kd1
-    phi_kd2 = phi_new_kd2
 
     if (mxa_kind == 1) wa_ifc_mxa = wa_ifc_kd1
     if (mxb_kind == 1) wa_ifc_mxb = wa_ifc_kd1

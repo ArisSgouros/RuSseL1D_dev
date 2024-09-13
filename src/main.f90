@@ -392,12 +392,6 @@ program fd_1d
     if (glo_kind == 2) phi_kd2 = phi_kd2 + phi_glo
     if (ghi_kind == 2) phi_kd2 = phi_kd2 + phi_ghi
 
-    !TODO: create variables for old/new fields
-    !TODO: create variables for old/new phi
-    !TODO: generate functions for determining current field
-    !TODO: generate functions for incompressibility
-    !TODO: generate functions for field/density mixing
-
     !calculate new fields
     wa_kd1 = 0.d0
     wa_kd2 = 0.d0
@@ -411,8 +405,6 @@ program fd_1d
     !mixing term
     if (dabs(chi12) .gt. 1e-7) then
       do jj = 0, nx
-        !wa_kd1(jj) = wa_kd1(jj) + chi12 * phi_kd2(jj)
-        !wa_kd2(jj) = wa_kd2(jj) + chi12 * phi_kd1(jj)
         wa_kd1(jj) = wa_kd1(jj) + chi12*phi_kd2(jj)
         wa_kd2(jj) = wa_kd2(jj) + chi12*phi_kd1(jj)
       end do
@@ -449,9 +441,7 @@ program fd_1d
       wa_ifc_new_kd1 = wa_kd1 - wa_bulk_kd1
       wa_ifc_new_kd2 = wa_kd2 - wa_bulk_kd2
 
-
       wa_error_new = 0.d0
-
       do jj = 0, nx
         wa_error_new = max(wa_error_new, dabs(wa_ifc_kd1(jj) - wa_ifc_new_kd1(jj)), dabs(wa_ifc_kd2(jj) - wa_ifc_new_kd2(jj)))
       end do
@@ -499,15 +489,14 @@ program fd_1d
       fh_d2(jj, 0) = wa_ifc_new_kd2(jj) - wa_ifc_kd2(jj)
     end do
 
-    fh_U = 0.d0
-    fh_V = 0.d0
     wa_error_new = 0.d0
-
     do jj = 0, nx
       wa_error_new = max(wa_error_new, dabs(wa_ifc_kd1(jj) - wa_ifc_new_kd1(jj)), dabs(wa_ifc_kd2(jj) - wa_ifc_new_kd2(jj)))
     end do
 
     if (iter .gt. andersen_after_iter) then
+      fh_U = 0.d0
+      fh_V = 0.d0
       do ii = 1, fh_nr
         do kk = 1, fh_nr
           do jj = 0, nx

@@ -101,7 +101,7 @@ subroutine compute_energies(free_energy)
 
   if (dabs(chi12) .gt. 1e-7) then
     do kk = 0, nx
-      prof_Flory(kk) = chi12*(phi_kd1(kk)*phi_kd2(kk) - fh_rho_bulk*(1.d0-fh_rho_bulk))
+      prof_Flory(kk) = chi12*(phi_kd1(kk)*phi_kd2(kk) - fh_rho_bulk*(1.d0 - fh_rho_bulk))
     end do
   end if
 
@@ -237,7 +237,7 @@ subroutine compute_energies(free_energy)
   E_nkTlnQm = E_nkTlnQm/(surface_area*1.e-20)*1e+3
   E_sgt_f = E_sgt_f/(surface_area*1.e-20)*1e+3
   E_sgt_rdfdr = E_sgt_rdfdr/(surface_area*1.e-20)*1e+3
-  E_Flory  = E_Flory/(surface_area*1.e-20)*1e+3
+  E_Flory = E_Flory/(surface_area*1.e-20)*1e+3
 ! partial contributions
   E_rho_wifc_glo = E_rho_wifc_glo/(surface_area*1.e-20)*1e+3
   E_rho_wifc_ghi = E_rho_wifc_ghi/(surface_area*1.e-20)*1e+3

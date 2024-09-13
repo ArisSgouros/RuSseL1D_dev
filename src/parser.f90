@@ -816,7 +816,7 @@ subroutine parser()
 
   if (log_field_andersen_fraction) then
     write (iow, '(3X,A45,F16.9)') adjl('Field andersen fraction:', 45), andersen_fraction
-    write (*  , '(3X,A45,F16.9)') adjl('Field andersen fraction:', 45), andersen_fraction
+    write (*, '(3X,A45,F16.9)') adjl('Field andersen fraction:', 45), andersen_fraction
   end if
 
   if (log_edwards_solver) then
@@ -1299,24 +1299,24 @@ subroutine parser()
   write (iow, '(A85)') adjl('---------------------------------BOUNDARY CONDITIONS---------------------------------', 85)
   write (*, '(A85)') adjl('---------------------------------BOUNDARY CONDITIONS---------------------------------', 85)
 
-  if (.not.log_bc_lo_mxa_val) then
+  if (.not. log_bc_lo_mxa_val) then
     bc_lo_mxa_val = 1.d0
-  endif
-  if (.not.log_bc_lo_mxb_val) then
+  end if
+  if (.not. log_bc_lo_mxb_val) then
     bc_lo_mxb_val = 1.d0
-  endif
-  if (.not.log_bc_hi_mxa_val) then
+  end if
+  if (.not. log_bc_hi_mxa_val) then
     bc_hi_mxa_val = 1.d0
-  endif
-  if (.not.log_bc_hi_mxb_val) then
+  end if
+  if (.not. log_bc_hi_mxb_val) then
     bc_hi_mxb_val = 1.d0
-  endif
-  if (.not.log_bc_hi_grafted_val) then
+  end if
+  if (.not. log_bc_hi_grafted_val) then
     bc_hi_grafted_val = 1.d0
-  endif
-  if (.not.log_bc_lo_grafted_val) then
+  end if
+  if (.not. log_bc_lo_grafted_val) then
     bc_lo_grafted_val = 1.d0
-  endif
+  end if
 
   if (log_lo_BC_of_grafted) then
     if (bc_lo_grafted == F_bc_neuman) then

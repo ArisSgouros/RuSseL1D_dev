@@ -476,10 +476,10 @@ program fd_1d
 
       do jj = 0, nx
         do kk = fh_nr, 1, -1
-          wa_prv_iter1(jj, kk) = wa_prv_iter1(jj, kk-1)
-          wa_prv_iter2(jj, kk) = wa_prv_iter2(jj, kk-1)
-          wa_mix_iter1(jj, kk) = wa_mix_iter1(jj, kk-1)
-          wa_mix_iter2(jj, kk) = wa_mix_iter2(jj, kk-1)
+          wa_prv_iter1(jj, kk) = wa_prv_iter1(jj, kk - 1)
+          wa_prv_iter2(jj, kk) = wa_prv_iter2(jj, kk - 1)
+          wa_mix_iter1(jj, kk) = wa_mix_iter1(jj, kk - 1)
+          wa_mix_iter2(jj, kk) = wa_mix_iter2(jj, kk - 1)
         end do
         wa_prv_iter1(jj, 0) = wa_ifc_kd1(jj)
         wa_prv_iter2(jj, 0) = wa_ifc_kd2(jj)
@@ -487,71 +487,70 @@ program fd_1d
         wa_mix_iter2(jj, 0) = wa_ifc_new_kd2(jj)
       end do
 
-    do jj = 0, nx
-      do kk = fh_nr, 1, -1
-        fh_d1(jj, kk) = fh_d1(jj, kk-1)
-        fh_d2(jj, kk) = fh_d2(jj, kk-1)
+      do jj = 0, nx
+        do kk = fh_nr, 1, -1
+          fh_d1(jj, kk) = fh_d1(jj, kk - 1)
+          fh_d2(jj, kk) = fh_d2(jj, kk - 1)
+        end do
+        fh_d1(jj, 0) = wa_ifc_new_kd1(jj) - wa_ifc_kd1(jj)
+        fh_d2(jj, 0) = wa_ifc_new_kd2(jj) - wa_ifc_kd2(jj)
       end do
-      fh_d1(jj, 0) = wa_ifc_new_kd1(jj) - wa_ifc_kd1(jj)
-      fh_d2(jj, 0) = wa_ifc_new_kd2(jj) - wa_ifc_kd2(jj)
-    end do
 
-    wa_error_new = 0.d0
-    do jj = 0, nx
-      wa_error_new = max(wa_error_new, dabs(wa_ifc_kd1(jj) - wa_ifc_new_kd1(jj)), dabs(wa_ifc_kd2(jj) - wa_ifc_new_kd2(jj)))
-    end do
+      wa_error_new = 0.d0
+      do jj = 0, nx
+        wa_error_new = max(wa_error_new, dabs(wa_ifc_kd1(jj) - wa_ifc_new_kd1(jj)), dabs(wa_ifc_kd2(jj) - wa_ifc_new_kd2(jj)))
+      end do
 
-    if (iter .gt. andersen_after_iter) then
-      fh_U = 0.d0
-      fh_V = 0.d0
-      do ii = 1, fh_nr
-        do kk = 1, fh_nr
-          do jj = 0, nx
-            fh_U(ii,kk)=fh_U(ii,kk)+(fh_d1(jj,0)-fh_d1(jj,ii))*(fh_d1(jj,0)-fh_d1(jj,kk))+ (fh_d2(jj,0)-fh_d2(jj,ii))*(fh_d2(jj,0)-fh_d2(jj,kk))
+      if (iter .gt. andersen_after_iter) then
+        fh_U = 0.d0
+        fh_V = 0.d0
+        do ii = 1, fh_nr
+          do kk = 1, fh_nr
+            do jj = 0, nx
+fh_U(ii,kk)=fh_U(ii,kk)+(fh_d1(jj,0)-fh_d1(jj,ii))*(fh_d1(jj,0)-fh_d1(jj,kk))+ (fh_d2(jj,0)-fh_d2(jj,ii))*(fh_d2(jj,0)-fh_d2(jj,kk))
+            end do
           end do
         end do
-      end do
 
-      do kk = 1, fh_nr
+        do kk = 1, fh_nr
+          do jj = 0, nx
+            fh_V(kk) = fh_V(kk) + (fh_d1(jj, 0) - fh_d1(jj, kk))*fh_d1(jj, 0) + (fh_d2(jj, 0) - fh_d2(jj, kk))*(fh_d2(jj, 0))
+          end do
+        end do
+
+        ! Calculate the inverse determinant of the matrix
+        call invrsmtx(fh_U, fh_nr, fh_Uinv)
+
+        fh_C = 0.d0
+        do kk = 1, fh_nr
+          do ii = 1, fh_nr
+            fh_C(kk) = fh_C(kk) + fh_Uinv(kk, ii)*fh_V(ii)
+          end do
+        end do
+
         do jj = 0, nx
-          fh_V(kk) = fh_V(kk) + (fh_d1(jj, 0) - fh_d1(jj, kk))*fh_d1(jj, 0) + (fh_d2(jj, 0) - fh_d2(jj, kk))*(fh_d2(jj, 0))
+          wa_ifc_kd1(jj) = wa_prv_iter1(jj, 0) !+ C(1)*(wa_prv_iter1(jj, 1) - wa_prv_iter1(jj, 0)) + C(2)*(wa_prv_iter1(jj, 2) - wa_prv_iter1(jj, 0))
+          wa_ifc_kd2(jj) = wa_prv_iter2(jj, 0) !+ C(1)*(wa_prv_iter2(jj, 1) - wa_prv_iter2(jj, 0)) + C(2)*(wa_prv_iter2(jj, 2) - wa_prv_iter2(jj, 0))
+          !wa_ifc_new_kd1(jj) = wa_ifc_new_kd1(jj)  !+ C(1)*(wa_mix_iter1(jj, 1) - wa_mix_iter1(jj, 0)) + C(2)*(wa_mix_iter1(jj, 2) - wa_mix_iter1(jj, 0))
+          !wa_ifc_new_kd2(jj) = wa_ifc_new_kd2(jj)  !+ C(1)*(wa_mix_iter2(jj, 1) - wa_mix_iter2(jj, 0)) + C(2)*(wa_mix_iter2(jj, 2) - wa_mix_iter2(jj, 0))
+
+          do ii = 1, fh_nr
+            wa_ifc_kd1(jj) = wa_ifc_kd1(jj) + fh_C(ii)*(wa_prv_iter1(jj, ii) - wa_prv_iter1(jj, 0))
+            wa_ifc_kd2(jj) = wa_ifc_kd2(jj) + fh_C(ii)*(wa_prv_iter2(jj, ii) - wa_prv_iter2(jj, 0))
+            wa_ifc_new_kd1(jj) = wa_ifc_new_kd1(jj) + fh_C(ii)*(wa_mix_iter1(jj, ii) - wa_mix_iter1(jj, 0))
+            wa_ifc_new_kd2(jj) = wa_ifc_new_kd2(jj) + fh_C(ii)*(wa_mix_iter2(jj, ii) - wa_mix_iter2(jj, 0))
+          end do
+
+          wa_ifc_kd1(jj) = (1.d0 - andersen_fraction)*wa_ifc_kd1(jj) + andersen_fraction*wa_ifc_new_kd1(jj)
+          wa_ifc_kd2(jj) = (1.d0 - andersen_fraction)*wa_ifc_kd2(jj) + andersen_fraction*wa_ifc_new_kd2(jj)
         end do
-      end do
-
-      ! Calculate the inverse determinant of the matrix
-      call invrsmtx(fh_U, fh_nr, fh_Uinv)
-
-      fh_C = 0.d0
-      do kk = 1, fh_nr
-        do ii = 1, fh_nr
-          fh_C(kk) = fh_C(kk) + fh_Uinv(kk, ii)*fh_V(ii)
+      else
+        !apply field mixing rule and update field
+        do jj = 0, nx
+          wa_ifc_kd1(jj) = (1.d0 - frac)*wa_ifc_kd1(jj) + frac*wa_ifc_new_kd1(jj)
+          wa_ifc_kd2(jj) = (1.d0 - frac)*wa_ifc_kd2(jj) + frac*wa_ifc_new_kd2(jj)
         end do
-      end do
-
-      do jj = 0, nx
-        wa_ifc_kd1(jj)     = wa_prv_iter1(jj, 0) !+ C(1)*(wa_prv_iter1(jj, 1) - wa_prv_iter1(jj, 0)) + C(2)*(wa_prv_iter1(jj, 2) - wa_prv_iter1(jj, 0))
-        wa_ifc_kd2(jj)     = wa_prv_iter2(jj, 0) !+ C(1)*(wa_prv_iter2(jj, 1) - wa_prv_iter2(jj, 0)) + C(2)*(wa_prv_iter2(jj, 2) - wa_prv_iter2(jj, 0))
-        !wa_ifc_new_kd1(jj) = wa_ifc_new_kd1(jj)  !+ C(1)*(wa_mix_iter1(jj, 1) - wa_mix_iter1(jj, 0)) + C(2)*(wa_mix_iter1(jj, 2) - wa_mix_iter1(jj, 0))
-        !wa_ifc_new_kd2(jj) = wa_ifc_new_kd2(jj)  !+ C(1)*(wa_mix_iter2(jj, 1) - wa_mix_iter2(jj, 0)) + C(2)*(wa_mix_iter2(jj, 2) - wa_mix_iter2(jj, 0))
-
-        do ii = 1, fh_nr
-          wa_ifc_kd1(jj) = wa_ifc_kd1(jj) + fh_C(ii)*(wa_prv_iter1(jj, ii) - wa_prv_iter1(jj, 0))
-          wa_ifc_kd2(jj) = wa_ifc_kd2(jj) + fh_C(ii)*(wa_prv_iter2(jj, ii) - wa_prv_iter2(jj, 0))
-          wa_ifc_new_kd1(jj) = wa_ifc_new_kd1(jj) + fh_C(ii)*(wa_mix_iter1(jj, ii) - wa_mix_iter1(jj, 0))
-          wa_ifc_new_kd2(jj) = wa_ifc_new_kd2(jj) + fh_C(ii)*(wa_mix_iter2(jj, ii) - wa_mix_iter2(jj, 0))
-        end do
-
-
-        wa_ifc_kd1(jj) = (1.d0 - andersen_fraction)*wa_ifc_kd1(jj) + andersen_fraction*wa_ifc_new_kd1(jj)
-        wa_ifc_kd2(jj) = (1.d0 - andersen_fraction)*wa_ifc_kd2(jj) + andersen_fraction*wa_ifc_new_kd2(jj)
-      end do
-    else
-      !apply field mixing rule and update field
-      do jj = 0, nx
-        wa_ifc_kd1(jj) = (1.d0 - frac)*wa_ifc_kd1(jj) + frac*wa_ifc_new_kd1(jj)
-        wa_ifc_kd2(jj) = (1.d0 - frac)*wa_ifc_kd2(jj) + frac*wa_ifc_new_kd2(jj)
-      end do
-    end if
+      end if
     end if
 
     if (mxa_kind == 1) wa_ifc_mxa = wa_ifc_kd1

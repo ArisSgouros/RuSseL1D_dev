@@ -77,11 +77,17 @@ subroutine compute_energies_incompressible(free_energy)
     nchmxa = get_nchains(coeff_nx, nx, layer_area, phi_mxa, rho_seg_bulk, chainlen_mxa)
     part_func_mxa = get_part_func(nx, ns_mxa, layer_area, volume, coeff_nx, qfinal_mxa)
     E_NLnQ_mxa = -nchmxa/beta*log(part_func_mxa)
+
+    rho_seg_bulk_mx12 = rho_seg_bulk*(1.d0 - fh_rho_bulk)
+    nchmxa_bulk = get_nchains(coeff_nx, nx, layer_area, phi_tot, rho_seg_bulk_mx12, chainlen_mxa)
   end if
   if (exist_mxb) then
     nchmxb = get_nchains(coeff_nx, nx, layer_area, phi_mxb, rho_seg_bulk, chainlen_mxb)
     part_func_mxb = get_part_func(nx, ns_mxb, layer_area, volume, coeff_nx, qfinal_mxb)
     E_NLnQ_mxb = -nchmxb/beta*log(part_func_mxb)
+
+    rho_seg_bulk_mx12 = rho_seg_bulk*(1.d0 - fh_rho_bulk)
+    nchmxb_bulk = get_nchains(coeff_nx, nx, layer_area, phi_tot, rho_seg_bulk_mx12, chainlen_mxb)
   end if
 
   E_nkTlnQm = 0.d0
@@ -113,10 +119,12 @@ subroutine compute_energies_incompressible(free_energy)
   free_energy = E_Flory + E_fh_pressure + E_NLnQ_mxa + E_NLnQ_mxb + E_nkTlnQm + E_solid + E_solid_solid
 
   open (unit=777, file="o.energies")
-  write (777, '(8(A16))') "free_energy", "E_Flory", "E_fh_pressure", "NLnQmxa", "NLnQmxb", "nkTlnQm_ns", &
+  write (777, '(12(A16))') "free_energy", "E_Flory", "E_fh_pressure", "NLnQmxa", "NLnQmxb", "nkTlnQm_ns", &
+  &                        "N_ch1", "N_ch2", "N_ch1_bulk", "N_ch2_bulk", &
   &                        "E_solid", "solid_solid"
 
-  write (777, '(8(E16.7))') free_energy, E_Flory, E_fh_pressure, E_NLnQ_mxa, E_NLnQ_mxb, E_nkTlnQm, &
+  write (777, '(12(E16.7))') free_energy, E_Flory, E_fh_pressure, E_NLnQ_mxa, E_NLnQ_mxb, E_nkTlnQm, &
+  &                        nchmxa, nchmxb, nchmxa_bulk, nchmxb_bulk, &
   &                        E_solid, E_solid_solid
   close (777)
 

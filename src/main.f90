@@ -458,8 +458,8 @@ program fd_1d
     if (eos_type .eq. F_incompressible) then
       !mixing term
       do jj = 0, nx
-        wa_kd1(jj) = wa_kd1(jj) + chi12*phi_kd2(jj)
-        wa_kd2(jj) = wa_kd2(jj) + chi12*phi_kd1(jj)
+        wa_kd1(jj) = wa_kd1(jj) + chi12*phi_kd2(jj) - 0.5d0*chi12
+        wa_kd2(jj) = wa_kd2(jj) + chi12*phi_kd1(jj) - 0.5d0*chi12
       end do
 
       do jj = 0, nx
@@ -469,10 +469,8 @@ program fd_1d
       end do
 
       !subtrack bulk contribution
-      wa_bulk_kd1 = 0.5d0*chi12
-      wa_bulk_kd2 = 0.5d0*chi12
-      wa_ifc_new_kd1 = wa_kd1 - wa_bulk_kd1
-      wa_ifc_new_kd2 = wa_kd2 - wa_bulk_kd2
+      wa_ifc_new_kd1 = wa_kd1 
+      wa_ifc_new_kd2 = wa_kd2
 
       do jj = 0, nx
         do kk = fh_nr, 1, -1

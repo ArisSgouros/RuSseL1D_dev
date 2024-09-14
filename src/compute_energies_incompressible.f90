@@ -2,7 +2,7 @@
 !
 !See the LICENSE file in the root directory for license information.
 
-subroutine compute_energies_compressible(free_energy)
+subroutine compute_energies_incompressible(free_energy)
 !----------------------------------------------------------------------------------------------------------!
   use eos, only: eos_ff, eos_df_drho
   use arrays, only: ufield, layer_area, coeff_nx, &
@@ -280,4 +280,4 @@ subroutine compute_energies_compressible(free_energy)
 
   return
 !----------------------------------------------------------------------------------------------------------!
-end subroutine compute_energies_compressible
+end subroutine compute_energies_incompressible

@@ -631,7 +631,11 @@ fh_U(ii,kk)=fh_U(ii,kk)+(fh_d1(jj,0)-fh_d1(jj,ii))*(fh_d1(jj,0)-fh_d1(jj,kk))+ (
       if (exist_ghi) nchghi = get_nchains(coeff_nx, nx, layer_area, phi_ghi,  &
 &                                                      rho_seg_bulk, chainlen_ghi)
 
-      call compute_energies(free_energy)
+      if (eos_type .eq. F_incompressible) then
+        call compute_energies_incompressible(free_energy)
+      else
+        call compute_energies_compressible(free_energy)
+      end if
 
       ! flush the log file
       close (iow)

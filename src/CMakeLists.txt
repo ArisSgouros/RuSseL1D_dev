@@ -11,7 +11,8 @@ add_executable(RSL1D
      compute_phi_ads_states.f90
      compute_equimolar.f90
      compute_phi_seg.f90
-     compute_energies.f90
+     compute_energies_compressible.f90
+     compute_energies_incompressible.f90
      contour_convolution.f90
      solver_edwards.f90
      solver_tridag.f90

@@ -32,7 +32,7 @@ subroutine compute_energies_incompressible(free_energy)
   real(8)                  :: nchglo, nchghi, nchmxa, nchmxb, nchmxa_bulk, nchmxb_bulk
   real(8)                  :: part_func_mxa, part_func_mxb
   real(8)                  :: E_nkTlnQm, E_solid, E_NLnQ_mxa, E_NLnQ_mxb,  &
-                       &      E_solid_solid, &
+                       &      E_solid_solid, rho_seg_bulk_mx12, &
                        &      E_Flory, E_fh_pressure
 !----------------------------------------------------------------------------------------------------------!
   E_NLnQ_mxa = 0.d0
@@ -42,6 +42,12 @@ subroutine compute_energies_incompressible(free_energy)
   E_solid_solid = 0.d0
   E_Flory = 0.d0
   E_fh_pressure = 0.d0
+  nchglo = 0.d0
+  nchghi = 0.d0
+  nchmxa = 0.d0
+  nchmxb = 0.d0
+  nchmxa_bulk = 0.d0
+  nchmxb_bulk = 0.d0
 
   prof_solid = 0.d0
   prof_Flory = 0.d0
@@ -50,8 +56,8 @@ subroutine compute_energies_incompressible(free_energy)
     ! total contributions
     prof_solid(kk) = phi_tot(kk)*Ufield(kk)/beta
     ! flory huggins
-    prof_Flory(kk) = chi12*(phi_kd1(kk)*phi_kd2(kk) - fh_rho_bulk*(1.d0 - fh_rho_bulk))
-    prof_fh_pressure(kk) = 0.5*(wa_ifc_new_kd1(kk) + wa_ifc_new_kd2(kk)) - 0.5d0*chi12
+    prof_Flory(kk) = -chi12*(phi_kd1(kk)*phi_kd2(kk) - fh_rho_bulk*(1.d0 - fh_rho_bulk))
+    prof_fh_pressure(kk) = -(0.5*(wa_ifc_new_kd1(kk) + wa_ifc_new_kd2(kk)) - 0.5d0*chi12)
   end do
 
   do kk = 0, nx

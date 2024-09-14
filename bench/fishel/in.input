@@ -7,8 +7,8 @@
  0.000000000D+00               ! system pressure, (atm)
 
  # polymer parameters
- 3.0123912725+02               ! polymer monomer_mass, (g/mol)
- 0.990300000D+00               ! polymer mass_density, (g/cm3)
+ 3.1898860025+02               ! polymer monomer_mass, (g/mol)
+ 1.048650000D+00               ! polymer mass_density, (g/cm3)
 
  # simulation parameters
  10000000                      ! field iterations
@@ -20,12 +20,6 @@
  0                             ! discret spatial (0: uniform, 1: nonuniform)
  1                             ! integr contour (0: Rectangle rule, 1: Simpson rule)
  1                             ! integr spatial (0: Rectangle rule, 1: Simpson rule)
-
- # wall parameters
- 0                                                               ! wall type, (0: vacuum; 1: Hamaker)
- 3.700000000E+00 3.000000000E+00 5.840000000D+00 6.430000000D+00 ! wall coeffs, (Hamaker: sig_pol, sig_sol, A_pol, A_sol
- 5.000000000D+00                                                 ! wall pos auto, (Angstrom)
- 0                                                               ! wall side (-1: lo, 0: both, 1: hi)
 
  # Flory's parameter
  0.041610000D+00               ! chi12

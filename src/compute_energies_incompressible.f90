@@ -68,12 +68,14 @@ subroutine compute_energies_incompressible(free_energy)
   E_fh_pressure = E_fh_pressure*1.d-30*rho_seg_bulk/beta
 
   if (exist_mxa) then
+    nchmxa = get_nchains(coeff_nx, nx, layer_area, phi_mxa, rho_seg_bulk, chainlen_mxa)
     part_func_mxa = get_part_func(nx, ns_mxa, layer_area, volume, coeff_nx, qfinal_mxa)
-    E_NLnQ_mxa = volume*1.0d-30*rho_seg_bulk/beta/chainlen_mxa*(1.d0 - part_func_mxa)
+    E_NLnQ_mxa = -nchmxa/beta*log(part_func_mxa)
   end if
   if (exist_mxb) then
+    nchmxb = get_nchains(coeff_nx, nx, layer_area, phi_mxb, rho_seg_bulk, chainlen_mxb)
     part_func_mxb = get_part_func(nx, ns_mxb, layer_area, volume, coeff_nx, qfinal_mxb)
-    E_NLnQ_mxb = volume*1.0d-30*rho_seg_bulk/beta/chainlen_mxb*(1.d0 - part_func_mxb)
+    E_NLnQ_mxb = -nchmxb/beta*log(part_func_mxb)
   end if
 
   E_nkTlnQm = 0.d0

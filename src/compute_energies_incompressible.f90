@@ -51,7 +51,7 @@ subroutine compute_energies_incompressible(free_energy)
     prof_solid(kk) = phi_tot(kk)*Ufield(kk)/beta
     ! flory huggins
     prof_Flory(kk) = chi12*(phi_kd1(kk)*phi_kd2(kk) - fh_rho_bulk*(1.d0 - fh_rho_bulk))
-    prof_fh_pressure(kk) = 0.5*(wa_kd1(kk) + wa_kd2(kk)) - 0.5d0*chi12
+    prof_fh_pressure(kk) = 0.5*(wa_ifc_new_kd1(kk) + wa_ifc_new_kd2(kk)) - 0.5d0*chi12
   end do
 
   do kk = 0, nx
@@ -107,7 +107,7 @@ subroutine compute_energies_incompressible(free_energy)
   free_energy = E_Flory + E_fh_pressure + E_NLnQ_mxa + E_NLnQ_mxb + E_nkTlnQm + E_solid + E_solid_solid
 
   open (unit=777, file="o.energies")
-  write (777, '(8(A16))') "free_energy", "E_Flory", "E_fh_pressure", "N1LnQ1mxa", "N1LnQ1mxb", "nkTlnQm_ns", &
+  write (777, '(8(A16))') "free_energy", "E_Flory", "E_fh_pressure", "NLnQmxa", "NLnQmxb", "nkTlnQm_ns", &
   &                        "E_solid", "solid_solid"
 
   write (777, '(8(E16.7))') free_energy, E_Flory, E_fh_pressure, E_NLnQ_mxa, E_NLnQ_mxb, E_nkTlnQm, &

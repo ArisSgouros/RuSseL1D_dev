@@ -12,7 +12,7 @@
 
  # simulation parameters
  10000000                      ! field iterations
- False                         ! field read, (0: no, 1: yes)
+ True                          ! field read, (0: no, 1: yes)
  0.100000000D-08               ! field max_error, (J/k_BT)
  0.100000000D-01               ! field mixing_fraction
  0                             ! edwards solver (0: implicit?, 1: semi-implicit)

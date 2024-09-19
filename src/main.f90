@@ -9,7 +9,7 @@ program fd_1d
   use eos, only: eos_df_drho, eos_type
   use write_helper, only: adjl
   use flags, only: F_bc_dirichlet_eq_0, F_bc_dirichlet_eq_1, F_sphere, F_incompressible
-  use parser_vars, only: beta, k_gr, delta, fh_nr,      &
+  use parser_vars, only: beta, k_gr, delta, fh_nr, fh_fraction,     &
                         & mxa_kind, mxb_kind, ghi_kind, glo_kind, &
                         & bc_lo_mxa, bc_lo_mxb, bc_lo_grafted, bc_hi_mxa, bc_hi_mxb, bc_hi_grafted, &
                         & bc_lo_mxa_val, bc_lo_mxb_val, bc_lo_grafted_val, bc_hi_mxa_val, bc_hi_mxb_val, bc_hi_grafted_val, &
@@ -458,8 +458,8 @@ program fd_1d
     if (eos_type .eq. F_incompressible) then
       !mixing term
       do jj = 0, nx
-        wa_kd1(jj) = wa_kd1(jj) + chi12*phi_kd2(jj) - 0.5d0*chi12
-        wa_kd2(jj) = wa_kd2(jj) + chi12*phi_kd1(jj) - 0.5d0*chi12
+        wa_kd1(jj) = wa_kd1(jj) + chi12*phi_kd2(jj) - 0.5d0*chi12 + 0.5d0*chi12*(2.0*fh_fraction - 1.d0)
+        wa_kd2(jj) = wa_kd2(jj) + chi12*phi_kd1(jj) - 0.5d0*chi12 + 0.5d0*chi12*(2.0*fh_fraction - 1.d0)
       end do
 
       do jj = 0, nx

@@ -456,10 +456,12 @@ program fd_1d
 
     !eos term for incompressible
     if (eos_type .eq. F_incompressible) then
+      !fix pressure term does not work correctly for N1!=N2
+      !should resolve to the usual expression (wa=Naphib + ksi) and then reexpress in the reduced wa->wa/Na version.
       !mixing term
       do jj = 0, nx
         wa_kd1(jj) = wa_kd1(jj) + chi12*phi_kd2(jj) - 0.5d0*chi12 + 0.5d0*chi12*(2.0*fh_fraction - 1.d0)
-        wa_kd2(jj) = wa_kd2(jj) + chi12*phi_kd1(jj) - 0.5d0*chi12 + 0.5d0*chi12*(2.0*fh_fraction - 1.d0)
+        wa_kd2(jj) = wa_kd2(jj) + chi12*phi_kd1(jj) - 0.5d0*chi12 - 0.5d0*chi12*(2.0*fh_fraction - 1.d0)
       end do
 
       do jj = 0, nx

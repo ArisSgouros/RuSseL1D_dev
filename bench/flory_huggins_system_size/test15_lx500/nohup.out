@@ -1,0 +1,58 @@
+ Input parameter file was read successfully!
+-----------------------------------SYSTEM PARAMETERS---------------------------------
+   System geometry:                                         film
+   Domain in Angstroms:                                1000.0000 Angstrom
+   Domain discretization:                                 0.5000 Angstrom
+   Nodes across the domain:                                 2000 nodes
+   Temperature:                                         500.0000 K
+   Pressure:                                              0.0000 atm
+----------------------------------POLYMER PROPERTIES---------------------------------
+   Monomer mass:                                        100.0000 g/mol
+   Mass density:                                          1.0000 g/cm^3
+--------------------------------SIMULATION PARAMETERS--------------------------------
+   Output thermodynamics every:                              100           steps
+   Output computes every:                                   1000 steps
+   Field will be initialized to zero            
+   Field error tolerance:                                 0.0000 J/k_BT
+   Field mixing fraction:                            0.010000000
+   Field andersen fraction:                          0.100000000
+   Edwards solver                                       implicit
+   *Linear solver not set.. we will use tridag..
+   Maximum iterations:                                     40000 iterations
+   Andersen_after_iter:                                     2000 andersen_after_iter
+   Spacing for chain contour discret:                    uniform
+   Spacing for spatial discret:                          uniform
+   Chain contour integration rule:                  Simpson rule
+   Spatial integration rule:                      Recrangle rule
+-------------------------------------mxa CHAINS-----------------------------------   
+   chain kind:                                                 1
+   Chain contour discretization:                 0.500000000E+00 monomers
+   Chain length:                                    50.000000000 monomers
+   Chain characteristic ratio C_infinity:                10.0000
+   Bond length:                                           1.0000 Angstrom
+-------------------------------------mxb CHAINS-----------------------------------   
+   chain kind:                                                 2
+   Chain contour discretization:                 0.500000000E+00 monomers
+   Chain length:                                    50.000000000 monomers
+   Chain characteristic ratio C_infinity:                10.0000
+   Bond length:                                           1.0000 Angstrom
+------------------------------------ BULK CHAINS ------------------------------------
+   Chain length (auto):                             50.000000000 monomers
+---------------------------------BOUNDARY CONDITIONS---------------------------------
+   mxa boundary condition for lo edge:                 Dirichlet q=     0.988367695
+   mxa boundary condition for hi edge:                   Neumann (dq/dr=0)
+   mxb boundary condition for lo edge:                   Neumann (dq/dr=0)
+   mxb boundary condition for hi edge:                 Dirichlet q=     0.988367695
+------------------------------SETUP THE EQUATION OF STATE----------------------------
+   The incompressible model was chosen          
+   Flory chi parameter :                             0.040000000
+   Flory bulk density :                              0.976870700
+------------------------------------SETUP THE WALLS----------------------------------
+   Wall type:                                             vacuum
+   *Side of the solid wall not detected..       
+                  ..it will be set to both sides
+   *Hard sphere wall position not found. Auto:            0.0000 Angstrom
+   fh_nr:                                                      5
+-----------------------------INITIALIZE THE SCF PARAMETERS---------------------------
+   mxa radious of gyration:                               9.1287 Angstrom
+   mxa nodes along chain contour:                            100 nodes

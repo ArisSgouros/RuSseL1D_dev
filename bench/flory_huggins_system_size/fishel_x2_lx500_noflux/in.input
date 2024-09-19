@@ -1,0 +1,62 @@
+ # system setup
+ 0                             ! domain geometry, (0: Film, 1: sphere)
+ 5.000000000D+02               ! domain lx, (Angstrom)
+ 0.5                           ! domain dx
+ 8.000000000E+01               ! domain sphere_radius, (Angstrom)
+ 0.443000000D+03               ! system temperature, (K)
+ 0.000000000D+00               ! system pressure, (atm)
+
+ # polymer parameters
+ 3.1898860025+02               ! polymer monomer_mass, (g/mol)
+ 1.048650000D+00               ! polymer mass_density, (g/cm3)
+
+ # simulation parameters
+ 10000000                      ! field iterations
+ True                          ! field read, (0: no, 1: yes)
+ 0.100000000D-08               ! field max_error, (J/k_BT)
+ 0.100000000D-01               ! field mixing_fraction
+ 0                             ! edwards solver (0: implicit?, 1: semi-implicit)
+ 0                             ! discret contour (0: uniform, 1: nonuniform)
+ 0                             ! discret spatial (0: uniform, 1: nonuniform)
+ 1                             ! integr contour (0: Rectangle rule, 1: Simpson rule)
+ 1                             ! integr spatial (0: Rectangle rule, 1: Simpson rule)
+
+ # Flory's parameter
+ 0.041610000D+00               ! chi12
+ 0.020805000D+00               ! fh_press_bulk
+
+ # mxa chains
+ True                          ! mxa set (1: yes, 0 : no)
+ 1                             ! mxa kind
+ 6.540000000D+02               ! mxa chain_length
+ 5.000000000D+00               ! mxa ds
+ 2.042389579D+00               ! mxa C_inf
+ 7.964000000D+00               ! mxa bond_length, (Angstrom)
+
+ # mxb chains
+ True                          ! mxb set (1: yes, 0 : no)
+ 2                             ! mxb kind
+ 6.540000000D+02               ! mxb chain_length
+ 5.000000000D+00               ! mxb ds
+ 2.042389579D+00               ! mxb C_inf
+ 7.964000000D+00               ! mxb bond_length, (Angstrom)
+ 
+
+ 0.000000000D+00               ! chain r_ads_lo, (Angstrom)
+ 0.000000000D+00               ! chain r_ads_hi, (Angstrom)
+
+ # boundary conditions
+ -1                            ! boundary_condition lo mxa, (-1: Neuman, 0: Dirichlet q=0, 1: Dirichlet q=1)
+ -1                            ! boundary_condition lo mxb, (-1: Neuman, 0: Dirichlet q=0, 1: Dirichlet q=1)
+ -1                            ! boundary_condition hi mxa, (-1: Neuman, 0: Dirichlet q=0, 1: Dirichlet q=1)
+ -1                            ! boundary_condition hi mxb, (-1: Neuman, 0: Dirichlet q=0, 1: Dirichlet q=1)
+
+ # equation of state
+ -1                            ! EOS type ( 0: Helfand; 1: Sanchez-Lacombe )
+ 5                             ! fh_dim
+ 0.300000000D-00               ! field andersen_fraction
+ 1000                          ! andersen_after_iter
+ 
+
+ 5000                          ! compute every 
+ 1000                          ! thermo every 

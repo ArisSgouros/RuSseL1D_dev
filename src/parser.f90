@@ -134,6 +134,7 @@ subroutine parser()
   logical :: log_real_influence_param = .false.
   logical :: log_fh_nr = .false.
   logical :: log_fh_rho_bulk = .false.
+  logical :: log_fh_press_bulk = .false.
 !----------------------------------------------------------------------------------------------------------!
   wall_hamaker = .false.
   wall_hamaker_well = .false.
@@ -529,6 +530,9 @@ subroutine parser()
       elseif (index(line, "! fh_rho_bulk") > 0) then
         read (line, *) fh_rho_bulk
         log_fh_rho_bulk = .true.
+      elseif (index(line, "! fh_press_bulk") > 0) then
+        read (line, *) fh_press_bulk
+        log_fh_press_bulk = .true.
       end if
     end if
   end do
@@ -1584,6 +1588,14 @@ subroutine parser()
   else
     fh_rho_bulk = 1.d0
   end if
+  if (log_fh_press_bulk) then
+    write (iow, '(3X,A45,F16.9)') adjl('Flory bulk pressure :', 45), fh_press_bulk
+    write (*, '(3X,A45,F16.9)') adjl('Flory bulk pressure :', 45), fh_press_bulk
+  else
+    fh_press_bulk = 0.5d0*chi12
+  end if
+
+
 
   if (log_influence_param) then
     write (iow, '(3X,A45,F16.4)') adjl('Reduced influence parameter:', 45), k_gr_tilde

@@ -19,7 +19,7 @@ subroutine compute_energies_incompressible(free_energy)
                        & chainlen_mxa, chainlen_mxb, chainlen_glo, chainlen_ghi, chainlen_bulk, &
                        & gnode_lo, gnode_hi, &
                        & gdens_lo, gdens_hi, beta, sig_solid, wall_pos, wall_side, asolid, &
-                       & chi12, fh_rho_bulk
+                       & chi12, fh_rho_bulk, fh_press_bulk
 !----------------------------------------------------------------------------------------------------------!
   implicit none
 !----------------------------------------------------------------------------------------------------------!
@@ -57,7 +57,7 @@ subroutine compute_energies_incompressible(free_energy)
     prof_solid(kk) = phi_tot(kk)*Ufield(kk)/beta
     ! flory huggins
     prof_Flory(kk) = -chi12*(phi_kd1(kk)*phi_kd2(kk) - fh_rho_bulk*(1.d0 - fh_rho_bulk))
-    prof_fh_pressure(kk) = -(0.5*(wa_ifc_new_kd1(kk) + wa_ifc_new_kd2(kk)) - 0.5d0*chi12)
+    prof_fh_pressure(kk) = -(0.5*(wa_ifc_new_kd1(kk) + wa_ifc_new_kd2(kk)) - fh_press_bulk)
   end do
 
   do kk = 0, nx

@@ -119,13 +119,13 @@ subroutine compute_energies_incompressible(free_energy)
   free_energy = E_Flory + E_fh_pressure + E_NLnQ_mxa + E_NLnQ_mxb + E_nkTlnQm + E_solid + E_solid_solid
 
   open (unit=777, file="o.energies")
-  write (777, '(12(A16))') "free_energy", "E_Flory", "E_fh_pressure", "NLnQmxa", "NLnQmxb", "nkTlnQm_ns", &
+  write (777, '(14(A16))') "free_energy", "E_Flory", "E_fh_pressure", "NLnQmxa", "NLnQmxb", "nkTlnQm_ns", &
   &                        "N_ch1", "N_ch2", "N_ch1_bulk", "N_ch2_bulk", &
-  &                        "E_solid", "solid_solid"
+  &                        "E_solid", "solid_solid", "Qmxa", "Qmxb"
 
-  write (777, '(12(E16.7))') free_energy, E_Flory, E_fh_pressure, E_NLnQ_mxa, E_NLnQ_mxb, E_nkTlnQm, &
+  write (777, '(14(E16.7))') free_energy, E_Flory, E_fh_pressure, E_NLnQ_mxa, E_NLnQ_mxb, E_nkTlnQm, &
   &                        nchmxa, nchmxb, nchmxa_bulk, nchmxb_bulk, &
-  &                        E_solid, E_solid_solid
+  &                        E_solid, E_solid_solid, part_func_mxa, part_func_mxb
   close (777)
 
   return

@@ -78,7 +78,7 @@ subroutine compute_energies_incompressible(free_energy)
     part_func_mxa = get_part_func(nx, ns_mxa, layer_area, volume, coeff_nx, qfinal_mxa)
     E_NLnQ_mxa = -nchmxa/beta*log(part_func_mxa)
 
-    rho_seg_bulk_mx12 = rho_seg_bulk*(1.d0 - fh_rho_bulk)
+    rho_seg_bulk_mx12 = rho_seg_bulk*fh_rho_bulk
     nchmxa_bulk = get_nchains(coeff_nx, nx, layer_area, phi_tot, rho_seg_bulk_mx12, chainlen_mxa)
   end if
   if (exist_mxb) then
@@ -86,7 +86,7 @@ subroutine compute_energies_incompressible(free_energy)
     part_func_mxb = get_part_func(nx, ns_mxb, layer_area, volume, coeff_nx, qfinal_mxb)
     E_NLnQ_mxb = -nchmxb/beta*log(part_func_mxb)
 
-    rho_seg_bulk_mx12 = rho_seg_bulk*(1.d0 - fh_rho_bulk)
+    rho_seg_bulk_mx12 = rho_seg_bulk*fh_rho_bulk
     nchmxb_bulk = get_nchains(coeff_nx, nx, layer_area, phi_tot, rho_seg_bulk_mx12, chainlen_mxb)
   end if
 

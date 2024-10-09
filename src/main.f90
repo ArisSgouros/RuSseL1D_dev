@@ -36,7 +36,9 @@ program fd_1d
                         & wa_kd2, wa_bulk_kd2, wa_ifc_kd2, wa_ifc_new_kd2, wa_ifc_backup_kd2,     &
                         & wa_ifc_mxa, wa_ifc_mxb, wa_ifc_glo, wa_ifc_ghi, &
                         & surface_area, rr, irr, layer_area, &
-                        & fh_d1, fh_d2, fh_V, fh_U, fh_Uinv, fh_C, wa_prv_iter1, wa_mix_iter1, wa_mix_iter2, wa_prv_iter2
+                        & fh_d1, fh_d2, fh_V, fh_U, fh_Uinv, fh_C, wa_prv_iter1, wa_mix_iter1, wa_mix_iter2, wa_prv_iter2, &
+                        & volume
+
 !----------------------------------------------------------------------------------------------------------!
   implicit none
 !----------------------------------------------------------------------------------------------------------!
@@ -50,6 +52,10 @@ program fd_1d
   real(8) :: qinit_lo = 0.d0, qinit_hi = 0.d0
   real(8) :: free_energy = 0.d0
   real(8) :: nchglo = 0.d0, nchghi = 0.d0, nch_mxa = 0.d0, nch_mxb = 0.d0
+
+
+  real(8)               :: get_part_func
+  real(8)               :: part_func_mxa, part_func_mxb, part_func_tot
 !----------------------------------------------------------------------------------------------------------!
   open (unit=iow, file="o.log")
 
@@ -70,6 +76,8 @@ program fd_1d
   &                               "nch_mxb", "nch_glo", "nch_ghi", "fraction"
 
   do iter = 0, max_iter
+
+    part_func_tot = 0.d0
 
     if (exist_mxa) then
       !set the dirichlet boundary conditions for matrix chains
@@ -375,6 +383,16 @@ program fd_1d
 &                                qfinal_ghi_aux, qfinal_ghi, phi_ghi)
     end if
 
+    part_func_mxa = get_part_func(nx, ns_mxa, layer_area, volume, coeff_nx, qfinal_mxa)
+    part_func_mxb = get_part_func(nx, ns_mxb, layer_area, volume, coeff_nx, qfinal_mxb)
+    part_func_tot = part_func_mxa + part_func_mxb
+    if (eos_type .eq. F_incompressible) then
+      part_func_mxa = part_func_mxa / part_func_tot
+      part_func_mxb = part_func_mxb / part_func_tot
+      phi_mxa = fh_fraction * phi_mxa / part_func_mxa
+      phi_mxb = (1.0 - fh_fraction) * phi_mxb / part_func_mxb
+    end if
+
     phi_tot = 0.d0
     if (exist_mxa) phi_tot = phi_tot + phi_mxa
     if (exist_mxb) phi_tot = phi_tot + phi_mxb
@@ -460,8 +478,8 @@ program fd_1d
       !should resolve to the usual expression (wa=Naphib + ksi) and then reexpress in the reduced wa->wa/Na version.
       !mixing term
       do jj = 0, nx
-        wa_kd1(jj) = wa_kd1(jj) + chi12*phi_kd2(jj) - 0.5d0*chi12 + 0.5d0*chi12*(2.0*fh_fraction - 1.d0)
-        wa_kd2(jj) = wa_kd2(jj) + chi12*phi_kd1(jj) - 0.5d0*chi12 - 0.5d0*chi12*(2.0*fh_fraction - 1.d0)
+        wa_kd1(jj) = wa_kd1(jj) + chi12*phi_kd2(jj) - 0.5d0*chi12
+        wa_kd2(jj) = wa_kd2(jj) + chi12*phi_kd1(jj) - 0.5d0*chi12
       end do
 
       do jj = 0, nx

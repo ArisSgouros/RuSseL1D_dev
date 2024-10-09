@@ -259,6 +259,12 @@ subroutine parser()
         log_spatial_integr_scheme = .true.
 
         ! computes
+      elseif (index(line, "! export phi_seg") > 0) then
+        read (line, '(L10)') out_phi_seg
+        log_out_phi_seg = .true.
+      elseif (index(line, "! export set phi_seg") > 0) then
+        read (line, *) export_phi_seg_id
+        log_out_phi_seg_set = .true.
       elseif (index(line, "! export phi") > 0) then
         read (line, '(L10)') out_phi
         log_out_phi = .true.
@@ -280,12 +286,6 @@ subroutine parser()
       elseif (index(line, "! export brush") > 0) then
         read (line, '(L10)') out_brush_thickness
         log_out_brush_thickness = .true.
-      elseif (index(line, "! export phi_seg") > 0) then
-        read (line, '(L10)') out_phi_seg
-        log_out_phi_seg = .true.
-      elseif (index(line, "! export set phi_seg") > 0) then
-        read (line, *) export_phi_seg_id
-        log_out_phi_seg_set = .true.
 
         ! wall section
       elseif (index(line, "! wall type") > 0) then

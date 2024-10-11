@@ -1,0 +1,80 @@
+-----------------------------------SYSTEM PARAMETERS---------------------------------
+   System geometry:                                         film
+   Domain in Angstroms:                                 250.0000 Angstrom
+   Domain discretization:                                 0.2500 Angstrom
+   Nodes across the domain:                                 1000 nodes
+   Temperature:                                         500.0000 K
+   Pressure:                                              0.0000 atm
+----------------------------------POLYMER PROPERTIES---------------------------------
+   Monomer mass:                                        100.0000 g/mol
+   Mass density:                                          1.0000 g/cm^3
+--------------------------------SIMULATION PARAMETERS--------------------------------
+   Output thermodynamics every:                              100           steps
+   Output computes every:                                   1000 steps
+   Output equimolar:                                           F
+   Output q:                                                   F
+   Output chain shape:                                         F
+   Output ads free:                                            F
+   Output phi seg:                                             F
+   Output brush thickness:                                     F
+   Field input file not specified.              
+   Reading default field input file:            ./in.field.bin  
+   Field error tolerance:                                 0.0000 J/k_BT
+   Field mixing fraction:                            0.010000000
+   Field andersen fraction:                          0.500000000
+   Edwards solver                                       implicit
+   *Linear solver not set.. we will use tridag..
+   Maximum iterations:                                     40000 iterations
+   Andersen_after_iter:                                      200 andersen_after_iter
+   Spacing for chain contour discret:                    uniform
+   Spacing for spatial discret:                          uniform
+   Chain contour integration rule:                  Simpson rule
+   Spatial integration rule:                      Recrangle rule
+-------------------------------------mxa CHAINS-----------------------------------   
+   chain kind:                                                 1
+   Chain contour discretization:                 0.100000000E+00 monomers
+   Chain length:                                    50.000000000 monomers
+   Chain characteristic ratio C_infinity:                 1.0000
+   Bond length:                                           1.0000 Angstrom
+-------------------------------------mxb CHAINS-----------------------------------   
+   chain kind:                                                 2
+   Chain contour discretization:                 0.100000000E+00 monomers
+   Chain length:                                    50.000000000 monomers
+   Chain characteristic ratio C_infinity:                 1.0000
+   Bond length:                                           1.0000 Angstrom
+------------------------------------ BULK CHAINS ------------------------------------
+   Chain length (auto):                             50.000000000 monomers
+---------------------------------BOUNDARY CONDITIONS---------------------------------
+   mxa boundary condition for lo edge:                   Neumann (dq/dr=0)
+   mxa boundary condition for hi edge:                   Neumann (dq/dr=0)
+   mxb boundary condition for lo edge:                   Neumann (dq/dr=0)
+   mxb boundary condition for hi edge:                   Neumann (dq/dr=0)
+------------------------------SETUP THE EQUATION OF STATE----------------------------
+   The incompressible model was chosen:         
+   Flory chi parameter :                             0.050000000
+   Flory bulk density :                              0.853997800
+   Flory bulk pressure :                             0.020856921
+   Flory fraction :                                  0.500000000
+------------------------------------SETUP THE WALLS----------------------------------
+   Wall type:                                             vacuum
+   *Side of the solid wall not detected..       
+                  ..it will be set to both sides
+   *Hard sphere wall position not found. Auto:            0.0000 Angstrom
+   fh_nr:                                                      5
+-----------------------------INITIALIZE THE SCF PARAMETERS---------------------------
+   mxa radious of gyration:                               2.8868 Angstrom
+   mxa nodes along chain contour:                            500 nodes
+   mxb radious of gyration:                               2.8868 Angstrom
+   mxb nodes along chain contour:                            500 nodes
+   molar density in bulk                              10000.0000 mol/m3
+---------------------------------BEGIN THE SIMULATION--------------------------------
+        Iteration    energy (mN/m)    error (k_B T)         gdens_lo         gdens_hi            nch_m          nch_mxb          nch_glo          nch_ghi         fraction
+                0    0.1444951E+02    0.7154694E-13    0.0000000E+00    0.0000000E+00    0.1507041E-01    0.1507041E-01    0.0000000E+00    0.0000000E+00    0.1000000E-01
+
+Convergence of max field error   0.7154694E-13 k_B T
+-------------------------------------FINAL OUTPUT------------------------------------
+   Free energy:        0.1444951E+02 mN/m
+------------------------------------mxa CHAINS-----------------------------------    
+   matrix chains:      0.1507041E-01 chains
+------------------------------------mxb CHAINS-----------------------------------    
+   matrix chains:      0.1507041E-01 chains

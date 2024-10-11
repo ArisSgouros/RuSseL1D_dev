@@ -134,6 +134,7 @@ subroutine parser()
   logical :: log_real_influence_param = .false.
   logical :: log_fh_nr = .false.
   logical :: log_fh_rho_bulk = .false.
+  logical :: log_fh_rho_bulk_kd2 = .false.
   logical :: log_fh_press_bulk = .false.
   logical :: log_fh_fraction = .false.
 !----------------------------------------------------------------------------------------------------------!
@@ -528,6 +529,9 @@ subroutine parser()
       elseif (index(line, "! fh_dim") > 0) then
         read (line, *) fh_nr
         log_fh_nr = .true.
+      elseif (index(line, "! fh_rho_bulk_kd2") > 0) then
+        read (line, *) fh_rho_bulk_kd2
+        log_fh_rho_bulk_kd2 = .true.
       elseif (index(line, "! fh_rho_bulk") > 0) then
         read (line, *) fh_rho_bulk
         log_fh_rho_bulk = .true.
@@ -1591,6 +1595,12 @@ subroutine parser()
     write (*, '(3X,A45,F16.9)') adjl('Flory bulk density :', 45), fh_rho_bulk
   else
     fh_rho_bulk = 1.d0
+  end if
+  if (log_fh_rho_bulk_kd2) then
+    write (iow, '(3X,A45,F16.9)') adjl('Flory bulk density (kd2):', 45), fh_rho_bulk_kd2
+    write (*, '(3X,A45,F16.9)') adjl('Flory bulk density (kd2):', 45), fh_rho_bulk_kd2
+  else
+    fh_rho_bulk_kd2 = fh_rho_bulk
   end if
   if (log_fh_press_bulk) then
     write (iow, '(3X,A45,F16.9)') adjl('Flory bulk pressure :', 45), fh_press_bulk
